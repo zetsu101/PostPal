@@ -1,102 +1,96 @@
-import Image from "next/image";
+"use client";
+import Link from "next/link";
 
-export default function Home() {
+export default function LandingPage() {
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#1F2937] font-sans">
+      {/* Header */}
+      <header className="flex justify-between items-center px-6 py-4 shadow-sm bg-white">
+        <span className="text-2xl font-bold tracking-tight text-[#FF6B6B]">PostPal</span>
+        <nav className="space-x-4">
+          <Link href="/onboarding" className="font-medium hover:underline">Get Started Free</Link>
+          <Link href="/dashboard" className="font-medium hover:underline">Login</Link>
+        </nav>
+      </header>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+      {/* Hero Section */}
+      <section className="flex flex-col items-center justify-center flex-1 text-center px-4 py-16">
+        <h1 className="text-4xl sm:text-5xl font-extrabold mb-4 text-[#1F2937]">Never worry about what to post again.</h1>
+        <p className="text-lg sm:text-xl mb-8 max-w-xl mx-auto text-[#374151]">AI-powered content ideas, captions, hashtags, and a drag-and-drop calendar for creators, brands, and freelancers.</p>
+        <Link href="/onboarding" className="bg-[#FF6B6B] hover:bg-[#60A5FA] text-white font-semibold px-8 py-3 rounded-full shadow-lg transition-colors text-lg">Get Started Free</Link>
+      </section>
+
+      {/* How it Works */}
+      <section className="bg-white py-12 px-4">
+        <h2 className="text-2xl font-bold text-center mb-8">How it Works</h2>
+        <div className="flex flex-col sm:flex-row justify-center gap-8 max-w-4xl mx-auto">
+          <div className="flex-1 bg-[#F9FAFB] rounded-xl p-6 shadow-sm">
+            <div className="text-4xl mb-2">1️⃣</div>
+            <h3 className="font-semibold mb-2">Tell us about your brand</h3>
+            <p className="text-[#6B7280]">Complete a playful onboarding to set your tone, audience, and goals.</p>
+          </div>
+          <div className="flex-1 bg-[#F9FAFB] rounded-xl p-6 shadow-sm">
+            <div className="text-4xl mb-2">2️⃣</div>
+            <h3 className="font-semibold mb-2">Get AI-powered ideas</h3>
+            <p className="text-[#6B7280]">Receive tailored post ideas, captions, hashtags, and image prompts.</p>
+          </div>
+          <div className="flex-1 bg-[#F9FAFB] rounded-xl p-6 shadow-sm">
+            <div className="text-4xl mb-2">3️⃣</div>
+            <h3 className="font-semibold mb-2">Plan & post with ease</h3>
+            <p className="text-[#6B7280]">Drag-and-drop to your calendar, edit, and stay consistent with ease.</p>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
+      </section>
+
+      {/* Screenshots/Mockups Placeholder */}
+      <section className="py-12 px-4 bg-[#F9FAFB] text-center">
+        <h2 className="text-2xl font-bold mb-4">See PostPal in Action</h2>
+        <div className="flex flex-wrap justify-center gap-6">
+          <div className="w-72 h-44 bg-[#E5E7EB] rounded-xl flex items-center justify-center text-[#9CA3AF] text-lg font-semibold">[Post Ideas Mockup]</div>
+          <div className="w-72 h-44 bg-[#E5E7EB] rounded-xl flex items-center justify-center text-[#9CA3AF] text-lg font-semibold">[Calendar Mockup]</div>
+        </div>
+      </section>
+
+      {/* Pricing Tiers Placeholder */}
+      <section className="py-12 px-4 bg-white text-center">
+        <h2 className="text-2xl font-bold mb-8">Pricing</h2>
+        <div className="flex flex-col sm:flex-row justify-center gap-8 max-w-4xl mx-auto">
+          <div className="flex-1 border rounded-xl p-6 shadow-sm">
+            <h3 className="font-semibold text-lg mb-2">Free</h3>
+            <p className="mb-4 text-[#6B7280]">Try PostPal with basic features</p>
+            <span className="text-2xl font-bold">$0</span>
+          </div>
+          <div className="flex-1 border-2 border-[#FF6B6B] rounded-xl p-6 shadow-lg">
+            <h3 className="font-semibold text-lg mb-2 text-[#FF6B6B]">Pro</h3>
+            <p className="mb-4 text-[#6B7280]">Unlock AI, calendar, and more</p>
+            <span className="text-2xl font-bold">$12/mo</span>
+          </div>
+          <div className="flex-1 border rounded-xl p-6 shadow-sm">
+            <h3 className="font-semibold text-lg mb-2">Team</h3>
+            <p className="mb-4 text-[#6B7280]">Collaborate with your team</p>
+            <span className="text-2xl font-bold">$29/mo</span>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials Carousel Placeholder */}
+      <section className="py-12 px-4 bg-[#F9FAFB] text-center">
+        <h2 className="text-2xl font-bold mb-8">What Our Users Say</h2>
+        <div className="flex flex-col sm:flex-row justify-center gap-8 max-w-4xl mx-auto">
+          <div className="flex-1 bg-white rounded-xl p-6 shadow-md">“PostPal made posting so much easier!”<br/><span className="block mt-2 text-[#6B7280]">— Alex, Creator</span></div>
+          <div className="flex-1 bg-white rounded-xl p-6 shadow-md">“I love the AI ideas and calendar.”<br/><span className="block mt-2 text-[#6B7280]">— Jamie, Small Biz Owner</span></div>
+          <div className="flex-1 bg-white rounded-xl p-6 shadow-md">“Finally, I’m consistent on social!”<br/><span className="block mt-2 text-[#6B7280]">— Taylor, Freelancer</span></div>
+        </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="bg-white py-6 px-4 mt-8 border-t text-center text-[#6B7280]">
+        <div className="flex flex-col sm:flex-row justify-center gap-4 mb-2">
+          <Link href="/terms" className="hover:underline">Terms</Link>
+          <Link href="/privacy" className="hover:underline">Privacy</Link>
+          <Link href="/contact" className="hover:underline">Contact</Link>
+        </div>
+        <div>© {new Date().getFullYear()} PostPal. All rights reserved.</div>
       </footer>
     </div>
   );
