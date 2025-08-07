@@ -3,12 +3,32 @@
 @tailwind utilities;
 
 :root {
-  --color-primary: #FF6B6B;
-  --color-sky: #60A5FA;
-  --color-mint: #34D399;
-  --color-lemon: #FACC15;
-  --color-gray-light: #F9FAFB;
-  --color-charcoal: #1F2937;
+  /* Primary Colors - Light Blue Theme */
+  --color-primary: #87CEFA; /* Light Sky Blue - Primary */
+  --color-primary-dark: #5F9EC7; /* Darker Sky Blue */
+  --color-primary-light: #ADD8E6; /* Lighter Sky Blue */
+  
+  /* Accent Colors */
+  --color-accent: #40E0D0; /* Turquoise - Fresh & Balanced */
+  --color-accent-dark: #20B2AA; /* Darker Teal */
+  --color-accent-light: #7FFFD4; /* Lighter Turquoise */
+  
+  /* Warm Accents */
+  --color-warm: #FF7F50; /* Coral - CTAs & Highlights */
+  --color-warm-light: #FFA07A; /* Light Coral */
+  --color-warm-dark: #E65A3A; /* Darker Coral */
+  
+  /* Neutral Colors */
+  --color-gray-light: #F8FAFC; /* Very Light Gray */
+  --color-gray-lighter: #F1F5F9; /* Lighter Gray */
+  --color-gray: #E2E8F0; /* Light Gray */
+  --color-gray-dark: #64748B; /* Medium Gray */
+  --color-charcoal: #1E293B; /* Dark Gray */
+  
+  /* Success/Error Colors */
+  --color-success: #10B981; /* Green */
+  --color-warning: #F59E0B; /* Amber */
+  --color-error: #EF4444; /* Red */
 }
 
 body {
@@ -19,4 +39,83 @@ body {
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-inter), var(--font-lato), system-ui, sans-serif;
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+  /* Hide scrollbar on mobile */
+  ::-webkit-scrollbar {
+    display: none;
+  }
+  
+  /* Prevent horizontal scroll */
+  body {
+    overflow-x: hidden;
+  }
+  
+  /* Touch-friendly tap targets */
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Mobile-safe areas */
+  .mobile-safe-top {
+    padding-top: env(safe-area-inset-top);
+  }
+  
+  .mobile-safe-bottom {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  
+  /* Mobile gestures */
+  .swipeable {
+    touch-action: pan-y;
+  }
+  
+  /* Mobile animations */
+  @media (prefers-reduced-motion: no-preference) {
+    .mobile-fade-in {
+      animation: mobileFadeIn 0.3s ease-out;
+    }
+  }
+}
+
+@keyframes mobileFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* PWA specific styles */
+@media (display-mode: standalone) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* Dark mode support - keeping light theme for consistency */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #87CEFA;
+    --color-primary-dark: #5F9EC7;
+    --color-primary-light: #ADD8E6;
+    --color-accent: #40E0D0;
+    --color-accent-dark: #20B2AA;
+    --color-accent-light: #7FFFD4;
+    --color-warm: #FF7F50;
+    --color-warm-light: #FFA07A;
+    --color-warm-dark: #E65A3A;
+    --color-gray-light: #F8FAFC;
+    --color-gray-lighter: #F1F5F9;
+    --color-gray: #E2E8F0;
+    --color-gray-dark: #64748B;
+    --color-charcoal: #1E293B;
+  }
 }

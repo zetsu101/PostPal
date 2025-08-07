@@ -9,6 +9,9 @@ interface PostIdea {
   hashtags: string[];
   imagePrompt: string;
   platform: string;
+  contentType: string;
+  engagement: number;
+  difficulty: "Easy" | "Medium" | "Hard";
 }
 
 interface EditPostModalProps {
@@ -22,13 +25,10 @@ export default function EditPostModal({ post, isOpen, onClose, onSave }: EditPos
   const [formData, setFormData] = useState<PostIdea | null>(null);
   const [hashtagsInput, setHashtagsInput] = useState("");
 
-  console.log('🔍 EditPostModal DEBUG - isOpen:', isOpen, 'post:', post);
-
   useEffect(() => {
     if (post) {
       setFormData(post);
       setHashtagsInput(post.hashtags.join(" "));
-      console.log('🔍 EditPostModal DEBUG - Setting form data:', post);
     }
   }, [post]);
 
@@ -53,23 +53,14 @@ export default function EditPostModal({ post, isOpen, onClose, onSave }: EditPos
       };
       onSave(updatedPost);
       onClose();
-      console.log('🔍 EditPostModal DEBUG - Saving post:', updatedPost);
     }
   };
 
-  const handleCancel = () => {
-    onClose();
-    console.log('🔍 EditPostModal DEBUG - Canceling edit');
-  };
 
-  console.log('🔍 EditPostModal DEBUG - About to render, isOpen:', isOpen, 'formData:', formData);
 
   if (!isOpen || !formData) {
-    console.log('🔍 EditPostModal DEBUG - Not rendering, isOpen:', isOpen, 'formData:', formData);
     return null;
   }
-
-  console.log('🔍 EditPostModal DEBUG - Rendering modal with subtle background and no scrolling');
 
   return (
     <AnimatePresence>
@@ -114,6 +105,7 @@ export default function EditPostModal({ post, isOpen, onClose, onSave }: EditPos
               </div>
               <button
                 onClick={onClose}
+                aria-label="Close modal"
                 className="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center transition-colors"
               >
                 <span className="text-gray-600 text-lg">✕</span>

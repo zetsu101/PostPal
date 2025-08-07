@@ -1,11 +1,15 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import MobileFeatures from "./MobileFeatures";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: "🏠" },
   { name: "Create", href: "/create", icon: "✏️" },
   { name: "Calendar", href: "/calendar", icon: "📅" },
+  { name: "Analytics", href: "/analytics", icon: "📊" },
+  { name: "Team", href: "/team", icon: "👥" },
+  { name: "Billing", href: "/billing", icon: "💳" },
   { name: "Saved Posts", href: "/saved", icon: "💾" },
   { name: "Settings", href: "/settings", icon: "⚙️" },
 ];
@@ -15,13 +19,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-gray-50">
+      <MobileFeatures />
       {/* Desktop Sidebar */}
       <div className="hidden md:flex">
         <div className="w-64 bg-white shadow-lg border-r border-gray-200 min-h-screen">
           {/* Logo */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-[#FF6B6B] to-[#60A5FA] rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center">
                 <span className="text-white text-xl font-bold">P</span>
               </div>
               <span className="text-xl font-bold text-gray-900">PostPal</span>

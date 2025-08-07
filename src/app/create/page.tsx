@@ -1,6 +1,6 @@
 "use client";
-import { useState } from "react";
-import Link from "next/link";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface PostData {
   title: string;
@@ -8,282 +8,541 @@ interface PostData {
   hashtags: string[];
   imagePrompt: string;
   platform: string;
+  contentType: string;
+  tone: string;
+  targetAudience: string;
+}
+
+interface ContentTemplate {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+  category: string;
 }
 
 export default function CreatePage() {
   const [postData, setPostData] = useState<PostData>({
-    title: "Behind the Scenes: Our Creative Process",
-    caption: "Ever wondered how we bring your ideas to life? Here's a peek into our creative process! From initial concept to final design, every step is crafted with care. What's your favorite part of the creative journey? ✨",
-    hashtags: ["#BehindTheScenes", "#CreativeProcess", "#DesignLife", "#BrandStory"],
-    imagePrompt: "A clean workspace with design tools, mood boards, and creative materials scattered around, soft natural lighting, professional photography style",
-    platform: "Instagram"
+    title: "",
+    caption: "",
+    hashtags: [],
+    imagePrompt: "",
+    platform: "Instagram",
+    contentType: "post",
+    tone: "professional",
+    targetAudience: "general"
   });
 
-  const [selectedPlatforms, setSelectedPlatforms] = useState(["Instagram"]);
-  const [hashtagsInput, setHashtagsInput] = useState(postData.hashtags.join(" "));
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [showAIGenerator, setShowAIGenerator] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [uploadedMedia, setUploadedMedia] = useState<File[]>([]);
+  const [scheduleType, setScheduleType] = useState("draft");
+  const [scheduledTime, setScheduledTime] = useState("");
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const platforms = ["Instagram", "Facebook", "TikTok", "LinkedIn", "Twitter"];
+  // Content templates
+  const templates: ContentTemplate[] = [
+    { id: "product-showcase", name: "Product Showcase", description: "Highlight your products with engaging visuals", icon: "📦", category: "business" },
+    { id: "behind-scenes", name: "Behind the Scenes", description: "Share your creative process and team culture", icon: "🎬", category: "lifestyle" },
+    { id: "user-generated", name: "User Generated Content", description: "Feature customer testimonials and reviews", icon: "👥", category: "social" },
+    { id: "educational", name: "Educational Post", description: "Share valuable tips and industry insights", icon: "📚", category: "education" },
+    { id: "promotional", name: "Promotional Offer", description: "Announce deals, discounts, and special offers", icon: "🎉", category: "business" },
+    { id: "storytelling", name: "Storytelling", description: "Share your brand story and values", icon: "📖", category: "brand" }
+  ];
 
-  const togglePlatform = (platform: string) => {
-    if (selectedPlatforms.includes(platform)) {
-      setSelectedPlatforms(selectedPlatforms.filter(p => p !== platform));
-    } else {
-      setSelectedPlatforms([...selectedPlatforms, platform]);
-    }
+  // AI Content Generation
+  const generateAIContent = async () => {
+    setIsGenerating(true);
+    // Simulate AI generation
+    setTimeout(() => {
+      setPostData({
+        ...postData,
+        caption: "🚀 Exciting news! We're launching something amazing that will transform your social media game. Stay tuned for the big reveal! ✨\n\nWhat do you think it could be? Drop your guesses below! 👇\n\n#LaunchDay #Innovation #SocialMedia #Excited #ComingSoon",
+        hashtags: ["#LaunchDay", "#Innovation", "#SocialMedia", "#Excited", "#ComingSoon"],
+        imagePrompt: "A modern, clean workspace with a laptop showing social media analytics, surrounded by creative elements like colorful sticky notes, a coffee cup, and natural lighting"
+      });
+      setIsGenerating(false);
+      setShowAIGenerator(false);
+    }, 2000);
+  };
+
+  // File upload handling
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(event.target.files || []);
+    setUploadedMedia(prev => [...prev, ...files]);
+  };
+
+  const removeMedia = (index: number) => {
+    setUploadedMedia(prev => prev.filter((_, i) => i !== index));
   };
 
   return (
-<div className="h-screen bg-white flex overflow-hidden">
-  {/* Left Navigation - YouTube-style Collapsible */}
-  <div className={`transition-all duration-300 ease-in-out bg-white border-r border-gray-200 flex flex-col relative items-center ${sidebarOpen ? 'w-56 px-4' : 'w-20 px-0'}`}>
-    {/* Hamburger Menu Button - Updated YouTube-style */}
-    <div className="h-20 flex items-center justify-center w-full">
-    <button
-  onClick={() => setSidebarOpen(!sidebarOpen)}
-  className="w-10 h-10 rounded-full bg-transparent hover:bg-gray-100 flex items-center justify-center transition-colors duration-200 group"
-  aria-label="Toggle sidebar"
->
-  <div className="relative w-6 h-4 flex flex-col justify-between items-center">
-    {/* Top Line */}
-    <span
-      className={`absolute top-0 w-6 h-0.5 bg-black rounded transition-all duration-300 
-        ${sidebarOpen ? 'rotate-45 translate-y-[7px]' : ''}`}
-    ></span>
-    
-    {/* Middle Line */}
-    <span
-      className={`absolute top-[7px] w-6 h-0.5 bg-black rounded transition-all duration-300 
-        ${sidebarOpen ? 'opacity-0' : ''}`}
-    ></span>
-    
-    {/* Bottom Line */}
-    <span
-      className={`absolute bottom-0 w-6 h-0.5 bg-black rounded transition-all duration-300 
-        ${sidebarOpen ? '-rotate-45 -translate-y-[7px]' : ''}`}
-    ></span>
-  </div>
-</button>
-    </div>
+    <div className="h-screen bg-gray-50 flex">
+      {/* Left Navigation */}
+      <div className={`transition-all duration-300 ease-in-out bg-white border-r border-gray-200 flex flex-col relative items-center ${sidebarOpen ? "w-64 px-4" : "w-20 px-0"}`}>
+        <div className="fixed top-4 left-4 z-50 bg-white border border-gray-300 p-2 rounded-xl shadow-lg">
+          <button
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="relative w-10 h-10 rounded-full bg-transparent hover:bg-gray-100 flex items-center justify-center transition-colors duration-200"
+            aria-label="Toggle sidebar"
+          >
+            <span className={`absolute w-6 h-0.5 bg-black rounded transition-all duration-300 origin-center ${sidebarOpen ? "rotate-45 translate-y-1.5" : "-translate-y-2"}`}></span>
+            <span className={`absolute w-6 h-0.5 bg-black rounded transition-all duration-300 origin-center ${sidebarOpen ? "opacity-0" : ""}`}></span>
+            <span className={`absolute w-6 h-0.5 bg-black rounded transition-all duration-300 origin-center ${sidebarOpen ? "-rotate-45 -translate-y-1.5" : "translate-y-2"}`}></span>
+          </button>
+        </div>
 
-        {/* Navigation - Responsive */}
-        <nav className="flex-1 flex flex-col items-center justify-center gap-8">
-          <Link href="/dashboard" className={`flex items-center gap-4 w-full py-3 px-2 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all text-xl ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
-            <span>🏠</span>
-            {sidebarOpen && <span className="font-semibold text-base">Home</span>}
-          </Link>
-          <Link href="/create" className={`flex items-center gap-4 w-full py-3 px-2 rounded-xl text-blue-600 bg-blue-50 shadow-lg text-xl ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
-            <span>✏️</span>
-            {sidebarOpen && <span className="font-semibold text-base">Create</span>}
-          </Link>
-          <Link href="/calendar" className={`flex items-center gap-4 w-full py-3 px-2 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all text-xl ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
-            <span>📅</span>
-            {sidebarOpen && <span className="font-semibold text-base">Calendar</span>}
-          </Link>
-          <Link href="/saved" className={`flex items-center gap-4 w-full py-3 px-2 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all text-xl ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
-            <span>💾</span>
-            {sidebarOpen && <span className="font-semibold text-base">Saved</span>}
-          </Link>
-          <Link href="/settings" className={`flex items-center gap-4 w-full py-3 px-2 rounded-xl text-gray-600 hover:text-blue-600 hover:bg-blue-50 transition-all text-xl ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
-            <span>⚙️</span>
-            {sidebarOpen && <span className="font-semibold text-base">Settings</span>}
-          </Link>
+        <nav className="flex-1 flex flex-col items-center justify-center gap-6 mt-20">
+          <a href="/dashboard" className={`flex items-center gap-4 w-full py-3 px-3 rounded-xl text-gray-600 hover:text-[#87CEFA] hover:bg-[#87CEFA]/10 transition-all ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
+            <span className="text-xl">🏠</span>
+            {sidebarOpen && <span className="font-semibold">Dashboard</span>}
+          </a>
+          <a href="/create" className={`flex items-center gap-4 w-full py-3 px-3 rounded-xl text-[#87CEFA] bg-[#87CEFA]/10 shadow-lg ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
+            <span className="text-xl">✏️</span>
+            {sidebarOpen && <span className="font-semibold">Create</span>}
+          </a>
+          <a href="/calendar" className={`flex items-center gap-4 w-full py-3 px-3 rounded-xl text-gray-600 hover:text-[#87CEFA] hover:bg-[#87CEFA]/10 transition-all ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
+            <span className="text-xl">📅</span>
+            {sidebarOpen && <span className="font-semibold">Calendar</span>}
+          </a>
+          <a href="/saved" className={`flex items-center gap-4 w-full py-3 px-3 rounded-xl text-gray-600 hover:text-[#87CEFA] hover:bg-[#87CEFA]/10 transition-all ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
+            <span className="text-xl">💾</span>
+            {sidebarOpen && <span className="font-semibold">Saved</span>}
+          </a>
+          <a href="/settings" className={`flex items-center gap-4 w-full py-3 px-3 rounded-xl text-gray-600 hover:text-[#87CEFA] hover:bg-[#87CEFA]/10 transition-all ${sidebarOpen ? 'justify-start' : 'justify-center'}`}>
+            <span className="text-xl">⚙️</span>
+            {sidebarOpen && <span className="font-semibold">Settings</span>}
+          </a>
         </nav>
       </div>
 
-      {/* Main Content Area - Responsive to sidebar */}
-      <div className={`flex-1 flex flex-col h-screen overflow-hidden transition-all duration-300 ${sidebarOpen ? 'pl-0' : 'pl-0'}`}>
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col h-screen overflow-hidden">
         {/* Top Navigation Bar */}
-        <div className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-10">
-          <div className="flex items-center space-x-10">
-            <span className="text-2xl font-bold text-gray-900">PostPal</span>
-            <div className="flex space-x-8">
-              <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Home</Link>
-              <Link href="/create" className="text-blue-600 font-bold">Create</Link>
-              <Link href="/calendar" className="text-gray-600 hover:text-blue-600 font-medium">Calendar</Link>
-              <Link href="/saved" className="text-gray-600 hover:text-blue-600 font-medium">Saved</Link>
+        <div className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8">
+          <div className="flex items-center space-x-8">
+            <span className="text-2xl font-bold bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] bg-clip-text text-transparent">PostPal</span>
+            <div className="flex space-x-6">
+              <a href="/dashboard" className="text-gray-600 hover:text-[#87CEFA] font-medium transition-colors">Dashboard</a>
+              <a href="/create" className="text-[#87CEFA] font-bold">Create</a>
+              <a href="/calendar" className="text-gray-600 hover:text-[#87CEFA] font-medium transition-colors">Calendar</a>
+              <a href="/saved" className="text-gray-600 hover:text-[#87CEFA] font-medium transition-colors">Saved</a>
             </div>
           </div>
-          <div className="flex items-center space-x-6">
-            <span className="text-gray-400 text-xl">🔍</span>
-            <span className="text-gray-400 text-xl">🔔</span>
-            <div className="w-10 h-10 bg-gray-300 rounded-full"></div>
+          <div className="flex items-center space-x-4">
+            <button aria-label="Search" className="text-gray-400 text-xl hover:text-[#87CEFA] transition-colors">🔍</button>
+            <button aria-label="Notifications" className="text-gray-400 text-xl hover:text-[#87CEFA] transition-colors">🔔</button>
+            <div className="w-10 h-10 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full flex items-center justify-center text-white font-bold">U</div>
           </div>
         </div>
 
-        {/* Main Content - Modern Spacing */}
-        <div className="flex-1 flex overflow-hidden p-8 gap-10">
-          {/* Left Content Area */}
-          <div className="flex-1 flex flex-col gap-10 justify-between">
-            {/* Date Selector */}
-            <div className="flex items-center justify-between bg-white rounded-xl shadow-lg px-8 py-4 mb-2">
-              <div className="flex items-center space-x-3">
-                <span className="text-gray-400 text-xl">◀</span>
-                <div className="flex space-x-2">
-                  <button className="px-4 py-2 text-base text-blue-600 bg-blue-50 rounded-lg font-semibold">17 Mon</button>
-                  <button className="px-4 py-2 text-base text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold">18 Tue</button>
-                  <button className="px-4 py-2 text-base text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold">19 Wed</button>
-                  <button className="px-4 py-2 text-base text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold">20 Thu</button>
-                  <button className="px-4 py-2 text-base text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold">21 Fri</button>
-                  <button className="px-4 py-2 text-base text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold">22 Sat</button>
-                  <button className="px-4 py-2 text-base text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg font-semibold">23 Sun</button>
-                </div>
-                <span className="text-gray-400 text-xl">▶</span>
+        {/* Main Content */}
+        <div className="flex-1 flex overflow-hidden">
+          {/* Left Panel - Content Creation */}
+          <div className="flex-1 flex flex-col p-6 gap-6">
+            {/* Header with AI Generator */}
+            <div className="flex items-center justify-between">
+              <div>
+                <h1 className="text-3xl font-bold text-[#1E293B] mb-2">Create Amazing Content</h1>
+                <p className="text-[#64748B]">Craft engaging posts that connect with your audience</p>
               </div>
-              <span className="text-base text-gray-500">This month 2023</span>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setShowAIGenerator(true)}
+                className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white px-6 py-3 rounded-xl font-semibold flex items-center gap-2 shadow-lg hover:shadow-xl transition-all"
+              >
+                <span>🤖</span>
+                <span>AI Content Generator</span>
+              </motion.button>
             </div>
 
             {/* Content Type Tabs */}
-            <div className="flex space-x-10 border-b border-gray-200 pb-2">
-              <button className="pb-2 border-b-4 border-blue-600 text-blue-600 font-bold text-lg">POST</button>
-              <button className="pb-2 text-gray-500 font-semibold text-lg hover:text-blue-600">STORIES</button>
-              <button className="pb-2 text-gray-500 font-semibold text-lg hover:text-blue-600">REELS</button>
+            <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
+              {["post", "story", "reel", "carousel"].map((type) => (
+                <button
+                  key={type}
+                  onClick={() => setPostData({ ...postData, contentType: type })}
+                  className={`px-6 py-3 rounded-lg font-semibold transition-all capitalize ${
+                    postData.contentType === type
+                      ? "bg-white text-[#87CEFA] shadow-md"
+                      : "text-[#64748B] hover:text-[#1E293B]"
+                  }`}
+                >
+                  {type}
+                </button>
+              ))}
             </div>
 
-            {/* Content Area with Modern Spacing */}
-            <div className="flex-1 flex gap-10">
-              {/* Left Column - Media Upload */}
-              <div className="w-1/2 flex flex-col gap-8 justify-between">
-                {/* Media Upload Area */}
-                <div className="flex-1 bg-pink-50 border-2 border-dashed border-pink-200 rounded-2xl flex items-center justify-center shadow-lg">
-                  <div className="text-center">
-                    <span className="text-5xl mb-4 block">🎯</span>
-                    <p className="text-gray-600 text-lg font-semibold">Drop media here</p>
-                  </div>
+            {/* Content Creation Area */}
+            <div className="flex-1 flex gap-6">
+              {/* Left Column - Media & Templates */}
+              <div className="w-1/2 flex flex-col gap-6">
+                {/* Media Upload */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                  <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Media</h3>
+                  
+                  {uploadedMedia.length === 0 ? (
+                    <div 
+                      onClick={() => fileInputRef.current?.click()}
+                      className="border-2 border-dashed border-[#87CEFA] rounded-xl p-8 text-center cursor-pointer hover:bg-[#87CEFA]/5 transition-colors"
+                    >
+                      <span className="text-4xl mb-4 block">📷</span>
+                      <p className="text-[#64748B] font-medium mb-2">Drop your media here</p>
+                      <p className="text-sm text-[#64748B]">or click to browse</p>
+                      <input
+                        ref={fileInputRef}
+                        type="file"
+                        multiple
+                        accept="image/*,video/*"
+                        onChange={handleFileUpload}
+                        className="hidden"
+                      />
+                    </div>
+                  ) : (
+                    <div className="grid grid-cols-2 gap-4">
+                      {uploadedMedia.map((file, index) => (
+                        <div key={index} className="relative group">
+                          <img
+                            src={URL.createObjectURL(file)}
+                            alt={`Upload ${index + 1}`}
+                            className="w-full h-32 object-cover rounded-lg"
+                          />
+                          <button
+                            onClick={() => removeMedia(index)}
+                            className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                          >
+                            ×
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
-                {/* Upload Button */}
-                <button className="w-full bg-blue-600 text-white py-4 rounded-xl font-bold shadow-lg text-lg">
-                  Upload your own media, or, use our in-built libraries for free!
-                </button>
-
-                {/* Scheduling Options */}
-                <div className="space-y-4 bg-white rounded-xl shadow-lg p-6">
-                  <h3 className="font-bold text-gray-900 text-lg mb-2">Schedule your post</h3>
-                  <div className="space-y-3">
-                    <label className="flex items-center text-base">
-                      <input type="radio" name="schedule" className="mr-3" defaultChecked />
-                      <span>Save as draft</span>
-                    </label>
-                    <label className="flex items-center text-base">
-                      <input type="radio" name="schedule" className="mr-3" />
-                      <span>Post now</span>
-                    </label>
-                    <label className="flex items-center text-base">
-                      <input type="radio" name="schedule" className="mr-3" />
-                      <span>Custom time</span>
-                    </label>
-                    <label className="flex items-center text-base">
-                      <input type="radio" name="schedule" className="mr-3" />
-                      <span>Your best times to post</span>
-                    </label>
-                    <label className="flex items-center text-base">
-                      <input type="radio" name="schedule" className="mr-3" />
-                      <span>When your audience is most online</span>
-                    </label>
+                {/* Content Templates */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                  <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Content Templates</h3>
+                  <div className="grid grid-cols-2 gap-3">
+                    {templates.map((template) => (
+                      <motion.button
+                        key={template.id}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        onClick={() => setSelectedTemplate(template.id)}
+                        className={`p-4 rounded-xl border-2 transition-all text-left ${
+                          selectedTemplate === template.id
+                            ? "border-[#87CEFA] bg-[#87CEFA]/5"
+                            : "border-gray-200 hover:border-[#87CEFA]/50"
+                        }`}
+                      >
+                        <div className="text-2xl mb-2">{template.icon}</div>
+                        <div className="font-semibold text-[#1E293B] text-sm">{template.name}</div>
+                        <div className="text-xs text-[#64748B] mt-1">{template.description}</div>
+                      </motion.button>
+                    ))}
                   </div>
                 </div>
               </div>
 
-              {/* Right Column - Caption */}
-              <div className="w-1/2 flex flex-col gap-8 justify-between">
-                {/* Caption Input */}
-                <div className="flex-1 bg-white rounded-xl shadow-lg p-6 flex flex-col gap-4">
+              {/* Right Column - Caption & Settings */}
+              <div className="w-1/2 flex flex-col gap-6">
+                {/* Caption Editor */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg flex-1">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="text-lg font-semibold text-[#1E293B]">Caption</h3>
+                    <div className="flex items-center gap-2 text-sm text-[#64748B]">
+                      <span>{postData.caption.length}/2200</span>
+                    </div>
+                  </div>
+                  
                   <textarea
                     value={postData.caption}
                     onChange={(e) => setPostData({ ...postData, caption: e.target.value })}
-                    className="w-full h-full p-4 border border-gray-200 rounded-lg resize-none focus:outline-none focus:border-blue-500 text-lg"
-                    placeholder="Craft the perfect caption here..."
+                    className="w-full h-48 p-4 border border-gray-200 rounded-xl resize-none focus:outline-none focus:border-[#87CEFA] focus:ring-2 focus:ring-[#87CEFA]/20 text-[#1E293B]"
+                    placeholder="Write your engaging caption here... Use emojis and hashtags to make it more engaging! ✨"
                   />
+
                   {/* Caption Tools */}
-                  <div className="flex items-center justify-between">
-                    <div className="flex space-x-3">
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">💡</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">📷</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">🌍</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">🏷️</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">👤</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">🎵</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">📅</button>
-                      <button className="p-2 hover:bg-gray-100 rounded text-xl">⏰</button>
+                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-100">
+                    <div className="flex gap-2">
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="AI suggestions">💡</button>
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Add hashtags">🏷️</button>
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Add emojis">😊</button>
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Add location">📍</button>
                     </div>
-                    <div className="text-base text-gray-500 font-semibold">
-                      <span>0/30</span> • <span>0/2200</span>
+                    <div className="flex gap-2">
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Preview">👁️</button>
+                      <button className="p-2 hover:bg-gray-100 rounded-lg transition-colors" title="Save template">💾</button>
                     </div>
                   </div>
                 </div>
 
-                {/* Auto Post Options */}
-                <div className="space-y-4 bg-white rounded-xl shadow-lg p-6">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-base font-bold">Auto Post to Instagram</p>
-                      <p className="text-xs text-gray-500">@oliveandauburn</p>
-                    </div>
-                    <button className="w-12 h-7 bg-gray-200 rounded-full relative">
-                      <div className="w-5 h-5 bg-white rounded-full absolute left-1 top-1"></div>
-                    </button>
+                {/* Hashtags */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                  <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Hashtags</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {postData.hashtags.map((tag, index) => (
+                      <span key={index} className="bg-[#87CEFA]/10 text-[#87CEFA] px-3 py-1 rounded-full text-sm font-medium">
+                        {tag}
+                      </span>
+                    ))}
                   </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-base font-bold">Share copy to Facebook</p>
-                      <p className="text-xs text-gray-500">oliveandauburn</p>
-                    </div>
-                    <button className="w-12 h-7 bg-gray-200 rounded-full relative">
-                      <div className="w-5 h-5 bg-white rounded-full absolute left-1 top-1"></div>
-                    </button>
-                  </div>
+                  <button className="mt-3 text-[#87CEFA] text-sm font-medium hover:underline">
+                    + Add hashtags
+                  </button>
                 </div>
 
-                {/* Action Buttons */}
-                <div className="flex space-x-4 justify-end">
-                  <button className="px-8 py-3 bg-gray-200 text-gray-700 rounded-xl font-bold text-lg hover:bg-gray-300 transition-all">
-                    DISCARD DRAFT
-                  </button>
-                  <button className="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold text-lg hover:bg-blue-700 transition-all flex items-center">
-                    SAVE AS DRAFT
-                    <span className="ml-2">▼</span>
-                  </button>
+                {/* Scheduling */}
+                <div className="bg-white rounded-2xl p-6 shadow-lg">
+                  <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Schedule</h3>
+                  <div className="space-y-3">
+                    {[
+                      { id: "draft", label: "Save as draft", icon: "📝" },
+                      { id: "now", label: "Post now", icon: "🚀" },
+                      { id: "custom", label: "Custom time", icon: "⏰" },
+                      { id: "optimal", label: "Optimal time", icon: "🎯" }
+                    ].map((option) => (
+                      <label key={option.id} className="flex items-center gap-3 cursor-pointer">
+                        <input
+                          type="radio"
+                          name="schedule"
+                          value={option.id}
+                          checked={scheduleType === option.id}
+                          onChange={(e) => setScheduleType(e.target.value)}
+                          className="text-[#87CEFA] focus:ring-[#87CEFA]"
+                        />
+                        <span className="text-lg">{option.icon}</span>
+                        <span className="text-[#1E293B] font-medium">{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                  
+                  {scheduleType === "custom" && (
+                    <div className="mt-4 pt-4 border-t border-gray-100">
+                      <input
+                        type="datetime-local"
+                        value={scheduledTime}
+                        onChange={(e) => setScheduledTime(e.target.value)}
+                        className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#87CEFA]"
+                      />
+                    </div>
+                  )}
                 </div>
               </div>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex justify-end gap-4 pt-4 border-t border-gray-200">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-3 bg-gray-100 text-[#1E293B] rounded-xl font-semibold hover:bg-gray-200 transition-colors"
+              >
+                Save Draft
+              </motion.button>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="px-8 py-3 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all"
+              >
+                {scheduleType === "now" ? "Post Now" : "Schedule Post"}
+              </motion.button>
             </div>
           </div>
 
-          {/* Right Sidebar - Instagram Preview with spacing */}
-          <div className="w-96 bg-white border-l border-gray-200 p-8 flex flex-col gap-10 justify-between">
-            {/* Account Header */}
-            <div className="flex flex-col gap-6">
-              <div>
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-lg font-bold">@oliveandauburn</span>
-                  <button className="text-xs text-blue-600 font-bold">SELECT</button>
-                </div>
-                <div className="flex space-x-6 text-base">
-                  <button className="text-blue-600 border-b-2 border-blue-600 pb-1 font-bold">ALL</button>
-                  <button className="text-gray-500 font-semibold">SCHEDULED</button>
-                </div>
-              </div>
-
-              {/* Content Type Tabs */}
-              <div className="flex space-x-6 text-base">
-                <button className="text-blue-600 border-b-2 border-blue-600 pb-1 font-bold">POSTS</button>
-                <button className="text-gray-500 font-semibold">STORIES</button>
-                <button className="text-gray-500 font-semibold">REELS</button>
-              </div>
+          {/* Right Panel - Preview */}
+          <div className="w-96 bg-white border-l border-gray-200 p-6">
+            <h3 className="text-lg font-semibold text-[#1E293B] mb-6">Preview</h3>
+            
+            {/* Platform Selector */}
+            <div className="flex gap-2 mb-6">
+              {["Instagram", "Facebook", "Twitter", "LinkedIn"].map((platform) => (
+                <button
+                  key={platform}
+                  onClick={() => setPostData({ ...postData, platform })}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+                    postData.platform === platform
+                      ? "bg-[#87CEFA] text-white"
+                      : "bg-gray-100 text-[#64748B] hover:bg-gray-200"
+                  }`}
+                >
+                  {platform}
+                </button>
+              ))}
             </div>
 
-            {/* Image Grid */}
-            <div className="flex-1 grid grid-cols-3 gap-4">
-              {/* Sample Images */}
-              {Array.from({length: 12}).map((_, i) => (
-                <div key={i} className="aspect-square bg-gray-200 rounded-xl flex items-center justify-center shadow">
-                  <span className="text-2xl text-gray-400">📱</span>
+            {/* Preview Card */}
+            <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden shadow-lg">
+              {/* Preview Header */}
+              <div className="p-4 border-b border-gray-100">
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full flex items-center justify-center text-white font-bold">
+                    P
+                  </div>
+                  <div>
+                    <div className="font-semibold text-[#1E293B]">@postpal</div>
+                    <div className="text-sm text-[#64748B]">Just now</div>
+                  </div>
                 </div>
-              ))}
+              </div>
+
+              {/* Preview Content */}
+              <div className="p-4">
+                {uploadedMedia.length > 0 ? (
+                  <div className="mb-4">
+                    <img
+                      src={URL.createObjectURL(uploadedMedia[0])}
+                      alt="Preview"
+                      className="w-full h-48 object-cover rounded-lg"
+                    />
+                  </div>
+                ) : (
+                  <div className="mb-4 h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                    <span className="text-4xl text-gray-400">📷</span>
+                  </div>
+                )}
+                
+                <p className="text-[#1E293B] text-sm leading-relaxed">
+                  {postData.caption || "Your caption will appear here..."}
+                </p>
+                
+                {postData.hashtags.length > 0 && (
+                  <div className="mt-3 flex flex-wrap gap-1">
+                    {postData.hashtags.map((tag, index) => (
+                      <span key={index} className="text-[#87CEFA] text-sm">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Preview Actions */}
+              <div className="p-4 border-t border-gray-100 flex items-center justify-between text-[#64748B]">
+                <div className="flex gap-4">
+                  <button className="flex items-center gap-1 text-sm">
+                    <span>❤️</span>
+                    <span>Like</span>
+                  </button>
+                  <button className="flex items-center gap-1 text-sm">
+                    <span>💬</span>
+                    <span>Comment</span>
+                  </button>
+                  <button className="flex items-center gap-1 text-sm">
+                    <span>📤</span>
+                    <span>Share</span>
+                  </button>
+                </div>
+                <button className="text-sm">
+                  <span>🔖</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      {/* AI Content Generator Modal */}
+      <AnimatePresence>
+        {showAIGenerator && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto"
+            >
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-2xl font-bold text-[#1E293B]">AI Content Generator</h2>
+                <button
+                  onClick={() => setShowAIGenerator(false)}
+                  className="text-[#64748B] hover:text-[#1E293B] text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+
+              <div className="space-y-6">
+                {/* Content Type */}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E293B] mb-2">Content Type</label>
+                  <select
+                    value={postData.contentType}
+                    onChange={(e) => setPostData({ ...postData, contentType: e.target.value })}
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#87CEFA]"
+                  >
+                    <option value="post">Post</option>
+                    <option value="story">Story</option>
+                    <option value="reel">Reel</option>
+                    <option value="carousel">Carousel</option>
+                  </select>
+                </div>
+
+                {/* Tone */}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E293B] mb-2">Tone</label>
+                  <select
+                    value={postData.tone}
+                    onChange={(e) => setPostData({ ...postData, tone: e.target.value })}
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#87CEFA]"
+                  >
+                    <option value="professional">Professional</option>
+                    <option value="casual">Casual</option>
+                    <option value="friendly">Friendly</option>
+                    <option value="humorous">Humorous</option>
+                    <option value="inspirational">Inspirational</option>
+                  </select>
+                </div>
+
+                {/* Target Audience */}
+                <div>
+                  <label className="block text-sm font-medium text-[#1E293B] mb-2">Target Audience</label>
+                  <select
+                    value={postData.targetAudience}
+                    onChange={(e) => setPostData({ ...postData, targetAudience: e.target.value })}
+                    className="w-full p-3 border border-gray-200 rounded-lg focus:outline-none focus:border-[#87CEFA]"
+                  >
+                    <option value="general">General</option>
+                    <option value="professionals">Professionals</option>
+                    <option value="creators">Creators</option>
+                    <option value="businesses">Businesses</option>
+                    <option value="students">Students</option>
+                  </select>
+                </div>
+
+                {/* Generate Button */}
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={generateAIContent}
+                  disabled={isGenerating}
+                  className="w-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white py-4 rounded-xl font-semibold shadow-lg hover:shadow-xl transition-all disabled:opacity-50"
+                >
+                  {isGenerating ? (
+                    <div className="flex items-center justify-center gap-2">
+                      <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Generating content...</span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center justify-center gap-2">
+                      <span>🤖</span>
+                      <span>Generate AI Content</span>
+                    </div>
+                  )}
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 
