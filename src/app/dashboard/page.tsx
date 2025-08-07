@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
+import LoadingSpinner from "@/components/LoadingSpinner";
 
 interface AnalyticsData {
   engagementRate: number;
@@ -41,7 +42,8 @@ interface PostPerformance {
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState("7d");
   const [selectedPlatform, setSelectedPlatform] = useState("all");
-  const [analyticsData] = useState<AnalyticsData>({
+  const [isLoading, setIsLoading] = useState(true);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
     engagementRate: 8.2,
     followersGrowth: 12.5,
     totalImpressions: 124700,
@@ -61,56 +63,87 @@ export default function DashboardPage() {
     { platform: "LinkedIn", followers: 5670, engagement: 9.1, posts: 23, growth: 18.7, color: "from-[#0A66C2] to-[#1976D2]" },
   ]);
 
-  const [topPosts] = useState<PostPerformance[]>([
-    {
-      id: "1",
-      title: "Behind the Scenes: Our Creative Process",
-      platform: "Instagram",
-      date: "2024-01-15",
-      impressions: 15420,
-      engagement: 12.5,
-      likes: 1890,
-      comments: 234,
-      shares: 89,
-      reach: 12340,
-    },
-    {
-      id: "2",
-      title: "Tip Tuesday: Boost Your Engagement",
-      platform: "LinkedIn",
-      date: "2024-01-14",
-      impressions: 8920,
-      engagement: 15.2,
-      likes: 1340,
-      comments: 189,
-      shares: 156,
-      reach: 7450,
-    },
-    {
-      id: "3",
-      title: "Product Launch Announcement",
-      platform: "Facebook",
-      date: "2024-01-13",
-      impressions: 12340,
-      engagement: 9.8,
-      likes: 1200,
-      comments: 167,
-      shares: 234,
-      reach: 9870,
-    },
-    {
-      id: "4",
-      title: "Industry Insights: Social Media Trends",
-      platform: "Twitter",
-      date: "2024-01-12",
-      impressions: 9870,
-      engagement: 11.3,
-      likes: 1100,
-      comments: 145,
-      shares: 89,
-      reach: 8230,
-    },
-  ]);
+  const [topPosts, setTopPosts] = useState<PostPerformance[]>([]);
+
+  // Simulate data loading
+  useEffect(() => {
+    const loadData = async () => {
+      setIsLoading(true);
+      
+      // Simulate API call delay
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Set the data
+      setAnalyticsData({
+        engagementRate: 8.2,
+        followersGrowth: 12.5,
+        totalImpressions: 124700,
+        totalReach: 89200,
+        totalLikes: 15600,
+        totalComments: 2300,
+        totalShares: 890,
+        bestPostingTime: "2:00 PM",
+        topPerformingPost: "Behind the Scenes: Our Creative Process",
+        audienceGrowth: 15.3,
+      });
+
+      setTopPosts([
+        {
+          id: "1",
+          title: "Behind the Scenes: Our Creative Process",
+          platform: "Instagram",
+          date: "2024-01-15",
+          impressions: 15420,
+          engagement: 12.5,
+          likes: 1890,
+          comments: 234,
+          shares: 89,
+          reach: 12340,
+        },
+        {
+          id: "2",
+          title: "Tip Tuesday: Boost Your Engagement",
+          platform: "LinkedIn",
+          date: "2024-01-14",
+          impressions: 8920,
+          engagement: 15.2,
+          likes: 1340,
+          comments: 189,
+          shares: 156,
+          reach: 7450,
+        },
+        {
+          id: "3",
+          title: "Product Launch Announcement",
+          platform: "Facebook",
+          date: "2024-01-13",
+          impressions: 12340,
+          engagement: 9.8,
+          likes: 1200,
+          comments: 167,
+          shares: 234,
+          reach: 9870,
+        },
+      ]);
+
+      setIsLoading(false);
+    };
+
+    loadData();
+  }, []);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="flex items-center justify-center h-64">
+            <LoadingSpinner size="lg" text="Loading dashboard..." />
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   const [currentTime, setCurrentTime] = useState("");
 
