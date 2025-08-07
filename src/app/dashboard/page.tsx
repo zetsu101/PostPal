@@ -43,6 +43,7 @@ export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState("7d");
   const [selectedPlatform, setSelectedPlatform] = useState("all");
   const [isLoading, setIsLoading] = useState(true);
+  const [currentTime, setCurrentTime] = useState("");
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
     engagementRate: 8.2,
     followersGrowth: 12.5,
@@ -144,8 +145,6 @@ export default function DashboardPage() {
       </DashboardLayout>
     );
   }
-
-  const [currentTime, setCurrentTime] = useState("");
 
   useEffect(() => {
     const updateTime = () => {
