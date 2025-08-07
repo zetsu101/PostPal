@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function SignupPage() {
-  const { signup, isLoading, error } = useAuth();
+  const { signup, isLoading, error, isAuthenticated } = useAuth();
+  const router = useRouter();
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,9 +20,19 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [passwordStrength, setPasswordStrength] = useState(0);
 
+  // Redirect to dashboard if already authenticated
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await signup(formData);
+    const result = await signup(formData);
+    if (result.isAuthenticated) {
+      router.push("/dashboard");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
