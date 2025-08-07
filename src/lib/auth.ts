@@ -87,6 +87,16 @@ class AuthManager {
 
   // Initialize auth state from localStorage
   init(): AuthState {
+    // Check if we're in a browser environment
+    if (typeof window === 'undefined') {
+      return {
+        user: null,
+        isAuthenticated: false,
+        isLoading: false,
+        error: null,
+      };
+    }
+    
     const token = localStorage.getItem('postpal_token');
     const userData = localStorage.getItem('postpal_user');
     
@@ -138,8 +148,10 @@ class AuthManager {
       user.lastLogin = new Date().toISOString();
       
       // Store in localStorage
-      localStorage.setItem('postpal_token', token);
-      localStorage.setItem('postpal_user', JSON.stringify(user));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('postpal_token', token);
+        localStorage.setItem('postpal_user', JSON.stringify(user));
+      }
       
       this.token = token;
       this.currentUser = user;
@@ -201,8 +213,10 @@ class AuthManager {
       // Generate token and login
       const token = this.generateToken(newUser);
       
-      localStorage.setItem('postpal_token', token);
-      localStorage.setItem('postpal_user', JSON.stringify(newUser));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('postpal_token', token);
+        localStorage.setItem('postpal_user', JSON.stringify(newUser));
+      }
       
       this.token = token;
       this.currentUser = newUser;
@@ -225,8 +239,10 @@ class AuthManager {
 
   // Logout user
   logout(): AuthState {
-    localStorage.removeItem('postpal_token');
-    localStorage.removeItem('postpal_user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('postpal_token');
+      localStorage.removeItem('postpal_user');
+    }
     
     this.token = null;
     this.currentUser = null;
@@ -287,7 +303,9 @@ class AuthManager {
       }
 
       // Update localStorage
-      localStorage.setItem('postpal_user', JSON.stringify(updatedUser));
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('postpal_user', JSON.stringify(updatedUser));
+      }
       
       this.currentUser = updatedUser;
 
