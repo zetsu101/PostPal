@@ -133,19 +133,7 @@ export default function DashboardPage() {
     loadData();
   }, []);
 
-  // Loading state
-  if (isLoading) {
-    return (
-      <DashboardLayout>
-        <div className="max-w-7xl mx-auto p-6">
-          <div className="flex items-center justify-center h-64">
-            <LoadingSpinner size="lg" text="Loading dashboard..." />
-          </div>
-        </div>
-      </DashboardLayout>
-    );
-  }
-
+  // Time update effect
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -161,6 +149,19 @@ export default function DashboardPage() {
 
     return () => clearInterval(timeInterval);
   }, []);
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto p-6">
+          <div className="flex items-center justify-center h-64">
+            <LoadingSpinner size="lg" text="Loading dashboard..." />
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   // Generate mock chart data
   const generateChartData = (days: number) => {
