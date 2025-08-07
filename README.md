@@ -2,7 +2,7 @@
 
 PostPal is a modern web application that helps creators, brands, and freelancers generate engaging social media content using AI. The platform provides post ideas, captions, hashtags, and a drag-and-drop calendar for content planning.
 
-## 🚀 Features
+## Features
 
 ### **Core Features**
 - **AI Content Generation**: Get personalized post ideas, captions, and hashtags based on your brand profile
