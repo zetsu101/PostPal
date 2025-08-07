@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
 import LoadingSpinner from "@/components/LoadingSpinner";
+import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface AnalyticsData {
   engagementRate: number;
@@ -153,13 +154,15 @@ export default function DashboardPage() {
   // Loading state
   if (isLoading) {
     return (
-      <DashboardLayout>
-        <div className="max-w-7xl mx-auto p-6">
-          <div className="flex items-center justify-center h-64">
-            <LoadingSpinner size="lg" text="Loading dashboard..." />
+      <ProtectedRoute>
+        <DashboardLayout>
+          <div className="max-w-7xl mx-auto p-6">
+            <div className="flex items-center justify-center h-64">
+              <LoadingSpinner size="lg" text="Loading dashboard..." />
+            </div>
           </div>
-        </div>
-      </DashboardLayout>
+        </DashboardLayout>
+      </ProtectedRoute>
     );
   }
 
@@ -183,8 +186,9 @@ export default function DashboardPage() {
   const chartData = generateChartData(7);
 
   return (
-    <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-6">
+    <ProtectedRoute>
+      <DashboardLayout>
+        <div className="max-w-7xl mx-auto p-6">
         {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}

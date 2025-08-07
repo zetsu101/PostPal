@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
+import { useAuth } from "@/lib/auth";
 import MobileFeatures from "./MobileFeatures";
 
 const navigation = [
@@ -16,13 +17,20 @@ const navigation = [
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+    router.push("/login");
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
       <MobileFeatures />
       {/* Desktop Sidebar */}
       <div className="hidden md:flex">
-        <div className="w-64 bg-white shadow-lg border-r border-gray-200 min-h-screen">
+        <div className="w-64 bg-white shadow-lg border-r border-gray-200 min-h-screen relative">
           {/* Logo */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">
@@ -34,7 +42,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </div>
 
           {/* Navigation */}
-          <nav className="p-4">
+          <nav className="p-4 pb-32">
             <div className="space-y-2">
               {navigation.map((item) => {
                 const isActive = pathname === item.href;
@@ -55,6 +63,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               })}
             </div>
           </nav>
+
+          {/* User Profile & Logout */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
+            <div className="flex items-center gap-3 mb-3">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] flex items-center justify-center">
+                {user?.avatar ? (
+                  <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+                ) : (
+                  <span className="text-white font-semibold">{user?.name?.charAt(0) || "U"}</span>
+                )}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium text-gray-900 truncate">{user?.name || "User"}</p>
+                <p className="text-xs text-gray-500 truncate">{user?.email || "user@example.com"}</p>
+              </div>
+            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-lg transition-all"
+            >
+              <span className="text-lg">🚪</span>
+              Logout
+            </button>
+          </div>
         </div>
 
         {/* Main Content */}
