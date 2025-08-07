@@ -93,6 +93,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <span className="text-lg">🚪</span>
                 Logout
               </button>
+              <button
+                onClick={() => {
+                  localStorage.removeItem('postpal_token');
+                  localStorage.removeItem('postpal_user');
+                  window.location.href = '/login';
+                }}
+                className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all mt-2"
+              >
+                <span className="text-lg">🗑️</span>
+                Clear Session
+              </button>
             </div>
           )}
         </div>

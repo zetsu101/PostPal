@@ -3,25 +3,26 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import LoadingSpinner from "@/components/LoadingSpinner";
 
 export default function LoginPage() {
   const { login, isLoading, error, isAuthenticated } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
 
-  // Redirect to dashboard if already authenticated
+  // Redirect to dashboard if already authenticated (but only if not on login page)
   useEffect(() => {
-    if (isAuthenticated) {
+    if (isAuthenticated && pathname !== "/login") {
       router.push("/dashboard");
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router, pathname]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -137,6 +138,17 @@ export default function LoginPage() {
                 Email: demo@postpal.com<br />
                 Password: demo123
               </p>
+              <button
+                type="button"
+                onClick={() => {
+                  localStorage.removeItem('postpal_token');
+                  localStorage.removeItem('postpal_user');
+                  window.location.reload();
+                }}
+                className="mt-2 text-blue-600 text-xs underline hover:text-blue-800"
+              >
+                Clear Session & Reload
+              </button>
             </div>
 
             {/* Submit Button */}
