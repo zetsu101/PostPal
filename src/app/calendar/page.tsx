@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
 import Container from "@/components/Container";
 import PageHeader from "@/components/PageHeader";
+import Button from "@/components/ui/Button";
 
 interface ScheduledPost {
   id: string;
@@ -143,14 +144,11 @@ export default function CalendarPage() {
           title="Content Calendar"
           subtitle="Plan and schedule your posts with our drag-and-drop calendar"
           actions={(
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={() => setShowAddPost(true)}
-              className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white font-semibold px-6 py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
-            >
-              + Schedule Post
-            </motion.button>
+            <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
+              <Button onClick={() => setShowAddPost(true)} size="lg">
+                + Schedule Post
+              </Button>
+            </motion.div>
           )}
         />
 
@@ -175,26 +173,20 @@ export default function CalendarPage() {
             </div>
             
             <div className="flex items-center gap-2">
-              <button
+              <Button
+                variant={viewMode === "month" ? "primary" : "secondary"}
+                size="sm"
                 onClick={() => setViewMode("month")}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  viewMode === "month" 
-                    ? "bg-[#87CEFA] text-white" 
-                    : "bg-gray-100 text-[#64748B] hover:bg-gray-200"
-                }`}
               >
                 Month
-              </button>
-              <button
+              </Button>
+              <Button
+                variant={viewMode === "week" ? "primary" : "secondary"}
+                size="sm"
                 onClick={() => setViewMode("week")}
-                className={`px-4 py-2 rounded-lg font-medium transition-colors ${
-                  viewMode === "week" 
-                    ? "bg-[#87CEFA] text-white" 
-                    : "bg-gray-100 text-[#64748B] hover:bg-gray-200"
-                }`}
               >
                 Week
-              </button>
+              </Button>
             </div>
           </div>
         {/* end header and controls */}

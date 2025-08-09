@@ -4,6 +4,7 @@ import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
 import Container from "@/components/Container";
 import PageHeader from "@/components/PageHeader";
+import Button from "@/components/ui/Button";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -198,17 +199,14 @@ export default function DashboardPage() {
             <>
               <div className="hidden md:flex gap-2">
                 {["7d", "30d", "90d"].map((range) => (
-                  <button
+                  <Button
                     key={range}
+                    variant={timeRange === range ? "primary" : "secondary"}
+                    size="sm"
                     onClick={() => setTimeRange(range)}
-                    className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                      timeRange === range
-                        ? "bg-[#87CEFA] text-white"
-                        : "bg-gray-100 text-[#6B7280] hover:bg-gray-200"
-                    }`}
                   >
                     {range}
-                  </button>
+                  </Button>
                 ))}
               </div>
               <div className="text-right min-w-[120px]">
