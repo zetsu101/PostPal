@@ -5,6 +5,29 @@
 
 ---
 
+## 🔁 Recent Major Updates (Resume-ready)
+
+### 2025-08-09 – UI Foundation & Auth-linked Subscription
+- Added `Container` and `PageHeader` components to unify gutters and visual hierarchy across authenticated pages (dashboard, analytics, billing, settings, saved, calendar, team)
+- Standardized section paddings and spacing rhythm for a clean, modern feel
+- Wired subscription logic to the authenticated user instead of a hardcoded id to prevent plan mismatches
+- Fixed analytics typing (growth objects vs numbers) for a stable build
+Resume blurb: Implemented a reusable layout system and standardized spacing, improving UX consistency across 7 pages; aligned subscription state to the authenticated user to prevent gating inconsistencies.
+
+### 2025-08-09 – UI Consistency: Button Component
+- Introduced a reusable Button with variants/sizes; replaced ad-hoc buttons in dashboard range toggles and calendar controls
+Resume blurb: Built a cohesive component library primitive to unify CTAs and controls for consistent interaction patterns.
+
+### 2025-08-09 – Calendar Interaction Polish
+- Restored original black flash hover effect per cell while ensuring only the newly hovered cell animates
+Resume blurb: Enhanced discoverability and responsiveness in the content calendar with subtle hover micro-interactions.
+
+### 2025-08-09 – Dev Workflow: Curated Auto-Push
+- Added a conditional git post-commit hook. Auto-push triggers only on major commits via markers (`[push]`/`release`) or conventional breaking changes (`feat!`/`fix!`/`chore!`)
+Resume blurb: Tuned CI/dev workflow to push only meaningful milestones, keeping history noise-free while maintaining velocity.
+
+---
+
 ## 🏗️ **Whats Built So Far**
 
 ### ✅ **Core Platform Features**
