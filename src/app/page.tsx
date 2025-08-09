@@ -1,12 +1,14 @@
 "use client";
 import Link from "next/link";
+import Container from "@/components/Container";
 import { motion } from "framer-motion";
 
 export default function LandingPage() {
   return (
     <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#1F2937] font-sans">
       {/* Header */}
-      <header className="flex justify-between items-center px-6 py-4 shadow-sm bg-white/80 backdrop-blur-sm sticky top-0 z-50">
+      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b">
+        <Container className="flex items-center justify-between py-4">
         <motion.span 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
@@ -31,10 +33,12 @@ export default function LandingPage() {
             <Link href="/dashboard" className="font-medium hover:text-[#87CEFA] transition-colors">Login</Link>
           </motion.div>
         </nav>
+        </Container>
       </header>
 
       {/* Enhanced Hero Section */}
-      <section className="relative flex flex-col items-center justify-center flex-1 text-center px-4 py-16 overflow-hidden">
+      <section className="relative flex flex-col items-center justify-center flex-1 text-center py-20 overflow-hidden">
+        <Container>
         {/* Animated Background Elements */}
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
@@ -210,10 +214,12 @@ export default function LandingPage() {
             <div className="text-sm text-gray-600">Next post in 2 hours</div>
           </div>
         </motion.div>
+        </Container>
       </section>
 
       {/* How it Works */}
-      <section className="bg-white py-16 px-4">
+      <section className="bg-white py-20">
+        <Container>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -268,10 +274,12 @@ export default function LandingPage() {
             </motion.div>
           ))}
         </div>
+        </Container>
       </section>
 
       {/* Screenshots/Mockups Placeholder */}
-      <section className="py-16 px-4 bg-[#F9FAFB] text-center">
+      <section className="py-20 bg-[#F9FAFB] text-center">
+        <Container>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -318,11 +326,12 @@ export default function LandingPage() {
             </div>
           </motion.div>
         </div>
+        </Container>
       </section>
 
       {/* Simple, Clean Pricing Section */}
-      <section className="py-20 px-4 bg-white">
-        <div className="max-w-4xl mx-auto">
+      <section className="py-24 bg-white">
+        <Container className="max-w-4xl">
           {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
@@ -447,11 +456,12 @@ export default function LandingPage() {
               </div>
             </div>
           </motion.div>
-        </div>
+        </Container>
       </section>
 
       {/* Testimonials Carousel Placeholder */}
-      <section className="py-16 px-4 bg-[#F9FAFB] text-center">
+      <section className="py-20 bg-[#F9FAFB] text-center">
+        <Container>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -505,11 +515,12 @@ export default function LandingPage() {
             </motion.div>
           ))}
         </div>
+        </Container>
       </section>
 
       {/* Footer */}
-      <footer className="bg-white py-12 px-4 border-t text-center text-[#6B7280]">
-        <div className="max-w-4xl mx-auto">
+      <footer className="bg-white py-12 border-t text-center text-[#6B7280]">
+        <Container className="max-w-4xl">
           <div className="flex flex-col sm:flex-row justify-center gap-8 mb-6">
             <Link href="/terms" className="hover:text-[#87CEFA] transition-colors">Terms</Link>
             <Link href="/privacy" className="hover:text-[#87CEFA] transition-colors">Privacy</Link>
@@ -517,7 +528,7 @@ export default function LandingPage() {
             <Link href="/help" className="hover:text-[#87CEFA] transition-colors">Help Center</Link>
           </div>
           <div className="text-sm">© {new Date().getFullYear()} PostPal. All rights reserved.</div>
-        </div>
+        </Container>
       </footer>
     </div>
   );

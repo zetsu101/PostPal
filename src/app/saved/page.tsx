@@ -2,6 +2,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
+import Container from "@/components/Container";
+import PageHeader from "@/components/PageHeader";
 
 interface AITool {
   id: string;
@@ -174,20 +176,11 @@ export default function SavedPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h1 className="text-4xl font-bold text-[#1F2937] mb-2">
-            AI-Powered Features
-          </h1>
-          <p className="text-[#6B7280] text-lg">
-            Leverage advanced AI to create, optimize, and predict your social media success
-          </p>
-        </motion.div>
+      <Container className="py-8">
+        <PageHeader
+          title="AI-Powered Features"
+          subtitle="Leverage AI to create, optimize, and predict your social success"
+        />
 
         {/* Navigation Tabs */}
         <motion.div
@@ -454,7 +447,7 @@ export default function SavedPage() {
             </motion.div>
           )}
         </AnimatePresence>
-      </div>
+      </Container>
     </DashboardLayout>
   );
 } 

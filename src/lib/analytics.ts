@@ -14,7 +14,6 @@ export interface AnalyticsData {
   
   // Growth Metrics
   followersGrowth: number;
-  audienceGrowth: number;
   reachGrowth: number;
   engagementGrowth: number;
   
@@ -217,7 +216,6 @@ class AnalyticsEngine {
         totalClicks: Math.floor(Math.random() * 8000) + 1000,
         
         followersGrowth: Math.random() * 20 + 5,
-        audienceGrowth: Math.random() * 15 + 3,
         reachGrowth: Math.random() * 25 + 8,
         engagementGrowth: Math.random() * 30 + 10,
         

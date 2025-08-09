@@ -35,6 +35,17 @@ body {
   font-family: var(--font-lato), var(--font-inter), system-ui, sans-serif;
   background: var(--color-gray-light);
   color: var(--color-charcoal);
+  line-height: 1.6;
+}
+
+/* Global spacing rhythm */
+.section-y {
+  padding-top: 5rem;
+  padding-bottom: 5rem;
+}
+
+.stack > * + * {
+  margin-top: 1.25rem;
 }
 
 h1, h2, h3, h4, h5, h6 {

@@ -210,7 +210,7 @@ class SubscriptionManager {
     // Mock subscription data
     const mockSubscription: UserSubscription = {
       id: 'sub_1',
-      userId: 'user_1',
+      userId: '1',
       planId: 'free',
       status: 'active',
       currentPeriodStart: new Date().toISOString(),
@@ -225,7 +225,7 @@ class SubscriptionManager {
       }
     };
 
-    this.subscriptions.set('user_1', mockSubscription);
+    this.subscriptions.set('1', mockSubscription);
   }
 
   // Get user's current subscription

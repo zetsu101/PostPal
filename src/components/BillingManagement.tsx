@@ -8,13 +8,15 @@ import {
   getPlanColor,
   type UsageMetrics 
 } from "@/lib/subscription";
+import { useAuth } from "@/lib/auth";
 
 export default function BillingManagement() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState("overview");
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const currentUserId = 'user_1'; // Mock user ID
+  const currentUserId = user?.id || '1';
   const subscription = subscriptionManager.getUserSubscription(currentUserId);
   const plan = subscriptionManager.getUserPlan(currentUserId);
   const usageMetrics = subscriptionManager.getUsageMetrics(currentUserId);

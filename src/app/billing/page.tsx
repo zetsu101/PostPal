@@ -1,13 +1,19 @@
 "use client";
 import DashboardLayout from "@/components/DashboardLayout";
 import BillingManagement from "@/components/BillingManagement";
+import Container from "@/components/Container";
+import PageHeader from "@/components/PageHeader";
 
 export default function BillingPage() {
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-6">
+      <Container className="py-8">
+        <PageHeader
+          title="Billing & Subscription"
+          subtitle="Manage your plan, usage, and invoices"
+        />
         <BillingManagement />
-      </div>
+      </Container>
     </DashboardLayout>
   );
 } 

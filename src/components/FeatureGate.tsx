@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { subscriptionManager } from "@/lib/subscription";
+import { useAuth } from "@/lib/auth";
 
 interface FeatureGateProps {
   children: React.ReactNode;
@@ -16,12 +17,14 @@ export default function FeatureGate({
   feature, 
   fallback, 
   showUpgradePrompt = true,
-  userId = 'user_1' 
+  userId 
 }: FeatureGateProps) {
+  const { user } = useAuth();
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const hasAccess = subscriptionManager.hasFeatureAccess(userId, feature);
-  const currentPlan = subscriptionManager.getUserPlan(userId);
-  const upgradePlans = subscriptionManager.getUpgradeRecommendations(userId);
+  const resolvedUserId = userId || user?.id || '1';
+  const hasAccess = subscriptionManager.hasFeatureAccess(resolvedUserId, feature);
+  const currentPlan = subscriptionManager.getUserPlan(resolvedUserId);
+  const upgradePlans = subscriptionManager.getUpgradeRecommendations(resolvedUserId);
 
   if (hasAccess) {
     return <>{children}</>;

@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
+import Container from "@/components/Container";
+import PageHeader from "@/components/PageHeader";
 import LoadingSpinner from "@/components/LoadingSpinner";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
@@ -156,11 +158,11 @@ export default function DashboardPage() {
     return (
       <ProtectedRoute>
         <DashboardLayout>
-          <div className="max-w-7xl mx-auto p-6">
+          <Container className="py-8">
             <div className="flex items-center justify-center h-64">
               <LoadingSpinner size="lg" text="Loading dashboard..." />
             </div>
-          </div>
+          </Container>
         </DashboardLayout>
       </ProtectedRoute>
     );
@@ -188,24 +190,13 @@ export default function DashboardPage() {
   return (
     <ProtectedRoute>
       <DashboardLayout>
-        <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between">
-            <div>
-              <h1 className="text-4xl font-bold text-[#1F2937] mb-2">
-                Analytics Dashboard
-              </h1>
-              <p className="text-[#6B7280] text-lg">
-                Track your performance and optimize your social media strategy
-              </p>
-            </div>
-            <div className="mt-4 lg:mt-0 flex items-center gap-4">
-              <div className="flex gap-2">
+        <Container className="py-8">
+        <PageHeader
+          title="Analytics Dashboard"
+          subtitle="Track your performance and optimize your social media strategy"
+          actions={(
+            <>
+              <div className="hidden md:flex gap-2">
                 {["7d", "30d", "90d"].map((range) => (
                   <button
                     key={range}
@@ -220,13 +211,13 @@ export default function DashboardPage() {
                   </button>
                 ))}
               </div>
-              <div className="text-right">
+              <div className="text-right min-w-[120px]">
                 <div className="text-sm text-[#6B7280]">Last updated</div>
                 <div className="text-lg font-semibold text-[#1F2937]">{currentTime}</div>
               </div>
-            </div>
-          </div>
-        </motion.div>
+            </>
+          )}
+        />
 
         {/* Key Metrics */}
         <motion.div
@@ -548,7 +539,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </motion.div>
-      </div>
+      </Container>
       </DashboardLayout>
     </ProtectedRoute>
   );

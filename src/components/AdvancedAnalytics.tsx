@@ -1,7 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { analyticsEngine, type AnalyticsData, type ReportData, type Insight, type Recommendation } from "@/lib/analytics";
+import { analyticsEngine, type AnalyticsData, type ReportData, type Insight, type Recommendation, type ReportConfig } from "@/lib/analytics";
 import CompetitorAnalysis from "./CompetitorAnalysis";
 
 interface ChartData {
@@ -22,13 +22,13 @@ export default function AdvancedAnalytics() {
   const [isLoading, setIsLoading] = useState(false);
   const [reports, setReports] = useState<ReportData[]>([]);
   const [showReportModal, setShowReportModal] = useState(false);
-  const [reportConfig, setReportConfig] = useState({
+  const [reportConfig, setReportConfig] = useState<ReportConfig>({
     dateRange: { start: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(), end: new Date().toISOString() },
     platforms: selectedPlatforms,
     metrics: ["engagement", "reach", "growth"],
     includeCharts: true,
     includeInsights: true,
-    format: "pdf" as const
+    format: "pdf"
   });
 
   useEffect(() => {

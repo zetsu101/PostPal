@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
+import Container from "@/components/Container";
+import PageHeader from "@/components/PageHeader";
 
 interface ScheduledPost {
   id: string;
@@ -136,18 +138,11 @@ export default function CalendarPage() {
 
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-6">
-        {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h1 className="text-3xl font-heading font-bold text-[#1E293B] mb-2">
-                Content Calendar
-              </h1>
-              <p className="text-[#64748B] text-lg">
-                Plan and schedule your posts with our drag-and-drop calendar.
-              </p>
-            </div>
+      <Container className="py-8">
+        <PageHeader
+          title="Content Calendar"
+          subtitle="Plan and schedule your posts with our drag-and-drop calendar"
+          actions={(
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -156,7 +151,8 @@ export default function CalendarPage() {
             >
               + Schedule Post
             </motion.button>
-          </div>
+          )}
+        />
 
           {/* Calendar Controls */}
           <div className="flex items-center justify-between bg-white rounded-xl p-4 shadow-sm">
@@ -201,7 +197,7 @@ export default function CalendarPage() {
               </button>
             </div>
           </div>
-        </div>
+        {/* end header and controls */}
 
         {/* Calendar Grid */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
@@ -321,7 +317,7 @@ export default function CalendarPage() {
             </motion.div>
           </div>
         )}
-      </div>
+      </Container>
     </DashboardLayout>
   );
 } 

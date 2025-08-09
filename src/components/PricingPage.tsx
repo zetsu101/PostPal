@@ -9,15 +9,17 @@ import {
   getPlanColor,
   type SubscriptionPlan 
 } from "@/lib/subscription";
+import { useAuth } from "@/lib/auth";
 
 export default function PricingPage() {
+  const { user, isAuthenticated } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
   const plans = billingCycle === 'monthly' ? SUBSCRIPTION_PLANS : YEARLY_PLANS;
-  const currentUserId = 'user_1'; // Mock user ID
+  const currentUserId = user?.id || '1';
   const currentPlan = subscriptionManager.getUserPlan(currentUserId);
 
   const handlePlanSelect = (planId: string) => {

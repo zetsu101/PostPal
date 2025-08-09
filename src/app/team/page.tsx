@@ -1,13 +1,19 @@
 "use client";
 import DashboardLayout from "@/components/DashboardLayout";
 import TeamCollaboration from "@/components/TeamCollaboration";
+import Container from "@/components/Container";
+import PageHeader from "@/components/PageHeader";
 
 export default function TeamPage() {
   return (
     <DashboardLayout>
-      <div className="max-w-7xl mx-auto p-6">
+      <Container className="py-8">
+        <PageHeader
+          title="Team Collaboration"
+          subtitle="Manage members, workspaces, and approvals"
+        />
         <TeamCollaboration />
-      </div>
+      </Container>
     </DashboardLayout>
   );
 } 
