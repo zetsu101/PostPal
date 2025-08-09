@@ -30,6 +30,13 @@ export default function CalendarPage() {
   const [viewMode, setViewMode] = useState<"month" | "week">("month");
   const [showAddPost, setShowAddPost] = useState(false);
   const [calendarDays, setCalendarDays] = useState<CalendarDay[]>([]);
+  const [flashIndex, setFlashIndex] = useState<number | null>(null);
+
+  const triggerFlash = (index: number) => {
+    setFlashIndex(index);
+    // Reset soon so revisiting can retrigger the flash
+    window.setTimeout(() => setFlashIndex(null), 220);
+  };
 
   // Mock scheduled posts
   const [scheduledPosts] = useState<ScheduledPost[]>([
@@ -209,9 +216,10 @@ export default function CalendarPage() {
                 key={index}
                 className={`min-h-[120px] p-2 border-r border-b border-gray-100 ${
                   !day.isCurrentMonth ? "bg-gray-50" : "bg-white"
-                } ${day.isToday ? "bg-gradient-to-r from-[#87CEFA]/5 to-[#40E0D0]/5" : ""}`}
-                whileHover={{ backgroundColor: day.isCurrentMonth ? "#F8FAFC" : "#F1F5F9" }}
-                transition={{ duration: 0.2 }}
+                } ${day.isToday ? "bg-gradient-to-r from-[#87CEFA]/5 to-[#40E0D0]/5" : ""} ${
+                  day.isCurrentMonth ? "hover:bg-gray-50" : "hover:bg-gray-100"
+                } ${flashIndex === index ? "flash-once" : ""}`}
+                onMouseEnter={() => triggerFlash(index)}
               >
                 <div className="flex items-center justify-between mb-2">
                   <span className={`text-sm font-medium ${
