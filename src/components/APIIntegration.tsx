@@ -85,7 +85,7 @@ export default function APIIntegration() {
           message: response.error || 'Connection failed'
         });
       }
-    } catch (error) {
+    } catch {
       setPostResult({
         success: false,
         message: 'Connection failed - please try again'
@@ -111,7 +111,7 @@ export default function APIIntegration() {
           message: response.error || 'Disconnection failed'
         });
       }
-    } catch (error) {
+    } catch {
       setPostResult({
         success: false,
         message: 'Disconnection failed - please try again'
@@ -156,7 +156,7 @@ export default function APIIntegration() {
           message: response.error || 'Posting failed'
         });
       }
-    } catch (error) {
+    } catch {
       setPostResult({
         success: false,
         message: 'Posting failed - please try again'

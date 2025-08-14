@@ -5,14 +5,13 @@ import {
   SUBSCRIPTION_PLANS, 
   YEARLY_PLANS, 
   subscriptionManager, 
-  formatPrice, 
-  getPlanColor,
+  formatPrice,
   type SubscriptionPlan 
 } from "@/lib/subscription";
 import { useAuth } from "@/lib/auth";
 
 export default function PricingPage() {
-  const { user, isAuthenticated } = useAuth();
+  const { user } = useAuth();
   const [billingCycle, setBillingCycle] = useState<'monthly' | 'yearly'>('monthly');
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
@@ -238,7 +237,7 @@ export default function PricingPage() {
               <div className="text-center">
                 <h3 className="text-2xl font-bold text-[#1F2937] mb-4">Upgrade Your Plan</h3>
                 <p className="text-[#6B7280] mb-6">
-                  You're about to upgrade to the {selectedPlan && plans.find(p => p.id === selectedPlan)?.name} plan.
+                  You&apos;re about to upgrade to the {selectedPlan && plans.find(p => p.id === selectedPlan)?.name} plan.
                 </p>
                 
                 <div className="bg-gray-50 rounded-lg p-4 mb-6">

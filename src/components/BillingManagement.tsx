@@ -1,12 +1,11 @@
 "use client";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Skeleton, { CardSkeleton } from "./ui/Skeleton";
 import { 
   subscriptionManager, 
   formatPrice, 
-  formatUsagePercentage,
-  getPlanColor,
-  type UsageMetrics 
+  formatUsagePercentage
 } from "@/lib/subscription";
 import { useAuth } from "@/lib/auth";
 
@@ -15,6 +14,9 @@ export default function BillingManagement() {
   const [activeTab, setActiveTab] = useState("overview");
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [showAddPaymentModal, setShowAddPaymentModal] = useState(false);
+  const [showUpdateBillingModal, setShowUpdateBillingModal] = useState(false);
 
   const currentUserId = user?.id || '1';
   const subscription = subscriptionManager.getUserSubscription(currentUserId);
@@ -22,6 +24,27 @@ export default function BillingManagement() {
   const usageMetrics = subscriptionManager.getUsageMetrics(currentUserId);
   const billingInfo = subscriptionManager.getBillingInfo(currentUserId);
   const invoices = subscriptionManager.getInvoiceHistory(currentUserId);
+
+  // Mock payment methods data
+  const [paymentMethods, setPaymentMethods] = useState([
+    {
+      id: '1',
+      type: 'card',
+      last4: '4242',
+      brand: 'Visa',
+      expiryMonth: 12,
+      expiryYear: 2025,
+      isDefault: true
+    }
+  ]);
+
+  useEffect(() => {
+    // Simulate loading time
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleCancelSubscription = async () => {
     setIsProcessing(true);
@@ -39,6 +62,17 @@ export default function BillingManagement() {
     }
   };
 
+  const handleRemovePaymentMethod = (id: string) => {
+    setPaymentMethods(prev => prev.filter(method => method.id !== id));
+  };
+
+  const handleSetDefaultPaymentMethod = (id: string) => {
+    setPaymentMethods(prev => prev.map(method => ({
+      ...method,
+      isDefault: method.id === id
+    })));
+  };
+
   const getUsageBarColor = (percentage: number) => {
     if (percentage >= 90) return 'bg-[#EF4444]';
     if (percentage >= 75) return 'bg-[#F59E0B]';
@@ -51,10 +85,78 @@ export default function BillingManagement() {
     return `${percentage}%`;
   };
 
+  if (isLoading) {
+    return (
+      <div className="space-y-8">
+        {/* Header Skeleton */}
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <Skeleton variant="text" width="200px" height="32px" className="mb-2" />
+            <Skeleton variant="text" width="300px" />
+          </div>
+          <div className="flex gap-3">
+            <Skeleton variant="rounded" width="120px" height="40px" />
+            <Skeleton variant="rounded" width="140px" height="40px" />
+          </div>
+        </div>
+
+        {/* Navigation Tabs Skeleton */}
+        <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <Skeleton key={index} variant="rounded" width="100px" height="40px" />
+          ))}
+        </div>
+
+        {/* Content Skeleton */}
+        <div className="space-y-6">
+          {/* Overview Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {Array.from({ length: 3 }).map((_, index) => (
+              <CardSkeleton key={index} />
+            ))}
+          </div>
+
+          {/* Quick Actions Skeleton */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            {Array.from({ length: 4 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-xl p-6 shadow-lg">
+                <Skeleton variant="circular" width="48px" height="48px" className="mb-4" />
+                <Skeleton variant="text" width="80%" className="mb-2" />
+                <Skeleton variant="text" width="60%" />
+              </div>
+            ))}
+          </div>
+
+          {/* Payment Methods Skeleton */}
+          <div className="bg-white rounded-xl p-6 shadow-lg">
+            <Skeleton variant="text" width="200px" height="24px" className="mb-4" />
+            <div className="space-y-4">
+              {Array.from({ length: 2 }).map((_, index) => (
+                <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Skeleton variant="circular" width="48px" height="32px" />
+                    <div>
+                      <Skeleton variant="text" width="120px" className="mb-1" />
+                      <Skeleton variant="text" width="80px" />
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Skeleton variant="rounded" width="80px" height="32px" />
+                    <Skeleton variant="rounded" width="80px" height="32px" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-[#1F2937]">Billing & Subscription</h2>
           <p className="text-[#6B7280]">Manage your subscription, billing information, and usage</p>
@@ -78,7 +180,7 @@ export default function BillingManagement() {
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex space-x-1 bg-gray-100 p-1 rounded-xl">
+      <div className="flex flex-wrap gap-1 bg-gray-100 p-1 rounded-xl">
         {[
           { id: "overview", label: "Overview", icon: "📊" },
           { id: "usage", label: "Usage", icon: "📈" },
@@ -88,14 +190,14 @@ export default function BillingManagement() {
           <button
             key={tab.id}
             onClick={() => setActiveTab(tab.id)}
-            className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 sm:px-6 py-3 rounded-lg font-semibold transition-all text-sm sm:text-base ${
               activeTab === tab.id
                 ? "bg-white text-[#87CEFA] shadow-md"
                 : "text-[#6B7280] hover:text-[#1F2937]"
             }`}
           >
             <span>{tab.icon}</span>
-            <span>{tab.label}</span>
+            <span className="hidden sm:inline">{tab.label}</span>
           </button>
         ))}
       </div>
@@ -155,26 +257,38 @@ export default function BillingManagement() {
 
             {/* Quick Actions */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <div className="bg-white rounded-xl p-6 shadow-lg text-center">
+              <button 
+                onClick={() => setActiveTab("usage")}
+                className="bg-white rounded-xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow cursor-pointer"
+              >
                 <div className="text-2xl mb-2">📊</div>
                 <div className="font-semibold text-[#1F2937] mb-1">Usage</div>
                 <div className="text-sm text-[#6B7280]">Track your usage</div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg text-center">
+              </button>
+              <button 
+                onClick={() => setActiveTab("billing")}
+                className="bg-white rounded-xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow cursor-pointer"
+              >
                 <div className="text-2xl mb-2">💳</div>
                 <div className="font-semibold text-[#1F2937] mb-1">Payment</div>
                 <div className="text-sm text-[#6B7280]">Update payment method</div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg text-center">
+              </button>
+              <button 
+                onClick={() => setActiveTab("invoices")}
+                className="bg-white rounded-xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow cursor-pointer"
+              >
                 <div className="text-2xl mb-2">📄</div>
                 <div className="font-semibold text-[#1F2937] mb-1">Invoices</div>
                 <div className="text-sm text-[#6B7280]">View billing history</div>
-              </div>
-              <div className="bg-white rounded-xl p-6 shadow-lg text-center">
+              </button>
+              <button 
+                onClick={() => setShowUpdateBillingModal(true)}
+                className="bg-white rounded-xl p-6 shadow-lg text-center hover:shadow-xl transition-shadow cursor-pointer"
+              >
                 <div className="text-2xl mb-2">⚙️</div>
                 <div className="font-semibold text-[#1F2937] mb-1">Settings</div>
                 <div className="text-sm text-[#6B7280]">Manage preferences</div>
-              </div>
+              </button>
             </div>
           </motion.div>
         )}
@@ -313,7 +427,10 @@ export default function BillingManagement() {
                     </div>
                   )}
                   
-                  <button className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors">
+                  <button 
+                    onClick={() => setShowUpdateBillingModal(true)}
+                    className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
+                  >
                     Update Billing Information
                   </button>
                 </div>
@@ -321,7 +438,10 @@ export default function BillingManagement() {
                 <div className="text-center py-8">
                   <div className="text-4xl mb-4">💳</div>
                   <p className="text-[#6B7280] mb-4">No billing information on file</p>
-                  <button className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors">
+                  <button 
+                    onClick={() => setShowUpdateBillingModal(true)}
+                    className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
+                  >
                     Add Billing Information
                   </button>
                 </div>
@@ -330,15 +450,69 @@ export default function BillingManagement() {
 
             {/* Payment Methods */}
             <div className="bg-white rounded-xl p-6 shadow-lg">
-              <h3 className="text-lg font-semibold text-[#1F2937] mb-6">Payment Methods</h3>
-              
-              <div className="text-center py-8">
-                <div className="text-4xl mb-4">💳</div>
-                <p className="text-[#6B7280] mb-4">No payment methods on file</p>
-                <button className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors">
+              <div className="flex items-center justify-between mb-6">
+                <h3 className="text-lg font-semibold text-[#1F2937]">Payment Methods</h3>
+                <button 
+                  onClick={() => setShowAddPaymentModal(true)}
+                  className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
+                >
                   Add Payment Method
                 </button>
               </div>
+              
+              {paymentMethods.length > 0 ? (
+                <div className="space-y-4">
+                  {paymentMethods.map((method) => (
+                    <div key={method.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                      <div className="flex items-center gap-4">
+                        <div className="w-12 h-8 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded flex items-center justify-center text-white font-bold">
+                          {method.brand === 'Visa' ? 'V' : method.brand.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-medium text-[#1F2937]">
+                            {method.brand} •••• {method.last4}
+                          </div>
+                          <div className="text-sm text-[#6B7280]">
+                            Expires {method.expiryMonth}/{method.expiryYear}
+                          </div>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        {method.isDefault && (
+                          <span className="px-2 py-1 bg-[#10B981]/10 text-[#10B981] rounded-full text-xs font-medium">
+                            Default
+                          </span>
+                        )}
+                        {!method.isDefault && (
+                          <button
+                            onClick={() => handleSetDefaultPaymentMethod(method.id)}
+                            className="px-3 py-1 text-sm text-[#87CEFA] hover:text-[#5F9EC7] transition-colors"
+                          >
+                            Set Default
+                          </button>
+                        )}
+                        <button
+                          onClick={() => handleRemovePaymentMethod(method.id)}
+                          className="px-3 py-1 text-sm text-[#EF4444] hover:text-[#DC2626] transition-colors"
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="text-4xl mb-4">💳</div>
+                  <p className="text-[#6B7280] mb-4">No payment methods on file</p>
+                  <button 
+                    onClick={() => setShowAddPaymentModal(true)}
+                    className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
+                  >
+                    Add Payment Method
+                  </button>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -358,7 +532,7 @@ export default function BillingManagement() {
               {invoices.length > 0 ? (
                 <div className="space-y-4">
                   {invoices.map((invoice) => (
-                    <div key={invoice.id} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
+                    <div key={invoice.id} className="flex flex-col sm:flex-row sm:items-center sm:justify-between p-4 border border-gray-200 rounded-lg gap-4">
                       <div>
                         <div className="font-medium text-[#1F2937]">{invoice.description}</div>
                         <div className="text-sm text-[#6B7280]">{new Date(invoice.date).toLocaleDateString()}</div>
@@ -429,6 +603,74 @@ export default function BillingManagement() {
                     {isProcessing ? 'Processing...' : 'Cancel Subscription'}
                   </button>
                 </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Add Payment Method Modal */}
+      <AnimatePresence>
+        {showAddPaymentModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl p-8 max-w-md w-full"
+            >
+              <div className="text-center">
+                <div className="text-4xl mb-4">💳</div>
+                <h3 className="text-2xl font-bold text-[#1F2937] mb-4">Add Payment Method</h3>
+                <p className="text-[#6B7280] mb-6">
+                  This feature is coming soon. For now, please contact support to add a payment method.
+                </p>
+                
+                <button
+                  onClick={() => setShowAddPaymentModal(false)}
+                  className="px-6 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
+                >
+                  Close
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Update Billing Information Modal */}
+      <AnimatePresence>
+        {showUpdateBillingModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+          >
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl p-8 max-w-md w-full"
+            >
+              <div className="text-center">
+                <div className="text-4xl mb-4">⚙️</div>
+                <h3 className="text-2xl font-bold text-[#1F2937] mb-4">Update Billing Information</h3>
+                <p className="text-[#6B7280] mb-6">
+                  This feature is coming soon. For now, please contact support to update your billing information.
+                </p>
+                
+                <button
+                  onClick={() => setShowUpdateBillingModal(false)}
+                  className="px-6 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
+                >
+                  Close
+                </button>
               </div>
             </motion.div>
           </motion.div>

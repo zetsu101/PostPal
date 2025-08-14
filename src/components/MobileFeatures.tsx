@@ -3,11 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface NotificationPermission {
-  granted: boolean;
-  denied: boolean;
-  default: boolean;
-}
+
 
 interface OfflineData {
   isOnline: boolean;
@@ -18,11 +14,7 @@ interface OfflineData {
 export default function MobileFeatures() {
   const [showInstallPrompt, setShowInstallPrompt] = useState(false);
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [notificationPermission, setNotificationPermission] = useState<NotificationPermission>({
-    granted: false,
-    denied: false,
-    default: true
-  });
+
   const [offlineData, setOfflineData] = useState<OfflineData>({
     isOnline: true,
     pendingActions: 0,
@@ -31,43 +23,36 @@ export default function MobileFeatures() {
   const [showOfflineBanner, setShowOfflineBanner] = useState(false);
 
   useEffect(() => {
-    // Check for PWA install prompt
-    window.addEventListener('beforeinstallprompt', (e) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-      setShowInstallPrompt(true);
-    });
-
-    // Check notification permission
-    if ('Notification' in window) {
-      setNotificationPermission({
-        granted: Notification.permission === 'granted',
-        denied: Notification.permission === 'denied',
-        default: Notification.permission === 'default'
+    if (typeof window !== 'undefined') {
+      // Check for PWA install prompt
+      window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        setDeferredPrompt(e);
+        setShowInstallPrompt(true);
       });
+
+      // Monitor online/offline status
+      const handleOnline = () => {
+        setOfflineData(prev => ({ ...prev, isOnline: true }));
+        setShowOfflineBanner(false);
+      };
+
+      const handleOffline = () => {
+        setOfflineData(prev => ({ ...prev, isOnline: false }));
+        setShowOfflineBanner(true);
+      };
+
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+
+      // Check initial online status
+      setOfflineData(prev => ({ ...prev, isOnline: navigator.onLine }));
+
+      return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      };
     }
-
-    // Monitor online/offline status
-    const handleOnline = () => {
-      setOfflineData(prev => ({ ...prev, isOnline: true }));
-      setShowOfflineBanner(false);
-    };
-
-    const handleOffline = () => {
-      setOfflineData(prev => ({ ...prev, isOnline: false }));
-      setShowOfflineBanner(true);
-    };
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    // Check initial online status
-    setOfflineData(prev => ({ ...prev, isOnline: navigator.onLine }));
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
   }, []);
 
   const handleInstallPWA = async () => {
@@ -84,21 +69,10 @@ export default function MobileFeatures() {
 
 
 
-  const sendTestNotification = () => {
-    if ('Notification' in window && Notification.permission === 'granted') {
-      new Notification('PostPal', {
-        body: 'Your post has been scheduled successfully! 📅',
-        icon: '/icon-192x192.png',
-        badge: '/icon-72x72.png',
-        tag: 'post-scheduled',
-        requireInteraction: false,
-        silent: false
-      });
-    }
-  };
+
 
   const syncOfflineData = async () => {
-    if ('serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
+    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
       try {
         const registration = await navigator.serviceWorker.ready;
         (registration as any).sync.register('background-sync');

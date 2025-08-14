@@ -23,7 +23,6 @@ export default function FeatureGate({
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const resolvedUserId = userId || user?.id || '1';
   const hasAccess = subscriptionManager.hasFeatureAccess(resolvedUserId, feature);
-  const currentPlan = subscriptionManager.getUserPlan(resolvedUserId);
   const upgradePlans = subscriptionManager.getUpgradeRecommendations(resolvedUserId);
 
   if (hasAccess) {
@@ -135,7 +134,6 @@ export function UsageLimit({
 }: UsageLimitProps) {
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const hasLimit = subscriptionManager.checkUsageLimit(userId, resource);
-  const usageMetrics = subscriptionManager.getUsageMetrics(userId);
   const upgradePlans = subscriptionManager.getUpgradeRecommendations(userId);
 
   if (hasLimit) {
@@ -158,7 +156,7 @@ export function UsageLimit({
             <div className="text-4xl mb-4">📊</div>
             <h3 className="text-lg font-semibold text-[#1F2937] mb-2">Usage Limit Reached</h3>
             <p className="text-[#6B7280] mb-4">
-              You've reached your monthly limit. Upgrade to continue using this feature.
+              You&apos;ve reached your monthly limit. Upgrade to continue using this feature.
             </p>
             <button
               onClick={() => setShowUpgradeModal(true)}

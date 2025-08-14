@@ -190,8 +190,8 @@ export interface ChartData {
   id: string;
   type: 'line' | 'bar' | 'pie' | 'doughnut' | 'area' | 'scatter';
   title: string;
-  data: any;
-  options: any;
+  data: Record<string, unknown>;
+  options: Record<string, unknown>;
 }
 
 class AnalyticsEngine {
@@ -332,7 +332,7 @@ class AnalyticsEngine {
   }
 
   // Generate recommendations based on insights
-  generateRecommendations(data: AnalyticsData, insights: Insight[]): Recommendation[] {
+  generateRecommendations(): Recommendation[] {
     const recommendations: Recommendation[] = [];
 
     // Content recommendations
@@ -391,7 +391,7 @@ class AnalyticsEngine {
     try {
       const data = await this.generateAnalytics(config.dateRange, config.platforms);
       const insights = this.generateInsights(data);
-      const recommendations = this.generateRecommendations(data, insights);
+      const recommendations = this.generateRecommendations();
       const charts = this.generateCharts(data);
 
       const report: ReportData = {

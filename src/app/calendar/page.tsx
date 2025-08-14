@@ -35,7 +35,9 @@ export default function CalendarPage() {
   const triggerFlash = (index: number) => {
     setFlashIndex(index);
     // Reset soon so revisiting can retrigger the flash
-    window.setTimeout(() => setFlashIndex(null), 220);
+    if (typeof window !== 'undefined') {
+      window.setTimeout(() => setFlashIndex(null), 220);
+    }
   };
 
   // Mock scheduled posts

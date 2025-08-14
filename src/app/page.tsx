@@ -43,18 +43,6 @@ export default function LandingPage() {
         <div className="absolute inset-0 overflow-hidden">
           <motion.div
             animate={{
-              rotate: 360,
-              scale: [1, 1.1, 1],
-            }}
-            transition={{
-              duration: 20,
-              repeat: Infinity,
-              ease: "linear"
-            }}
-            className="absolute top-20 left-10 w-32 h-32 bg-gradient-to-r from-[#FF6B6B]/10 to-[#60A5FA]/10 rounded-full blur-xl"
-          />
-          <motion.div
-            animate={{
               rotate: -360,
               scale: [1, 1.2, 1],
             }}
@@ -64,17 +52,6 @@ export default function LandingPage() {
               ease: "linear"
             }}
             className="absolute bottom-20 right-10 w-40 h-40 bg-gradient-to-r from-[#34D399]/10 to-[#FACC15]/10 rounded-full blur-xl"
-          />
-          <motion.div
-            animate={{
-              y: [0, -20, 0],
-            }}
-            transition={{
-              duration: 6,
-              repeat: Infinity,
-              ease: "easeInOut"
-            }}
-            className="absolute top-1/3 right-1/4 w-16 h-16 bg-[#60A5FA]/20 rounded-full"
           />
         </div>
 
@@ -163,7 +140,7 @@ export default function LandingPage() {
           </motion.div>
         </div>
 
-        {/* Floating UI Elements */}
+        {/* Floating UI Elements - Positioned diagonally around the text */}
         <motion.div
           animate={{
             y: [0, -10, 0],
@@ -173,19 +150,19 @@ export default function LandingPage() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-1/4 left-1/4 hidden lg:block"
+          className="absolute top-24 left-24 hidden lg:block z-20 opacity-80"
         >
-          <div className="bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl p-3 border border-gray-100 max-w-xs">
             <div className="flex items-center gap-3 mb-3">
-                          <div className="w-8 h-8 bg-[#87CEFA] rounded-full flex items-center justify-center">
-              <span className="text-white text-sm">📱</span>
-            </div>
+              <div className="w-8 h-8 bg-[#87CEFA] rounded-full flex items-center justify-center">
+                <span className="text-white text-sm">📱</span>
+              </div>
               <div className="text-sm">
                 <div className="font-semibold">Instagram Post</div>
                 <div className="text-gray-500">2 min ago</div>
               </div>
             </div>
-                         <div className="text-sm text-gray-600">&ldquo;Just posted our latest design! ✨&rdquo;</div>
+            <div className="text-sm text-gray-600">&ldquo;Just posted our latest design! ✨&rdquo;</div>
           </div>
         </motion.div>
 
@@ -199,13 +176,13 @@ export default function LandingPage() {
             ease: "easeInOut",
             delay: 1
           }}
-          className="absolute bottom-1/4 right-1/4 hidden lg:block"
+          className="absolute bottom-24 right-24 hidden lg:block z-20 opacity-80"
         >
-          <div className="bg-white rounded-2xl shadow-xl p-4 border border-gray-100">
+          <div className="bg-white rounded-2xl shadow-xl p-3 border border-gray-100 max-w-xs">
             <div className="flex items-center gap-3 mb-3">
-                          <div className="w-8 h-8 bg-[#40E0D0] rounded-full flex items-center justify-center">
-              <span className="text-white text-sm">📅</span>
-            </div>
+              <div className="w-8 h-8 bg-[#40E0D0] rounded-full flex items-center justify-center">
+                <span className="text-white text-sm">📅</span>
+              </div>
               <div className="text-sm">
                 <div className="font-semibold">Calendar</div>
                 <div className="text-gray-500">3 posts scheduled</div>

@@ -3,7 +3,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
 import MobileFeatures from "./MobileFeatures";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { Bell, Search, User } from "lucide-react";
+import { ThemeToggle } from "./ui/ThemeToggle";
+import { safeLocalStorage, safeWindow } from "@/lib/utils";
 
 const navigation = [
   { name: "Home", href: "/dashboard", icon: "🏠" },
@@ -76,7 +80,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <div className="flex items-center gap-3 mb-3">
                 <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] flex items-center justify-center">
                   {user?.avatar ? (
-                    <img src={user.avatar} alt={user.name} className="w-10 h-10 rounded-full" />
+                    <Image src={user.avatar} alt={user.name} width={40} height={40} className="w-10 h-10 rounded-full" />
                   ) : (
                     <span className="text-white font-semibold">{user?.name?.charAt(0) || "U"}</span>
                   )}
@@ -95,9 +99,11 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               </button>
               <button
                 onClick={() => {
-                  localStorage.removeItem('postpal_token');
-                  localStorage.removeItem('postpal_user');
-                  window.location.href = '/login';
+                  safeLocalStorage.removeItem('postpal_token');
+                  safeLocalStorage.removeItem('postpal_user');
+                  if (safeWindow.location) {
+                    safeWindow.location.href = '/login';
+                  }
                 }}
                 className="w-full flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50 hover:text-red-700 rounded-lg transition-all mt-2"
               >
@@ -107,6 +113,58 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </div>
           )}
         </div>
+
+        {/* Header */}
+        <header className="bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-700 px-4 py-3">
+          <div className="flex items-center justify-between">
+            {/* Left side - Title */}
+            <div className="flex items-center gap-4">
+              <div className="block sm:hidden">
+                <h1 className="text-xl font-bold text-gray-900 dark:text-white">PostPal</h1>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Social Media Management</p>
+              </div>
+            </div>
+
+            {/* Center - Search bar */}
+            <div className="hidden md:flex flex-1 max-w-md mx-8">
+              <div className="relative w-full">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+                <input
+                  type="text"
+                  placeholder="Search posts, analytics, settings..."
+                  className="w-full pl-10 pr-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
+                />
+              </div>
+            </div>
+
+            {/* Right side - Actions */}
+            <div className="flex items-center gap-3">
+              {/* Theme Toggle */}
+              <ThemeToggle />
+              
+              {/* Notifications */}
+              <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors relative">
+                <Bell size={20} className="text-gray-600 dark:text-gray-300" />
+                <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full"></span>
+              </button>
+              
+              {/* User Menu */}
+              <div className="flex items-center gap-3">
+                <button className="p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors">
+                  <User size={20} className="text-gray-600 dark:text-gray-300" />
+                </button>
+                <div className="hidden sm:block text-right">
+                  <p className="text-sm font-medium text-gray-900 dark:text-white">
+                    {user?.name || 'User'}
+                  </p>
+                  <p className="text-xs text-gray-500 dark:text-gray-400">
+                    {user?.email || 'user@example.com'}
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
 
         {/* Main Content */}
         <div className="flex-1">

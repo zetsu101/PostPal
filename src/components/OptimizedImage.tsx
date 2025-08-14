@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface OptimizedImageProps {
@@ -27,13 +27,7 @@ export default function OptimizedImage({
   const [hasError, setHasError] = useState(false);
   const [imageSrc, setImageSrc] = useState(placeholder);
 
-  useEffect(() => {
-    if (priority) {
-      loadImage();
-    }
-  }, [priority]);
-
-  const loadImage = () => {
+  const loadImage = useCallback(() => {
     const img = new Image();
     img.onload = () => {
       setImageSrc(src);
@@ -45,15 +39,21 @@ export default function OptimizedImage({
       setIsLoading(false);
     };
     img.src = src;
-  };
+  }, [src, fallback]);
 
-  const handleIntersection = (entries: IntersectionObserverEntry[]) => {
+  const handleIntersection = useCallback((entries: IntersectionObserverEntry[]) => {
     entries.forEach((entry) => {
       if (entry.isIntersecting && isLoading) {
         loadImage();
       }
     });
-  };
+  }, [isLoading, loadImage]);
+
+  useEffect(() => {
+    if (priority) {
+      loadImage();
+    }
+  }, [priority, loadImage]);
 
   useEffect(() => {
     if (!priority) {
@@ -62,14 +62,16 @@ export default function OptimizedImage({
         threshold: 0.1,
       });
 
-      const imgElement = document.querySelector(`[data-src="${src}"]`);
-      if (imgElement) {
-        observer.observe(imgElement);
+      if (typeof document !== 'undefined') {
+        const imgElement = document.querySelector(`[data-src="${src}"]`);
+        if (imgElement) {
+          observer.observe(imgElement);
+        }
       }
 
       return () => observer.disconnect();
     }
-  }, [priority, src]);
+  }, [priority, src, handleIntersection]);
 
   return (
     <div className={`relative overflow-hidden ${className}`}>

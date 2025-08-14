@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface Competitor {
   id: string;
@@ -234,9 +235,11 @@ export default function CompetitorAnalysis() {
                   className="bg-white rounded-xl p-6 shadow-lg border border-gray-200 hover:border-[#87CEFA]/50 transition-all"
                 >
                   <div className="flex items-center gap-3 mb-4">
-                    <img
+                    <Image
                       src={competitor.avatar}
                       alt={competitor.name}
+                      width={48}
+                      height={48}
                       className="w-12 h-12 rounded-full object-cover"
                     />
                     <div>
@@ -364,9 +367,11 @@ export default function CompetitorAnalysis() {
                 {filteredCompetitors.map((competitor) => (
                   <div key={competitor.id} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-3">
-                      <img
+                      <Image
                         src={competitor.avatar}
                         alt={competitor.name}
+                        width={40}
+                        height={40}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>

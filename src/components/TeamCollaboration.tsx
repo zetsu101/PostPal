@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface TeamMember {
   id: string;
@@ -47,8 +48,8 @@ interface Comment {
 
 export default function TeamCollaboration() {
   const [activeTab, setActiveTab] = useState("members");
-  const [showInviteModal, setShowInviteModal] = useState(false);
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
+  const [showInviteModal, setShowInviteModal] = useState(false);
   const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
 
   const [teamMembers] = useState<TeamMember[]>([
@@ -248,9 +249,11 @@ export default function TeamCollaboration() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <img
+                      <Image
                         src={member.avatar}
                         alt={member.name}
+                        width={48}
+                        height={48}
                         className="w-12 h-12 rounded-full object-cover"
                       />
                       <div>
@@ -349,11 +352,13 @@ export default function TeamCollaboration() {
                     <div>
                       <div className="text-sm font-medium text-[#1F2937] mb-2">Members ({workspace.members.length})</div>
                       <div className="flex -space-x-2">
-                        {workspace.members.map((member, index) => (
-                          <img
+                        {workspace.members.map((member) => (
+                          <Image
                             key={member.id}
                             src={member.avatar}
                             alt={member.name}
+                            width={32}
+                            height={32}
                             className="w-8 h-8 rounded-full border-2 border-white object-cover"
                             title={member.name}
                           />
@@ -408,9 +413,11 @@ export default function TeamCollaboration() {
                 >
                   <div className="flex items-start justify-between mb-4">
                     <div className="flex items-center gap-3">
-                      <img
+                      <Image
                         src={request.requester.avatar}
                         alt={request.requester.name}
+                        width={40}
+                        height={40}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>

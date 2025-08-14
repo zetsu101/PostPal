@@ -3,9 +3,9 @@
 
 // Simple in-memory cache
 class Cache {
-  private cache = new Map<string, { data: any; timestamp: number; ttl: number }>();
+  private cache = new Map<string, { data: unknown; timestamp: number; ttl: number }>();
 
-  set(key: string, data: any, ttl: number = 5 * 60 * 1000) { // 5 minutes default
+  set(key: string, data: unknown, ttl: number = 5 * 60 * 1000) { // 5 minutes default
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -13,7 +13,7 @@ class Cache {
     });
   }
 
-  get(key: string): any | null {
+  get(key: string): unknown | null {
     const item = this.cache.get(key);
     if (!item) return null;
 
@@ -35,7 +35,7 @@ class Cache {
 }
 
 // Debounce utility
-export function debounce<T extends (...args: any[]) => any>(
+export function debounce<T extends (...args: unknown[]) => unknown>(
   func: T,
   wait: number
 ): (...args: Parameters<T>) => void {
@@ -48,7 +48,7 @@ export function debounce<T extends (...args: any[]) => any>(
 }
 
 // Throttle utility
-export function throttle<T extends (...args: any[]) => any>(
+export function throttle<T extends (...args: unknown[]) => unknown>(
   func: T,
   limit: number
 ): (...args: Parameters<T>) => void {
@@ -73,7 +73,7 @@ export async function fetchWithCache<T>(
   const cached = cache.get(key);
   
   if (cached) {
-    return cached;
+    return cached as T;
   }
 
   try {
@@ -88,8 +88,7 @@ export async function fetchWithCache<T>(
 
 // Lazy loading utility
 export function createLazyLoader<T>(
-  loader: () => Promise<T>,
-  cacheKey?: string
+  loader: () => Promise<T>
 ) {
   let cached: T | null = null;
   let loading = false;
@@ -225,12 +224,14 @@ export function createIntersectionObserver(
 // Memory usage monitoring
 export function getMemoryUsage(): { used: number; total: number; percentage: number } {
   if ('memory' in performance) {
-    const memory = (performance as any).memory;
-    return {
-      used: Math.round(memory.usedJSHeapSize / 1048576), // MB
-      total: Math.round(memory.totalJSHeapSize / 1048576), // MB
-      percentage: Math.round((memory.usedJSHeapSize / memory.totalJSHeapSize) * 100)
-    };
+    const memory = (performance as Performance & { memory?: { usedJSHeapSize: number; totalJSHeapSize: number } }).memory;
+    if (memory) {
+      return {
+        used: Math.round(memory.usedJSHeapSize / 1048576), // MB
+        total: Math.round(memory.totalJSHeapSize / 1048576), // MB
+        percentage: Math.round((memory.usedJSHeapSize / memory.totalJSHeapSize) * 100)
+      };
+    }
   }
   return { used: 0, total: 0, percentage: 0 };
 } 

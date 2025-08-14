@@ -34,15 +34,17 @@ export default function EditPostModal({ post, isOpen, onClose, onSave }: EditPos
 
   // Prevent background scrolling when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    if (typeof document !== 'undefined') {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'unset';
+      }
 
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
+      return () => {
+        document.body.style.overflow = 'unset';
+      };
+    }
   }, [isOpen]);
 
   const handleSave = () => {

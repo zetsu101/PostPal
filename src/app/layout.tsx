@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Lato } from "next/font/google";
 import "./globals.css";
+import { ToastProvider } from "@/components/ui/Toast";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -62,17 +63,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
-    viewportFit: "cover",
-  },
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#87CEFA" },
-    { media: "(prefers-color-scheme: dark)", color: "#1E293B" },
-  ],
+
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -95,6 +86,19 @@ export const metadata: Metadata = {
     "msapplication-config": "/browserconfig.xml",
   },
 };
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+  viewportFit: "cover",
+};
+
+export const themeColor = [
+  { media: "(prefers-color-scheme: light)", color: "#87CEFA" },
+  { media: "(prefers-color-scheme: dark)", color: "#1E293B" },
+];
 
 export default function RootLayout({
   children,
@@ -138,7 +142,7 @@ export default function RootLayout({
         <script
           dangerouslySetInnerHTML={{
             __html: `
-              if ('serviceWorker' in navigator) {
+              if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
                 window.addEventListener('load', function() {
                   navigator.serviceWorker.register('/sw.js')
                     .then(function(registration) {
@@ -153,8 +157,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="antialiased">
-        {children}
+      <body className={`antialiased font-sans ${inter.variable} ${lato.variable}`}>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
       </body>
     </html>
   );

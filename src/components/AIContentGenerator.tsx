@@ -124,8 +124,10 @@ export default function AIContentGenerator() {
 
   const copyToClipboard = async (text: string) => {
     try {
-      await navigator.clipboard.writeText(text);
-      // You could add a toast notification here
+      if (typeof navigator !== 'undefined' && navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        // You could add a toast notification here
+      }
     } catch (err) {
       console.error('Failed to copy text: ', err);
       setError('Failed to copy text to clipboard. Please try again.');

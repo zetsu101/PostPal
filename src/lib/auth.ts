@@ -110,7 +110,7 @@ class AuthManager {
           isLoading: false,
           error: null,
         };
-      } catch (error) {
+      } catch {
         this.logout();
       }
     }

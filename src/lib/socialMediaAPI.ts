@@ -118,14 +118,7 @@ export const SOCIAL_PLATFORMS: SocialPlatform[] = [
   }
 ];
 
-// API Base URLs
-const API_BASE_URLS = {
-  instagram: 'https://graph.facebook.com/v18.0',
-  facebook: 'https://graph.facebook.com/v18.0',
-  twitter: 'https://api.twitter.com/2',
-  linkedin: 'https://api.linkedin.com/v2',
-  tiktok: 'https://open.tiktokapis.com/v1.3'
-};
+
 
 // Rate limiting storage
 const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
@@ -155,7 +148,6 @@ class SocialMediaAPI {
       }
 
       // Simulate OAuth flow
-      const authUrl = this.getAuthUrl(platform);
       
       // In a real implementation, this would open a popup for OAuth
       // For now, we'll simulate successful authentication

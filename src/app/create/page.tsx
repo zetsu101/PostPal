@@ -1,6 +1,7 @@
 "use client";
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface PostData {
   title: string;
@@ -205,9 +206,11 @@ export default function CreatePage() {
                     <div className="grid grid-cols-2 gap-4">
                       {uploadedMedia.map((file, index) => (
                         <div key={index} className="relative group">
-                          <img
+                          <Image
                             src={URL.createObjectURL(file)}
                             alt={`Upload ${index + 1}`}
+                            width={400}
+                            height={128}
                             className="w-full h-32 object-cover rounded-lg"
                           />
                           <button
@@ -393,9 +396,11 @@ export default function CreatePage() {
               <div className="p-4">
                 {uploadedMedia.length > 0 ? (
                   <div className="mb-4">
-                    <img
+                    <Image
                       src={URL.createObjectURL(uploadedMedia[0])}
                       alt="Preview"
+                      width={600}
+                      height={192}
                       className="w-full h-48 object-cover rounded-lg"
                     />
                   </div>

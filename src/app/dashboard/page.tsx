@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
+import Skeleton, { MetricSkeleton } from "@/components/ui/Skeleton";
 import Container from "@/components/Container";
 import PageHeader from "@/components/PageHeader";
 import Button from "@/components/ui/Button";
-import LoadingSpinner from "@/components/LoadingSpinner";
 import ProtectedRoute from "@/components/ProtectedRoute";
 
 interface AnalyticsData {
@@ -157,15 +157,86 @@ export default function DashboardPage() {
   // Loading state
   if (isLoading) {
     return (
-      <ProtectedRoute>
-        <DashboardLayout>
-          <Container className="py-8">
-            <div className="flex items-center justify-center h-64">
-              <LoadingSpinner size="lg" text="Loading dashboard..." />
+      <DashboardLayout>
+        <Container>
+          <PageHeader
+            title="Dashboard"
+            subtitle="Your social media performance at a glance"
+            actions={
+              <div className="flex gap-3">
+                <Skeleton variant="rounded" width="120px" height="40px" />
+                <Skeleton variant="rounded" width="100px" height="40px" />
+              </div>
+            }
+          />
+
+          {/* Loading Skeleton */}
+          <div className="space-y-8">
+            {/* Key Metrics Skeleton */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <MetricSkeleton key={index} />
+              ))}
             </div>
-          </Container>
-        </DashboardLayout>
-      </ProtectedRoute>
+
+            {/* Main Analytics Grid Skeleton */}
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+              {/* Engagement Chart Skeleton */}
+              <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <Skeleton variant="text" width="200px" height="24px" />
+                  <Skeleton variant="rounded" width="120px" height="32px" />
+                </div>
+                <div className="h-64 flex items-end justify-between gap-2">
+                  {Array.from({ length: 7 }).map((_, index) => (
+                    <div key={index} className="flex-1 flex flex-col items-center">
+                      <Skeleton variant="rounded" width="100%" height="100%" />
+                      <Skeleton variant="text" width="40px" className="mt-2" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Quick Stats Skeleton */}
+              <div className="space-y-6">
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <div key={index} className="bg-white rounded-2xl shadow-lg p-6">
+                    <Skeleton variant="text" width="150px" height="20px" className="mb-4" />
+                    <div className="space-y-4">
+                      {Array.from({ length: 3 }).map((_, i) => (
+                        <div key={i} className="flex items-center justify-between">
+                          <Skeleton variant="text" width="80px" />
+                          <Skeleton variant="text" width="60px" />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Recent Posts Skeleton */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <Skeleton variant="text" width="200px" height="24px" className="mb-6" />
+              <div className="space-y-4">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <div key={index} className="flex items-center gap-4 p-4 border border-gray-200 rounded-lg">
+                    <Skeleton variant="circular" width="48px" height="48px" />
+                    <div className="flex-1">
+                      <Skeleton variant="text" width="60%" className="mb-2" />
+                      <Skeleton variant="text" width="40%" />
+                    </div>
+                    <div className="text-right">
+                      <Skeleton variant="text" width="60px" className="mb-1" />
+                      <Skeleton variant="text" width="80px" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Container>
+      </DashboardLayout>
     );
   }
 
@@ -227,28 +298,28 @@ export default function DashboardPage() {
           {[
             {
               label: "Engagement Rate",
-              value: `${analyticsData.engagementRate}%`,
+              value: `${analyticsData?.engagementRate || 0}%`,
               change: "+2.1%",
               icon: "📈",
               color: "from-[#34D399] to-[#6EE7B7]",
             },
             {
               label: "Total Impressions",
-              value: analyticsData.totalImpressions.toLocaleString(),
+              value: (analyticsData?.totalImpressions || 0).toLocaleString(),
               change: "+15%",
               icon: "👁️",
               color: "from-[#60A5FA] to-[#93C5FD]",
             },
             {
               label: "Followers Growth",
-              value: `${analyticsData.followersGrowth}%`,
+              value: `${analyticsData?.followersGrowth || 0}%`,
               change: "+5.2%",
               icon: "👥",
               color: "from-[#FACC15] to-[#FDE047]",
             },
             {
               label: "Total Reach",
-              value: analyticsData.totalReach.toLocaleString(),
+              value: (analyticsData?.totalReach || 0).toLocaleString(),
               change: "+12%",
               icon: "📡",
               color: "from-[#A78BFA] to-[#C4B5FD]",
@@ -435,48 +506,45 @@ export default function DashboardPage() {
                     <div className="text-sm text-[#6B7280]">When your audience is most active</div>
                   </div>
                 </div>
-                <div className="text-2xl font-bold text-[#87CEFA]">{analyticsData.bestPostingTime}</div>
+                <div className="text-2xl font-bold text-[#87CEFA]">{analyticsData?.bestPostingTime || '2:00 PM'}</div>
+                <div className="text-sm text-[#6B7280]">Best Posting Time</div>
               </div>
-
-              {/* Audience Growth */}
-              <div className="p-4 rounded-xl bg-gradient-to-r from-[#34D399]/10 to-[#6EE7B7]/10">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-[#34D399] rounded-lg flex items-center justify-center">
-                    <span className="text-white text-lg">📈</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-[#1F2937]">Audience Growth</div>
-                    <div className="text-sm text-[#6B7280]">This month</div>
-                  </div>
-                </div>
-                <div className="text-2xl font-bold text-[#34D399]">+{analyticsData.audienceGrowth}%</div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-[#34D399]">+{analyticsData?.audienceGrowth || 15.3}%</div>
+                <div className="text-sm text-[#6B7280]">Audience Growth</div>
               </div>
+            </div>
+          </motion.div>
 
-              {/* Engagement Breakdown */}
-              <div className="p-4 rounded-xl bg-gradient-to-r from-[#FACC15]/10 to-[#FDE047]/10">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="w-10 h-10 bg-[#FACC15] rounded-lg flex items-center justify-center">
-                    <span className="text-white text-lg">💬</span>
-                  </div>
-                  <div>
-                    <div className="font-semibold text-[#1F2937]">Engagement Breakdown</div>
-                    <div className="text-sm text-[#6B7280]">Likes, comments, shares</div>
-                  </div>
+          {/* Engagement Breakdown */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.4 }}
+            className="bg-white rounded-2xl shadow-lg p-6"
+          >
+            <h3 className="text-xl font-bold text-[#1F2937] mb-6">Engagement Breakdown</h3>
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-[#87CEFA] rounded-full"></div>
+                  <span className="text-sm text-[#6B7280]">Likes</span>
                 </div>
-                <div className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-[#6B7280]">Likes</span>
-                    <span className="font-semibold text-[#1F2937]">{analyticsData.totalLikes.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-[#6B7280]">Comments</span>
-                    <span className="font-semibold text-[#1F2937]">{analyticsData.totalComments.toLocaleString()}</span>
-                  </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-[#6B7280]">Shares</span>
-                    <span className="font-semibold text-[#1F2937]">{analyticsData.totalShares.toLocaleString()}</span>
-                  </div>
+                <span className="font-semibold text-[#1F2937]">{(analyticsData?.totalLikes || 0).toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-[#10B981] rounded-full"></div>
+                  <span className="text-sm text-[#6B7280]">Comments</span>
                 </div>
+                <span className="font-semibold text-[#1F2937]">{(analyticsData?.totalComments || 0).toLocaleString()}</span>
+              </div>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-3">
+                  <div className="w-3 h-3 bg-[#F59E0B] rounded-full"></div>
+                  <span className="text-sm text-[#6B7280]">Shares</span>
+                </div>
+                <span className="font-semibold text-[#1F2937]">{(analyticsData?.totalShares || 0).toLocaleString()}</span>
               </div>
             </div>
           </motion.div>
