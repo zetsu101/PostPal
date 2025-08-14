@@ -7,6 +7,9 @@ import Skeleton, { CardSkeleton, MetricSkeleton, ChartSkeleton } from "@/compone
 import { useToast } from "@/components/ui/Toast";
 import { PageTransition, StaggeredContainer, StaggeredItem } from "@/components/ui/PageTransition";
 import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import { InteractiveCard, MetricCard, FeatureCard } from "@/components/ui/InteractiveCard";
+import { EnhancedLoading, PageLoading, ContentLoading, SkeletonLoading } from "@/components/ui/EnhancedLoading";
+import { PullToRefresh, SwipeableCard, TouchFeedback, MobileOptimizedList } from "@/components/ui/MobileEnhancements";
 import { 
   Plus, 
   Settings, 
@@ -337,6 +340,168 @@ export default function DemoPage() {
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Global Ready</h3>
                 <p className="text-gray-600 dark:text-gray-300">Internationalization and accessibility support</p>
               </div>
+            </div>
+          </section>
+
+          {/* Enhanced Loading Components */}
+          <section className="card p-8">
+            <div className="text-center mb-8">
+              <Zap className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Enhanced Loading States
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Beautiful, animated loading components for every use case
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <div className="text-center p-6">
+                <EnhancedLoading type="pulse" size="lg" text="Pulse Loading" />
+              </div>
+              <div className="text-center p-6">
+                <EnhancedLoading type="wave" size="lg" text="Wave Loading" />
+              </div>
+              <div className="text-center p-6">
+                <EnhancedLoading type="dots" size="lg" text="Dots Loading" />
+              </div>
+              <div className="text-center p-6">
+                <EnhancedLoading type="spinner" size="lg" text="Spinner Loading" />
+              </div>
+              <div className="text-center p-6">
+                <EnhancedLoading type="progress" size="lg" text="Progress Loading" showProgress progress={75} />
+              </div>
+              <div className="text-center p-6">
+                <ContentLoading message="Content is loading..." />
+              </div>
+            </div>
+          </section>
+
+          {/* Interactive Cards */}
+          <section className="card p-8">
+            <div className="text-center mb-8">
+              <Heart className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Interactive Cards
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Hover effects, animations, and interactive feedback
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              <InteractiveCard hoverEffect="lift" className="p-6">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white text-lg">🚀</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Lift Effect</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Hover to see the lift animation</p>
+                </div>
+              </InteractiveCard>
+              
+              <InteractiveCard hoverEffect="glow" className="p-6">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white text-lg">✨</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Glow Effect</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Hover to see the glow animation</p>
+                </div>
+              </InteractiveCard>
+              
+              <InteractiveCard hoverEffect="scale" className="p-6">
+                <div className="text-center">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center mx-auto mb-3">
+                    <span className="text-white text-lg">📏</span>
+                  </div>
+                  <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Scale Effect</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">Hover to see the scale animation</p>
+                </div>
+              </InteractiveCard>
+            </div>
+            
+            <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+              <MetricCard 
+                title="Total Engagement" 
+                value="24.5K" 
+                change="+12.3%" 
+                trend="up"
+              />
+              <MetricCard 
+                title="Reach" 
+                value="156.2K" 
+                change="-2.1%" 
+                trend="down"
+              />
+            </div>
+          </section>
+
+          {/* Mobile Enhancements */}
+          <section className="card p-8">
+            <div className="text-center mb-8">
+              <Smartphone className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
+                Mobile Experience
+              </h2>
+              <p className="text-lg text-gray-600 dark:text-gray-300 max-w-3xl mx-auto">
+                Touch gestures, pull-to-refresh, and mobile-optimized interactions
+              </p>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Touch Feedback</h3>
+                <div className="space-y-3">
+                  <TouchFeedback feedback="ripple">
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center">
+                      Tap for Ripple Effect
+                    </div>
+                  </TouchFeedback>
+                  
+                  <TouchFeedback feedback="scale">
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center">
+                      Tap for Scale Effect
+                    </div>
+                  </TouchFeedback>
+                  
+                  <TouchFeedback feedback="glow">
+                    <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center">
+                      Tap for Glow Effect
+                    </div>
+                  </TouchFeedback>
+                </div>
+              </div>
+              
+              <div>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Swipeable Cards</h3>
+                <SwipeableCard 
+                  onSwipeLeft={() => addToast({ type: 'info', title: 'Swiped Left', message: 'You swiped left!' })}
+                  onSwipeRight={() => addToast({ type: 'success', title: 'Swiped Right', message: 'You swiped right!' })}
+                  className="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
+                >
+                  <div className="text-center">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-2xl flex items-center justify-center mx-auto mb-3">
+                      <span className="text-white text-2xl">👆</span>
+                    </div>
+                    <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Swipe Me!</h3>
+                    <p className="text-sm text-gray-600 dark:text-gray-400">Try swiping left or right</p>
+                  </div>
+                </SwipeableCard>
+              </div>
+            </div>
+            
+            <div className="mt-8">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Mobile Optimized List</h3>
+              <MobileOptimizedList
+                items={[
+                  { id: 1, content: <div className="flex items-center gap-3"><span>📱</span> <span>Mobile First Design</span></div> },
+                  { id: 2, content: <div className="flex items-center gap-3"><span>👆</span> <span>Touch Gestures</span></div> },
+                  { id: 3, content: <div className="flex items-center gap-3"><span>🔄</span> <span>Pull to Refresh</span></div> },
+                  { id: 4, content: <div className="flex items-center gap-3"><span>✨</span> <span>Smooth Animations</span></div> }
+                ]}
+                onItemPress={(id) => addToast({ type: 'success', title: 'Item Pressed', message: `You pressed item ${id}` })}
+              />
             </div>
           </section>
         </div>
