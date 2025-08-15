@@ -44,6 +44,13 @@ interface PostPerformance {
   reach: number;
 }
 
+interface ChartPoint {
+  date: string;
+  engagement: number;
+  followers: number;
+  impressions: number;
+}
+
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState("7d");
   const [selectedPlatform, setSelectedPlatform] = useState("all");
@@ -70,6 +77,7 @@ export default function DashboardPage() {
   ]);
 
   const [topPosts, setTopPosts] = useState<PostPerformance[]>([]);
+  const [chartData, setChartData] = useState<ChartPoint[]>([]);
 
   // Simulate data loading
   useEffect(() => {
@@ -79,7 +87,7 @@ export default function DashboardPage() {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1500));
       
-      // Set the data
+      // Set the data (static demo values)
       setAnalyticsData({
         engagementRate: 8.2,
         followersGrowth: 12.5,
@@ -93,7 +101,7 @@ export default function DashboardPage() {
         audienceGrowth: 15.3,
       });
 
-      setTopPosts([
+      const newTopPosts: PostPerformance[] = [
         {
           id: "1",
           title: "Behind the Scenes: Our Creative Process",
@@ -130,7 +138,11 @@ export default function DashboardPage() {
           shares: 234,
           reach: 9870,
         },
-      ]);
+      ];
+      setTopPosts(newTopPosts);
+
+      // Generate chart data on the client only to avoid SSR hydration mismatch
+      setChartData(generateChartData(7));
 
       setIsLoading(false);
     };
@@ -257,8 +269,6 @@ export default function DashboardPage() {
     }
     return data;
   };
-
-  const chartData = generateChartData(7);
 
   return (
     <ProtectedRoute>
