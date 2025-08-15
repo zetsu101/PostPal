@@ -48,9 +48,9 @@ interface Comment {
 
 export default function TeamCollaboration() {
   const [activeTab, setActiveTab] = useState("members");
-  const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
-  const [showInviteModal, setShowInviteModal] = useState(false);
-  const [selectedMember, setSelectedMember] = useState<TeamMember | null>(null);
+  const [, setShowWorkspaceModal] = useState(false);
+  const [, setShowInviteModal] = useState(false);
+  const [, setSelectedMember] = useState<TeamMember | null>(null);
 
   const [teamMembers] = useState<TeamMember[]>([
     {

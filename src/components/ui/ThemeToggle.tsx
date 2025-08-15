@@ -21,8 +21,6 @@ export function ThemeToggle() {
   useEffect(() => {
     if (!mounted) return;
 
-    const root = document.documentElement;
-    
     if (theme === 'system') {
       const systemTheme = safeWindow.matchMedia?.('(prefers-color-scheme: dark)')?.matches ? 'dark' : 'light';
       if (safeDocument.documentElement) {
