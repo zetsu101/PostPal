@@ -79,6 +79,23 @@ export default function DashboardPage() {
   const [topPosts, setTopPosts] = useState<PostPerformance[]>([]);
   const [chartData, setChartData] = useState<ChartPoint[]>([]);
 
+  // Generate mock chart data (declare before use to avoid any hoisting confusion)
+  function generateChartData(days: number): ChartPoint[] {
+    const data: ChartPoint[] = [];
+    const today = new Date();
+    for (let i = days - 1; i >= 0; i--) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      data.push({
+        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        engagement: Math.floor(Math.random() * 12) + 8,
+        followers: Math.floor(Math.random() * 100) + 50,
+        impressions: Math.floor(Math.random() * 5000) + 2000,
+      });
+    }
+    return data;
+  }
+
   // Simulate data loading
   useEffect(() => {
     const loadData = async () => {
@@ -256,22 +273,7 @@ export default function DashboardPage() {
     );
   }
 
-  // Generate mock chart data
-  const generateChartData = (days: number) => {
-    const data = [];
-    const today = new Date();
-    for (let i = days - 1; i >= 0; i--) {
-      const date = new Date(today);
-      date.setDate(date.getDate() - i);
-      data.push({
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-        engagement: Math.floor(Math.random() * 12) + 8, // Higher range for better visibility
-        followers: Math.floor(Math.random() * 100) + 50,
-        impressions: Math.floor(Math.random() * 5000) + 2000,
-      });
-    }
-    return data;
-  };
+  // (function declared above)
 
   return (
     <ProtectedRoute>
