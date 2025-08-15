@@ -37,7 +37,11 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
 
   // Don't render children if not authenticated
   if (!isAuthenticated) {
-    return null;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <LoadingSpinner size="lg" text="Redirecting to login..." />
+      </div>
+    );
   }
 
   return <>{children}</>;
