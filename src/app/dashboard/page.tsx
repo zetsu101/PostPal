@@ -153,12 +153,15 @@ export default function DashboardPage() {
   // Time update effect
   useEffect(() => {
     const updateTime = () => {
+      // Read time after mount to avoid SSR/client mismatch
       const now = new Date();
-      setCurrentTime(now.toLocaleTimeString('en-US', { 
-        hour: 'numeric', 
-        minute: '2-digit',
-        hour12: true 
-      }));
+      setCurrentTime(
+        now.toLocaleTimeString('en-US', {
+          hour: 'numeric',
+          minute: '2-digit',
+          hour12: true,
+        })
+      );
     };
 
     updateTime();
