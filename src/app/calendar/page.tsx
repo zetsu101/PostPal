@@ -129,7 +129,7 @@ export default function CalendarPage() {
       case "linkedin": return "bg-gradient-to-r from-[#0077B5] to-[#00A0DC]";
       case "twitter": return "bg-gradient-to-r from-[#1DA1F2] to-[#0D8BD9]";
       case "facebook": return "bg-gradient-to-r from-[#1877F2] to-[#0D6EFD]";
-      default: return "bg-gradient-to-r from-[#87CEFA] to-[#40E0D0]";
+      default: return "bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE]";
     }
   };
 
@@ -203,7 +203,7 @@ export default function CalendarPage() {
         {/* Calendar Grid */}
         <div className="bg-white rounded-xl shadow-sm overflow-hidden">
           {/* Calendar Header */}
-          <div className="grid grid-cols-7 bg-gradient-to-r from-[#87CEFA]/10 to-[#40E0D0]/10 border-b">
+          <div className="grid grid-cols-7 bg-gradient-to-r from-[#E0E7FF]/10 to-[#C7D2FE]/10 border-b">
             {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(day => (
               <div key={day} className="p-4 text-center font-semibold text-[#1E293B]">
                 {day}
@@ -218,7 +218,7 @@ export default function CalendarPage() {
                 key={index}
                 className={`min-h-[120px] p-2 border-r border-b border-gray-100 ${
                   !day.isCurrentMonth ? "bg-gray-50" : "bg-white"
-                } ${day.isToday ? "bg-gradient-to-r from-[#87CEFA]/5 to-[#40E0D0]/5" : ""} ${
+                } ${day.isToday ? "bg-gradient-to-r from-[#E0E7FF]/5 to-[#C7D2FE]/5" : ""} ${
                   day.isCurrentMonth ? "hover:bg-gray-50" : "hover:bg-gray-100"
                 } ${flashIndex === index ? "flash-once" : ""}`}
                 onMouseEnter={() => triggerFlash(index)}
@@ -311,7 +311,7 @@ export default function CalendarPage() {
                 </button>
                 <button
                   onClick={() => setShowAddPost(false)}
-                  className="flex-1 px-4 py-2 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white rounded-lg hover:shadow-lg transition-all duration-300"
+                  className="flex-1 px-4 py-2 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] rounded-lg hover:shadow-lg transition-all duration-300"
                 >
                   Coming Soon
                 </button>

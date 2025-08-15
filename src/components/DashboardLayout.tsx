@@ -44,7 +44,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {/* Logo */}
           <div className="p-6 border-b border-gray-200">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center">
+              <div className="w-10 h-10 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-xl flex items-center justify-center">
                 <span className="text-white text-xl font-bold">P</span>
               </div>
               <span className="text-xl font-bold text-gray-900">PostPal</span>
@@ -78,7 +78,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           {isClient && (
             <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] flex items-center justify-center">
                   {user?.avatar ? (
                     <Image src={user.avatar} alt={user.name} width={40} height={40} className="w-10 h-10 rounded-full" />
                   ) : (

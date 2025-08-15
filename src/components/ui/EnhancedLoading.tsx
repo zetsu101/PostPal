@@ -50,7 +50,7 @@ export function EnhancedLoading({
       case 'pulse':
         return (
           <motion.div
-            className={`${sizeClasses[size]} bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full`}
+            className={`${sizeClasses[size]} bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-full`}
             animate={{
               scale: [1, 1.2, 1],
               opacity: [0.5, 1, 0.5]
@@ -69,7 +69,7 @@ export function EnhancedLoading({
             {[0, 1, 2, 3].map((i) => (
               <motion.div
                 key={i}
-                className={`${sizeClasses.sm} bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full`}
+                className={`${sizeClasses.sm} bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-full`}
                 animate={{
                   y: [0, -10, 0],
                   opacity: [0.3, 1, 0.3]
@@ -91,7 +91,7 @@ export function EnhancedLoading({
             {[0, 1, 2].map((i) => (
               <motion.div
                 key={i}
-                className={`${sizeClasses.sm} bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full`}
+                className={`${sizeClasses.sm} bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-full`}
                 animate={{
                   scale: [1, 1.5, 1],
                   opacity: [0.3, 1, 0.3]
@@ -125,7 +125,7 @@ export function EnhancedLoading({
           <div className="w-full max-w-xs">
             <div className="w-full bg-gray-200 rounded-full h-2">
               <motion.div
-                className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] h-2 rounded-full"
+                className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] h-2 rounded-full"
                 initial={{ width: 0 }}
                 animate={{ width: `${currentProgress}%` }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
@@ -173,7 +173,7 @@ export function PageLoading() {
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="text-center space-y-6">
         <motion.div
-          className="w-20 h-20 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-3xl mx-auto"
+          className="w-20 h-20 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-3xl mx-auto"
           animate={{
             scale: [1, 1.1, 1],
             rotate: [0, 5, -5, 0]

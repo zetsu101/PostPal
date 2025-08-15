@@ -183,8 +183,8 @@ export default function AIContentGenerator() {
                 onClick={() => setSelectedContentType(type.id)}
                 className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
                   selectedContentType === type.id
-                    ? 'border-[#87CEFA] bg-gradient-to-r from-[#87CEFA]/10 to-[#40E0D0]/10'
-                    : 'border-gray-200 hover:border-[#87CEFA]/50 hover:bg-gray-50'
+                    ? 'border-[#C7D2FE] bg-gradient-to-r from-[#E0E7FF]/10 to-[#C7D2FE]/10'
+                    : 'border-gray-200 hover:border-[#C7D2FE]/50 hover:bg-gray-50'
                 }`}
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
@@ -213,8 +213,8 @@ export default function AIContentGenerator() {
                 onClick={() => setSelectedPlatform(platform.id)}
                 className={`px-4 py-2 rounded-xl border-2 transition-all duration-300 flex items-center gap-2 ${
                   selectedPlatform === platform.id
-                    ? 'border-[#87CEFA] bg-gradient-to-r from-[#87CEFA]/10 to-[#40E0D0]/10'
-                    : 'border-gray-200 hover:border-[#87CEFA]/50 hover:bg-gray-50'
+                    ? 'border-[#C7D2FE] bg-gradient-to-r from-[#E0E7FF]/10 to-[#C7D2FE]/10'
+                    : 'border-gray-200 hover:border-[#C7D2FE]/50 hover:bg-gray-50'
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -274,7 +274,7 @@ export default function AIContentGenerator() {
           <motion.button
             onClick={generatePostIdeas}
             disabled={isLoading}
-            className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] hover:from-[#5F9EC7] hover:to-[#20B2AA] disabled:from-[#9CA3AF] disabled:to-[#9CA3AF] text-white font-semibold px-8 py-4 rounded-xl transition-all duration-300 flex items-center gap-3 mx-auto shadow-lg hover:shadow-xl"
+            className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] hover:from-[#C7D2FE] hover:to-[#E0E7FF] disabled:from-[#9CA3AF] disabled:to-[#9CA3AF] text-[#1F2937] font-semibold px-8 py-4 rounded-xl transition-all duration-300 flex items-center gap-3 mx-auto shadow-lg hover:shadow-xl"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >

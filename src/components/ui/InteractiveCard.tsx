@@ -110,7 +110,7 @@ export function InteractiveCard({
       {/* Background gradient overlay */}
       {interactive && (
         <motion.div
-          className="absolute inset-0 bg-gradient-to-br from-[#87CEFA]/5 to-[#40E0D0]/5 opacity-0"
+          className="absolute inset-0 bg-gradient-to-br from-[#E0E7FF]/5 to-[#C7D2FE]/5 opacity-0"
           animate={{ opacity: isHovered ? 1 : 0 }}
           transition={{ duration: 0.3 }}
         />
@@ -208,7 +208,7 @@ export function FeatureCard({
       hoverEffect="glow"
     >
       <div className="text-center space-y-4">
-        <div className="w-16 h-16 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-2xl flex items-center justify-center mx-auto">
+        <div className="w-16 h-16 bg-gradient-to-br from-[#E0E7FF] to-[#C7D2FE] rounded-2xl flex items-center justify-center mx-auto">
           <span className="text-2xl">{icon}</span>
         </div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white">

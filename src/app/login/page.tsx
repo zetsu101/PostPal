@@ -41,7 +41,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#87CEFA] via-[#40E0D0] to-[#98FB98] flex items-center justify-center p-4">
+    <div className="min-h-screen bg-gradient-to-br from-[#E0E7FF] via-[#C7D2FE] to-[#E2E8F0] flex items-center justify-center p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -158,7 +158,7 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+              className="w-full bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {isLoading ? (
                 <div className="flex items-center justify-center">
@@ -176,7 +176,7 @@ export default function LoginPage() {
             <div className="text-center">
               <Link
                 href="/forgot-password"
-                className="text-[#87CEFA] hover:text-[#40E0D0] text-sm font-medium transition-colors"
+                className="text-[#64748B] hover:text-[#475569] text-sm font-medium transition-colors"
               >
                 Forgot your password?
               </Link>

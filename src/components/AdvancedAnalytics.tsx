@@ -257,7 +257,7 @@ export default function AdvancedAnalytics() {
           </select>
           <button
             onClick={() => setShowReportModal(true)}
-            className="px-4 py-2 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white rounded-lg font-medium hover:shadow-lg transition-all"
+            className="px-4 py-2 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] rounded-lg font-medium hover:shadow-lg transition-all"
           >
             📊 Generate Report
           </button>
@@ -426,7 +426,7 @@ export default function AdvancedAnalytics() {
                 {(analyticsData?.topPerformingPosts || []).map((post, index) => (
                   <div key={index} className="flex items-center justify-between p-4 border border-gray-200 rounded-lg">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] flex items-center justify-center text-white font-semibold">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] flex items-center justify-center text-[#1F2937] font-semibold">
                         {post.platform.charAt(0)}
                       </div>
                       <div>
@@ -626,7 +626,7 @@ export default function AdvancedAnalytics() {
                   <div className="text-sm text-[#6B7280]">Growth Rate</div>
                 </div>
                 <div className="text-center">
-                  <div className="text-2xl font-bold text-[#40E0D0]">{(analyticsData?.audienceGrowth?.retentionRate || 0).toFixed(1)}%</div>
+                  <div className="text-2xl font-bold text-[#475569]">{(analyticsData?.audienceGrowth?.retentionRate || 0).toFixed(1)}%</div>
                   <div className="text-sm text-[#6B7280]">Retention Rate</div>
                 </div>
               </div>

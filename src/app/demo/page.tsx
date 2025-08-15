@@ -76,7 +76,7 @@ export default function DemoPage() {
           {/* Theme Showcase Section */}
           <section className="card p-8">
             <div className="text-center mb-8">
-              <Palette className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <Palette className="w-16 h-16 text-[#64748B] mx-auto mb-4" />
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Beautiful Dark Mode
               </h2>
@@ -287,7 +287,7 @@ export default function DemoPage() {
                       <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Analytics Overview</h3>
                       <div className="grid grid-cols-2 gap-4">
                         <div className="text-center p-4 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg">
-                          <TrendingUp className="w-8 h-8 text-[#87CEFA] mx-auto mb-2" />
+                          <TrendingUp className="w-8 h-8 text-[#64748B] mx-auto mb-2" />
                           <div className="text-2xl font-bold text-gray-900 dark:text-white">+24%</div>
                           <div className="text-sm text-gray-600 dark:text-gray-300">Engagement</div>
                         </div>
@@ -307,7 +307,7 @@ export default function DemoPage() {
           {/* Features Showcase */}
           <section className="card p-8">
             <div className="text-center mb-8">
-              <Sparkles className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <Sparkles className="w-16 h-16 text-[#64748B] mx-auto mb-4" />
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 What&apos;s New in PostPal
               </h2>
@@ -318,7 +318,7 @@ export default function DemoPage() {
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div className="text-center p-6">
-                <div className="w-16 h-16 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <div className="w-16 h-16 bg-gradient-to-br from-[#E0E7FF] to-[#C7D2FE] rounded-2xl flex items-center justify-center mx-auto mb-4">
                   <Palette className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Dark Mode</h3>
@@ -346,7 +346,7 @@ export default function DemoPage() {
           {/* Enhanced Loading Components */}
           <section className="card p-8">
             <div className="text-center mb-8">
-              <Zap className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <Zap className="w-16 h-16 text-[#64748B] mx-auto mb-4" />
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Enhanced Loading States
               </h2>
@@ -380,7 +380,7 @@ export default function DemoPage() {
           {/* Interactive Cards */}
           <section className="card p-8">
             <div className="text-center mb-8">
-              <Heart className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <Heart className="w-16 h-16 text-[#64748B] mx-auto mb-4" />
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Interactive Cards
               </h2>
@@ -392,7 +392,7 @@ export default function DemoPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               <InteractiveCard hoverEffect="lift" className="p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#E0E7FF] to-[#C7D2FE] rounded-xl flex items-center justify-center mx-auto mb-3">
                     <span className="text-white text-lg">🚀</span>
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Lift Effect</h3>
@@ -402,7 +402,7 @@ export default function DemoPage() {
               
               <InteractiveCard hoverEffect="glow" className="p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#E0E7FF] to-[#C7D2FE] rounded-xl flex items-center justify-center mx-auto mb-3">
                     <span className="text-white text-lg">✨</span>
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Glow Effect</h3>
@@ -412,7 +412,7 @@ export default function DemoPage() {
               
               <InteractiveCard hoverEffect="scale" className="p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#E0E7FF] to-[#C7D2FE] rounded-xl flex items-center justify-center mx-auto mb-3">
                     <span className="text-white text-lg">📏</span>
                   </div>
                   <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Scale Effect</h3>
@@ -440,7 +440,7 @@ export default function DemoPage() {
           {/* Mobile Enhancements */}
           <section className="card p-8">
             <div className="text-center mb-8">
-              <Smartphone className="w-16 h-16 text-[#87CEFA] mx-auto mb-4" />
+              <Smartphone className="w-16 h-16 text-[#64748B] mx-auto mb-4" />
               <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-4">
                 Mobile Experience
               </h2>
@@ -481,7 +481,7 @@ export default function DemoPage() {
                   className="p-6 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700"
                 >
                   <div className="text-center">
-                    <div className="w-16 h-16 bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-2xl flex items-center justify-center mx-auto mb-3">
+                    <div className="w-16 h-16 bg-gradient-to-br from-[#E0E7FF] to-[#C7D2FE] rounded-2xl flex items-center justify-center mx-auto mb-3">
                       <span className="text-white text-2xl">👆</span>
                     </div>
                     <h3 className="font-semibold text-gray-900 dark:text-white mb-2">Swipe Me!</h3>
