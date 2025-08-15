@@ -147,7 +147,23 @@ export default function RootLayout({
           }}
         />
         
-        {/* Service Worker Registration disabled for demo stability */}
+        {/* Force-unregister any previously installed service workers (old cache) */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function(){
+                if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
+                  navigator.serviceWorker.getRegistrations()
+                    .then(function(regs){ regs.forEach(function(r){ r.unregister(); }); })
+                    .catch(function(){ /* ignore */ });
+                  if (window.caches && caches.keys) {
+                    caches.keys().then(function(keys){ keys.forEach(function(k){ caches.delete(k); }); });
+                  }
+                }
+              })();
+            `,
+          }}
+        />
       </head>
       <body className="antialiased font-sans">
         <ToastProvider>
