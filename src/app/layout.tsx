@@ -95,10 +95,7 @@ export const viewport = {
   viewportFit: "cover",
 };
 
-export const themeColor = [
-  { media: "(prefers-color-scheme: light)", color: "#87CEFA" },
-  { media: "(prefers-color-scheme: dark)", color: "#1E293B" },
-];
+// theme color is set via metadata meta tags below; no separate export
 
 export default function RootLayout({
   children,
