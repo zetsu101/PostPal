@@ -49,7 +49,7 @@ export default function PricingPage() {
     if (!plan.popular) return null;
     return (
       <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-        <span className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white px-4 py-1 rounded-full text-sm font-semibold">
+        <span className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] px-4 py-1 rounded-full text-sm font-semibold">
           Most Popular
         </span>
       </div>
@@ -103,7 +103,7 @@ export default function PricingPage() {
             <button
               onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
               className={`relative w-16 h-8 rounded-full transition-colors duration-300 ${
-                billingCycle === 'yearly' ? 'bg-[#87CEFA]' : 'bg-gray-300'
+                billingCycle === 'yearly' ? 'bg-[#C7D2FE]' : 'bg-gray-300'
               }`}
             >
               <div
@@ -131,10 +131,10 @@ export default function PricingPage() {
               transition={{ delay: 0.1 * index }}
               className={`relative bg-white rounded-2xl p-8 shadow-lg border-2 transition-all duration-300 hover:shadow-xl ${
                 plan.popular 
-                  ? 'border-[#87CEFA] scale-105' 
+                  ? 'border-[#C7D2FE] scale-105' 
                   : currentPlan?.id === plan.id 
                     ? 'border-[#10B981]' 
-                    : 'border-gray-200 hover:border-[#87CEFA]/50'
+                    : 'border-gray-200 hover:border-[#C7D2FE]/50'
               }`}
             >
               {getPopularBadge(plan)}
@@ -180,8 +180,8 @@ export default function PricingPage() {
                   currentPlan?.id === plan.id
                     ? 'bg-gray-100 text-[#6B7280] cursor-not-allowed'
                     : plan.popular
-                      ? 'bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white hover:shadow-lg hover:scale-105'
-                      : 'bg-white border-2 border-[#87CEFA] text-[#87CEFA] hover:bg-[#87CEFA] hover:text-white'
+                      ? 'bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] hover:shadow-lg hover:scale-105'
+                      : 'bg-white border-2 border-[#C7D2FE] text-[#1F2937] hover:bg-[#C7D2FE]'
                 }`}
               >
                 {currentPlan?.id === plan.id ? 'Current Plan' : plan.price === 0 ? 'Get Started' : 'Choose Plan'}
@@ -259,7 +259,7 @@ export default function PricingPage() {
                   <button
                     onClick={handleUpgrade}
                     disabled={isProcessing}
-                    className="flex-1 px-4 py-2 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50"
+                    className="flex-1 px-4 py-2 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50"
                   >
                     {isProcessing ? 'Processing...' : 'Upgrade Now'}
                   </button>

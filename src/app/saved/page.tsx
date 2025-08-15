@@ -199,7 +199,7 @@ export default function SavedPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
                 activeTab === tab.id
-                  ? "bg-white text-[#87CEFA] shadow-md"
+                  ? "bg-white text-[#64748B] shadow-md"
                   : "text-[#6B7280] hover:text-[#1F2937]"
               }`}
             >
@@ -225,7 +225,7 @@ export default function SavedPage() {
                   <motion.div
                     key={tool.id}
                     whileHover={{ scale: 1.02 }}
-                    className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:border-[#87CEFA]/50 transition-all"
+                    className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:border-[#C7D2FE]/50 transition-all"
                   >
                     <div className="flex items-start justify-between mb-4">
                       <div className={`w-12 h-12 bg-gradient-to-r ${tool.color} rounded-xl flex items-center justify-center`}>
@@ -255,8 +255,8 @@ export default function SavedPage() {
                         tool.status === "coming-soon"
                           ? "bg-gray-100 text-[#6B7280] cursor-not-allowed"
                           : isGenerating && selectedTool === tool.id
-                          ? "bg-[#87CEFA] text-white"
-                          : "bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white hover:shadow-lg"
+                          ? "bg-[#C7D2FE] text-[#1F2937]"
+                          : "bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] hover:shadow-lg"
                       }`}
                     >
                       {tool.status === "coming-soon" ? (
@@ -278,7 +278,7 @@ export default function SavedPage() {
               <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                 <div className="bg-white rounded-2xl shadow-lg p-6">
                   <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-lg flex items-center justify-center">
+                    <div className="w-10 h-10 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-lg flex items-center justify-center">
                       <span className="text-white text-lg">🎨</span>
                     </div>
                     <div>
@@ -345,7 +345,7 @@ export default function SavedPage() {
                     <p className="text-[#6B7280] mb-6">Start using AI tools to create amazing content</p>
                     <button
                       onClick={() => setActiveTab("ai-tools")}
-                      className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+                      className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
                     >
                       Explore AI Tools
                     </button>
@@ -353,7 +353,7 @@ export default function SavedPage() {
                 ) : (
                   <div className="space-y-4">
                     {generatedContent.map((content) => (
-                      <div key={content.id} className="p-6 border border-gray-200 rounded-xl hover:border-[#87CEFA]/50 transition-all">
+                      <div key={content.id} className="p-6 border border-gray-200 rounded-xl hover:border-[#C7D2FE]/50 transition-all">
                         <div className="flex items-start justify-between mb-4">
                           <div>
                             <h3 className="font-semibold text-[#1F2937] mb-1">{content.title}</h3>
@@ -377,7 +377,7 @@ export default function SavedPage() {
                         </div>
                         
                         <div className="flex gap-2">
-                          <button className="px-4 py-2 bg-[#87CEFA] text-white rounded-lg text-sm font-medium hover:bg-[#5F9EC7] transition-colors">
+                          <button className="px-4 py-2 bg-[#C7D2FE] text-[#1F2937] rounded-lg text-sm font-medium hover:bg-[#A5B4FC] transition-colors">
                             Use Content
                           </button>
                           <button className="px-4 py-2 bg-gray-100 text-[#1F2937] rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">

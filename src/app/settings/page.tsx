@@ -194,7 +194,7 @@ export default function SettingsPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
                 activeTab === tab.id
-                  ? "bg-white text-[#87CEFA] shadow-md"
+                  ? "bg-white text-[#64748B] shadow-md"
                   : "text-[#6B7280] hover:text-[#1F2937]"
               }`}
             >
@@ -224,7 +224,7 @@ export default function SettingsPage() {
                   <h2 className="text-2xl font-bold text-[#1F2937]">Connected Accounts</h2>
                   <button
                     onClick={() => setShowConnectModal(true)}
-                    className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+                    className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
                   >
                     + Connect Account
                   </button>
@@ -235,7 +235,7 @@ export default function SettingsPage() {
                     <motion.div
                       key={account.id}
                       whileHover={{ scale: 1.02 }}
-                      className="p-6 rounded-xl border border-gray-200 hover:border-[#87CEFA]/50 transition-all"
+                      className="p-6 rounded-xl border border-gray-200 hover:border-[#C7D2FE]/50 transition-all"
                     >
                       <div className="flex items-start justify-between mb-4">
                         <div className="flex items-center gap-3">
@@ -283,7 +283,7 @@ export default function SettingsPage() {
                           <p className="text-sm text-[#6B7280] mb-3">Not connected</p>
                           <button
                             onClick={() => handleConnectAccount(account.platform)}
-                            className="w-full bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all"
+                            className="w-full bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] py-2 rounded-lg font-medium hover:shadow-lg transition-all"
                           >
                             Connect {account.platform}
                           </button>
@@ -369,7 +369,7 @@ export default function SettingsPage() {
                           defaultChecked={integrationSettings[setting.key as keyof IntegrationSettings]}
                           className="sr-only peer"
                         />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#87CEFA]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#87CEFA]"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#C7D2FE]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C7D2FE]"></div>
                       </label>
                     </div>
                   ))}
@@ -394,7 +394,7 @@ export default function SettingsPage() {
                   <div className="p-6 border border-gray-200 rounded-xl">
                     <h3 className="font-semibold text-[#1F2937] mb-3">Content Recycling</h3>
                     <p className="text-sm text-[#6B7280] mb-4">Automatically repost your best performing content</p>
-                    <button className="bg-[#87CEFA] text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    <button className="bg-[#C7D2FE] text-[#1F2937] px-4 py-2 rounded-lg text-sm font-medium">
                       Configure
                     </button>
                   </div>
@@ -402,7 +402,7 @@ export default function SettingsPage() {
                   <div className="p-6 border border-gray-200 rounded-xl">
                     <h3 className="font-semibold text-[#1F2937] mb-3">Engagement Responses</h3>
                     <p className="text-sm text-[#6B7280] mb-4">Auto-respond to common comments and messages</p>
-                    <button className="bg-[#87CEFA] text-white px-4 py-2 rounded-lg text-sm font-medium">
+                    <button className="bg-[#C7D2FE] text-[#1F2937] px-4 py-2 rounded-lg text-sm font-medium">
                       Configure
                     </button>
                   </div>
@@ -436,7 +436,7 @@ export default function SettingsPage() {
                       </div>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" defaultChecked className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#87CEFA]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#87CEFA]"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-[#C7D2FE]/20 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#C7D2FE]"></div>
                       </label>
                     </div>
                   ))}
@@ -479,7 +479,7 @@ export default function SettingsPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                         onClick={() => setSelectedPlatform(platform.name)}
-                        className="p-6 border border-gray-200 rounded-xl hover:border-[#87CEFA]/50 transition-all text-left"
+                        className="p-6 border border-gray-200 rounded-xl hover:border-[#C7D2FE]/50 transition-all text-left"
                       >
                         <div className={`w-12 h-12 bg-gradient-to-r ${platform.color} rounded-xl flex items-center justify-center mb-4`}>
                           <span className="text-white text-2xl">{platform.icon}</span>
@@ -500,8 +500,8 @@ export default function SettingsPage() {
                      </p>
                     
                     {isConnecting ? (
-                      <div className="flex items-center justify-center gap-3 text-[#87CEFA]">
-                        <div className="w-6 h-6 border-2 border-[#87CEFA] border-t-transparent rounded-full animate-spin"></div>
+                      <div className="flex items-center justify-center gap-3 text-[#64748B]">
+                        <div className="w-6 h-6 border-2 border-[#C7D2FE] border-t-transparent rounded-full animate-spin"></div>
                         <span>Connecting to {selectedPlatform}...</span>
                       </div>
                     ) : (
@@ -514,7 +514,7 @@ export default function SettingsPage() {
                         </button>
                         <button
                           onClick={simulateConnection}
-                          className="flex-1 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
+                          className="flex-1 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
                         >
                           Connect {selectedPlatform}
                         </button>
