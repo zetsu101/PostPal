@@ -72,8 +72,14 @@ export default function MobileFeatures() {
 
 
   const syncOfflineData = async () => {
-    if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'sync' in window.ServiceWorkerRegistration.prototype) {
-      try {
+    try {
+      if (
+        typeof window !== 'undefined' &&
+        typeof navigator !== 'undefined' &&
+        'serviceWorker' in navigator &&
+        typeof (window as any).ServiceWorkerRegistration !== 'undefined' &&
+        'sync' in (window as any).ServiceWorkerRegistration.prototype
+      ) {
         const registration = await navigator.serviceWorker.ready;
         (registration as any).sync.register('background-sync');
         setOfflineData(prev => ({
@@ -81,9 +87,9 @@ export default function MobileFeatures() {
           pendingActions: 0,
           lastSync: new Date().toISOString()
         }));
-      } catch (error) {
-        console.error('Background sync failed:', error);
       }
+    } catch (error) {
+      console.error('Background sync failed:', error);
     }
   };
 
