@@ -360,8 +360,8 @@ export default function DashboardPage() {
           ))}
         </motion.div>
 
-        {/* Main Analytics Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+        {/* Main Analytics Grid - widen center area */}
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
           {/* Engagement Chart */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
@@ -406,7 +406,7 @@ export default function DashboardPage() {
             </div>
           </motion.div>
 
-          {/* Platform Performance */}
+          {/* Platform Performance (moves below on xl to center charts) */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -453,7 +453,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Detailed Analytics */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8 mb-8">
           {/* Top Performing Posts */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
