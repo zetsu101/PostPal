@@ -37,7 +37,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <MobileFeatures />
+      {/* Avoid PWA features during demo to reduce client exceptions */}
+      {/* <MobileFeatures /> */}
       {/* Desktop Sidebar */}
       <div className="hidden md:flex">
         <div className="w-64 bg-white shadow-lg border-r border-gray-200 min-h-screen relative">
