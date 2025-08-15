@@ -150,7 +150,7 @@ export default function LandingPage() {
             repeat: Infinity,
             ease: "easeInOut"
           }}
-          className="absolute top-24 left-24 hidden lg:block z-20 opacity-80"
+          className="absolute top-28 left-8 hidden lg:block z-0 opacity-80 pointer-events-none"
         >
           <div className="bg-white rounded-2xl shadow-xl p-3 border border-gray-100 max-w-xs">
             <div className="flex items-center gap-3 mb-3">
@@ -176,7 +176,7 @@ export default function LandingPage() {
             ease: "easeInOut",
             delay: 1
           }}
-          className="absolute bottom-24 right-24 hidden lg:block z-20 opacity-80"
+          className="absolute bottom-28 right-8 hidden lg:block z-0 opacity-80 pointer-events-none"
         >
           <div className="bg-white rounded-2xl shadow-xl p-3 border border-gray-100 max-w-xs">
             <div className="flex items-center gap-3 mb-3">
