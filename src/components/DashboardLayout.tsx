@@ -24,6 +24,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const pathname = usePathname();
   const router = useRouter();
   const { user, logout } = useAuth();
+  // Defensive: avoid rendering until client to prevent illegal invocation on certain bound methods
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {

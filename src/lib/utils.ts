@@ -34,12 +34,12 @@ export const safeLocalStorage = {
 };
 
 export const safeWindow = {
-  location: isBrowser ? window.location : null,
-  matchMedia: isBrowser ? window.matchMedia : null,
-  addEventListener: isBrowser ? window.addEventListener : null,
-  removeEventListener: isBrowser ? window.removeEventListener : null,
-  setTimeout: isBrowser ? window.setTimeout : null,
-  ServiceWorkerRegistration: isBrowser ? window.ServiceWorkerRegistration : null
+  location: isBrowser ? window.location : ({} as Location | null),
+  matchMedia: isBrowser ? window.matchMedia : (() => ({ matches: false })) as any,
+  addEventListener: isBrowser ? window.addEventListener.bind(window) : (() => {}) as any,
+  removeEventListener: isBrowser ? window.removeEventListener.bind(window) : (() => {}) as any,
+  setTimeout: isBrowser ? window.setTimeout.bind(window) : ((_: any, __: any) => 0) as any,
+  ServiceWorkerRegistration: isBrowser ? (window as any).ServiceWorkerRegistration : null
 };
 
 export const safeDocument = {
