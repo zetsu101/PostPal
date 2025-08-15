@@ -30,7 +30,7 @@ export default function LandingPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.3 }}
           >
-            <Link href="/dashboard" className="font-medium hover:text-[#87CEFA] transition-colors">Login</Link>
+            <Link href="/login" className="font-medium hover:text-[#87CEFA] transition-colors">Login</Link>
           </motion.div>
         </nav>
         </Container>
