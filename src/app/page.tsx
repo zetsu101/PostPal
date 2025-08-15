@@ -213,22 +213,22 @@ export default function LandingPage() {
         <div className="flex flex-col sm:flex-row justify-center gap-8 max-w-5xl mx-auto">
           {[
             {
-              step: "1️⃣",
+              icon: "🧭",
+              iconGradient: "from-[#E0E7FF] to-[#C7D2FE]",
               title: "Tell us about your brand",
-              description: "Complete a playful onboarding to set your tone, audience, and goals.",
-              color: "from-[#FF6B6B] to-[#FF8E8E]"
+              description: "Complete a playful onboarding to set your tone, audience, and goals."
             },
             {
-              step: "2️⃣", 
+              icon: "✨",
+              iconGradient: "from-[#CFFAFE] to-[#A7F3D0]",
               title: "Get AI-powered ideas",
-              description: "Receive tailored post ideas, captions, hashtags, and image prompts.",
-              color: "from-[#60A5FA] to-[#93C5FD]"
+              description: "Receive tailored post ideas, captions, hashtags, and image prompts."
             },
             {
-              step: "3️⃣",
+              icon: "📅",
+              iconGradient: "from-[#FDE68A] to-[#FECACA]",
               title: "Plan & post with ease", 
-              description: "Drag-and-drop to your calendar, edit, and stay consistent with ease.",
-              color: "from-[#34D399] to-[#6EE7B7]"
+              description: "Drag-and-drop to your calendar, edit, and stay consistent with ease."
             }
           ].map((item, index) => (
             <motion.div
@@ -239,8 +239,8 @@ export default function LandingPage() {
               viewport={{ once: true }}
               className="flex-1 bg-[#F9FAFB] rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group"
             >
-              <div className={`text-4xl mb-4 bg-gradient-to-r ${item.color === "from-[#FF6B6B] to-[#FF8E8E]" ? "from-[#87CEFA] to-[#ADD8E6]" : item.color === "from-[#60A5FA] to-[#93C5FD]" ? "from-[#40E0D0] to-[#7FFFD4]" : "from-[#10B981] to-[#34D399]"} bg-clip-text text-transparent`}>
-                {item.step}
+              <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.iconGradient} flex items-center justify-center mb-4`}>
+                <span className="text-lg">{item.icon}</span>
               </div>
               <h3 className="font-bold text-xl mb-3 text-[#1F2937] group-hover:text-[#87CEFA] transition-colors">
                 {item.title}
@@ -279,10 +279,10 @@ export default function LandingPage() {
             className="flex-1"
           >
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
-              <div className="bg-gradient-to-br from-[#87CEFA] to-[#40E0D0] rounded-xl p-8 text-white text-center">
+              <div className="bg-gradient-to-br from-[#E0E7FF]/20 to-[#C7D2FE]/20 rounded-xl p-8 text-center">
                 <div className="text-4xl mb-4">📱</div>
-                <h3 className="text-xl font-bold mb-2">AI Content Generator</h3>
-                <p className="text-white/80">Get personalized post ideas in seconds</p>
+                <h3 className="text-xl font-bold mb-2 text-[#1F2937]">AI Content Generator</h3>
+                <p className="text-[#374151]">Get personalized post ideas in seconds</p>
               </div>
             </div>
           </motion.div>
@@ -295,10 +295,10 @@ export default function LandingPage() {
             className="flex-1"
           >
             <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
-              <div className="bg-gradient-to-br from-[#40E0D0] to-[#FF7F50] rounded-xl p-8 text-white text-center">
+              <div className="bg-gradient-to-br from-[#F1F5F9]/20 to-[#E2E8F0]/20 rounded-xl p-8 text-center">
                 <div className="text-4xl mb-4">📅</div>
-                <h3 className="text-xl font-bold mb-2">Content Calendar</h3>
-                <p className="text-white/80">Plan and schedule with drag-and-drop</p>
+                <h3 className="text-xl font-bold mb-2 text-[#1F2937]">Content Calendar</h3>
+                <p className="text-[#374151]">Plan and schedule with drag-and-drop</p>
               </div>
             </div>
           </motion.div>

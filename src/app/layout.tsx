@@ -106,7 +106,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${lato.variable}`}>
+    <html lang="en">
       <head>
         {/* PWA Meta Tags */}
         <meta name="application-name" content="PostPal" />
@@ -138,6 +138,18 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         
+        {/* Font CSS Variables */}
+        <style
+          dangerouslySetInnerHTML={{
+            __html: `
+              :root {
+                --font-inter: ${inter.variable};
+                --font-lato: ${lato.variable};
+              }
+            `,
+          }}
+        />
+        
         {/* Service Worker Registration */}
         <script
           dangerouslySetInnerHTML={{
@@ -157,7 +169,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`antialiased font-sans ${inter.variable} ${lato.variable}`}>
+      <body className="antialiased font-sans">
         <ToastProvider>
           {children}
         </ToastProvider>

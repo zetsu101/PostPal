@@ -1,6 +1,8 @@
 // Social Media API Integration System
 // This handles real API connections to major social media platforms
 
+import { isBrowser, safeLocalStorage, safeWindow } from "@/lib/utils";
+
 export interface SocialPlatform {
   id: string;
   name: string;
@@ -129,7 +131,8 @@ class SocialMediaAPI {
   // Initialize API with stored credentials
   async initialize(): Promise<void> {
     try {
-      const stored = localStorage.getItem('postpal_api_credentials');
+      if (!isBrowser) return;
+      const stored = safeLocalStorage.getItem('postpal_api_credentials');
       if (stored) {
         const creds: APICredentials[] = JSON.parse(stored);
         creds.forEach(cred => this.credentials.set(cred.platform, cred));
@@ -194,7 +197,10 @@ class SocialMediaAPI {
       tiktok: 'your_tiktok_client_id'
     };
 
-    const redirectUri = `${window.location.origin}/api/auth/callback/${platform}`;
+    const origin = safeWindow.location ? safeWindow.location.origin : '';
+    const redirectUri = origin
+      ? `${origin}/api/auth/callback/${platform}`
+      : `/api/auth/callback/${platform}`;
     
     return `${baseUrls[platform]}?client_id=${clientIds[platform]}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=code&scope=basic`;
   }
@@ -431,7 +437,9 @@ class SocialMediaAPI {
   private saveCredentials(): void {
     try {
       const creds = Array.from(this.credentials.values());
-      localStorage.setItem('postpal_api_credentials', JSON.stringify(creds));
+      if (isBrowser) {
+        safeLocalStorage.setItem('postpal_api_credentials', JSON.stringify(creds));
+      }
     } catch (error) {
       console.error('Failed to save credentials:', error);
     }
@@ -442,4 +450,7 @@ class SocialMediaAPI {
 export const socialMediaAPI = new SocialMediaAPI();
 
 // Initialize on module load
-socialMediaAPI.initialize(); 
+if (isBrowser) {
+  // Avoid running during SSR
+  socialMediaAPI.initialize();
+} 
