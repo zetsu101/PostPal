@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  // Enable production source maps to get readable stack traces in Vercel
+  productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       {

@@ -33,13 +33,34 @@ export const safeLocalStorage = {
   }
 };
 
+type SafeMatchMedia = (query: string) => MediaQueryList;
+type SafeAddEvent = (
+  type: string,
+  listener: EventListenerOrEventListenerObject,
+  options?: boolean | AddEventListenerOptions
+) => void;
+type SafeRemoveEvent = SafeAddEvent;
+type SafeSetTimeout = (handler: (...args: unknown[]) => void, timeout?: number, ...args: unknown[]) => number;
+
 export const safeWindow = {
   location: isBrowser ? window.location : ({} as Location | null),
-  matchMedia: isBrowser ? window.matchMedia : (() => ({ matches: false })) as any,
-  addEventListener: isBrowser ? window.addEventListener.bind(window) : (() => {}) as any,
-  removeEventListener: isBrowser ? window.removeEventListener.bind(window) : (() => {}) as any,
-  setTimeout: isBrowser ? window.setTimeout.bind(window) : ((_: any, __: any) => 0) as any,
-  ServiceWorkerRegistration: isBrowser ? (window as any).ServiceWorkerRegistration : null
+  // Bind window methods to avoid "Illegal invocation" in some browsers
+  matchMedia: (isBrowser
+    ? window.matchMedia.bind(window)
+    : ((query: string) => ({
+        media: query,
+        matches: false,
+        onchange: null,
+        addEventListener: () => {},
+        removeEventListener: () => {},
+        addListener: () => {},
+        removeListener: () => {},
+        dispatchEvent: () => false,
+      } as MediaQueryList))) as SafeMatchMedia,
+  addEventListener: (isBrowser ? window.addEventListener.bind(window) : (() => {})) as SafeAddEvent,
+  removeEventListener: (isBrowser ? window.removeEventListener.bind(window) : (() => {})) as SafeRemoveEvent,
+  setTimeout: (isBrowser ? window.setTimeout.bind(window) : (() => 0)) as SafeSetTimeout,
+  ServiceWorkerRegistration: (isBrowser ? (window as unknown as { ServiceWorkerRegistration?: typeof ServiceWorkerRegistration }).ServiceWorkerRegistration ?? null : null) as typeof ServiceWorkerRegistration | null,
 };
 
 export const safeDocument = {
