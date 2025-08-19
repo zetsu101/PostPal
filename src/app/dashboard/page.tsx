@@ -8,6 +8,7 @@ import Container from "@/components/Container";
 import PageHeader from "@/components/PageHeader";
 import Button from "@/components/ui/Button";
 import ProtectedRoute from "@/components/ProtectedRoute";
+import { EngagementChart, PlatformChart, AudienceChart } from "@/components/ui/Chart";
 
 interface AnalyticsData {
   engagementRate: number;
@@ -45,10 +46,11 @@ interface PostPerformance {
 }
 
 interface ChartPoint {
-  date: string;
+  name: string;
   engagement: number;
   followers: number;
   impressions: number;
+  value: number;
 }
 
 export default function DashboardPage() {
@@ -87,10 +89,11 @@ export default function DashboardPage() {
       const date = new Date(today);
       date.setDate(date.getDate() - i);
       data.push({
-        date: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
+        name: date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
         engagement: Math.floor(Math.random() * 12) + 8,
         followers: Math.floor(Math.random() * 100) + 50,
         impressions: Math.floor(Math.random() * 5000) + 2000,
+        value: Math.floor(Math.random() * 12) + 8, // For chart display
       });
     }
     return data;
@@ -318,6 +321,7 @@ export default function DashboardPage() {
               change: "+2.1%",
               icon: "📈",
               color: "from-[#34D399] to-[#6EE7B7]",
+              trend: "up",
             },
             {
               label: "Total Impressions",
@@ -325,6 +329,7 @@ export default function DashboardPage() {
               change: "+15%",
               icon: "👁️",
               color: "from-[#60A5FA] to-[#93C5FD]",
+              trend: "up",
             },
             {
               label: "Followers Growth",
@@ -332,6 +337,7 @@ export default function DashboardPage() {
               change: "+5.2%",
               icon: "👥",
               color: "from-[#FACC15] to-[#FDE047]",
+              trend: "up",
             },
             {
               label: "Total Reach",
@@ -339,6 +345,7 @@ export default function DashboardPage() {
               change: "+12%",
               icon: "📡",
               color: "from-[#A78BFA] to-[#C4B5FD]",
+              trend: "up",
             },
           ].map((metric, index) => (
             <motion.div
@@ -346,16 +353,25 @@ export default function DashboardPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.1 }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
             >
               <div className="flex items-center justify-between mb-4">
-                <div className={`w-12 h-12 bg-gradient-to-r ${metric.color} rounded-xl flex items-center justify-center`}>
+                <div className={`w-12 h-12 bg-gradient-to-r ${metric.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
                   <span className="text-xl">{metric.icon}</span>
                 </div>
-                <span className="text-sm text-[#34D399] font-semibold">{metric.change}</span>
+                <div className="flex items-center gap-1">
+                  <span className={`text-sm font-semibold ${metric.trend === 'up' ? 'text-[#34D399]' : 'text-[#EF4444]'}`}>
+                    {metric.change}
+                  </span>
+                  <span className={`text-xs ${metric.trend === 'up' ? 'text-[#34D399]' : 'text-[#EF4444]'}`}>
+                    {metric.trend === 'up' ? '↗' : '↘'}
+                  </span>
+                </div>
               </div>
-              <div className="text-2xl font-bold text-[#1F2937] mb-1">{metric.value}</div>
-              <div className="text-sm text-[#6B7280]">{metric.label}</div>
+              <div className="text-2xl font-bold text-[#1F2937] mb-1 group-hover:text-[#87CEFA] transition-colors duration-200">{metric.value}</div>
+              <div className="text-sm text-[#6B7280] group-hover:text-[#1F2937] transition-colors duration-200">{metric.label}</div>
             </motion.div>
           ))}
         </motion.div>
@@ -385,19 +401,12 @@ export default function DashboardPage() {
               </select>
             </div>
             
-            {/* Chart Visualization */}
-            <div className="h-64 flex items-end justify-between gap-2">
-              {chartData.map((data, index) => (
-                <div key={index} className="flex-1 flex flex-col items-center">
-                  <div className="w-full bg-gray-100 rounded-t-lg relative h-full">
-                    <div
-                      className="bg-gradient-to-t from-[#87CEFA] to-[#40E0D0] rounded-t-lg transition-all duration-300"
-                      style={{ height: `${Math.max((data.engagement / 15) * 100, 15)}%` }}
-                    ></div>
-                  </div>
-                  <div className="text-xs text-[#6B7280] mt-2 text-center">{data.date}</div>
-                </div>
-              ))}
+            {/* Interactive Chart Visualization */}
+            <div className="h-64">
+              <EngagementChart 
+                data={chartData.map(data => ({ name: data.name, value: data.engagement }))}
+                height={256}
+              />
             </div>
             
             <div className="mt-4 flex items-center justify-between text-sm text-[#6B7280]">
@@ -406,7 +415,7 @@ export default function DashboardPage() {
             </div>
           </motion.div>
 
-          {/* Platform Performance (moves below on xl to center charts) */}
+          {/* Platform Performance Chart */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -414,6 +423,19 @@ export default function DashboardPage() {
             className="bg-white rounded-2xl shadow-lg p-6"
           >
             <h3 className="text-xl font-bold text-[#1F2937] mb-6">Platform Performance</h3>
+            
+            {/* Interactive Bar Chart */}
+            <div className="h-48 mb-6">
+              <PlatformChart 
+                data={platforms.map(platform => ({ 
+                  name: platform.platform, 
+                  value: platform.engagement 
+                }))}
+                height={192}
+              />
+            </div>
+            
+            {/* Platform Stats */}
             <div className="space-y-4">
               {platforms.map((platform, index) => (
                 <motion.div
@@ -510,6 +532,20 @@ export default function DashboardPage() {
             className="bg-white rounded-2xl shadow-lg p-6"
           >
             <h3 className="text-xl font-bold text-[#1F2937] mb-6">Audience Insights</h3>
+            
+            {/* Interactive Pie Chart */}
+            <div className="h-48 mb-6">
+              <AudienceChart 
+                data={[
+                  { name: 'Likes', value: analyticsData?.totalLikes || 0 },
+                  { name: 'Comments', value: analyticsData?.totalComments || 0 },
+                  { name: 'Shares', value: analyticsData?.totalShares || 0 },
+                  { name: 'Reach', value: Math.floor((analyticsData?.totalReach || 0) / 1000) }
+                ]}
+                height={192}
+              />
+            </div>
+            
             <div className="space-y-6">
               {/* Best Posting Time */}
               <div className="p-4 rounded-xl bg-gradient-to-r from-[#87CEFA]/10 to-[#40E0D0]/10">
@@ -575,50 +611,54 @@ export default function DashboardPage() {
         >
           <h3 className="text-xl font-bold text-[#1F2937] mb-6">AI-Powered Recommendations</h3>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="p-4 rounded-xl border border-gray-100">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">🎯</span>
+            {[
+              {
+                icon: "🎯",
+                title: "Post More Videos",
+                description: "Video content gets 2.5x more engagement than static posts. Try creating more reels and stories.",
+                action: "Create Video Content →",
+                color: "from-[#87CEFA] to-[#40E0D0]",
+                textColor: "text-[#87CEFA]"
+              },
+              {
+                icon: "⏰",
+                title: "Optimize Timing",
+                description: "Your audience is most active at 2:00 PM. Schedule more posts during this time for better reach.",
+                action: "Schedule Posts →",
+                color: "from-[#34D399] to-[#6EE7B7]",
+                textColor: "text-[#34D399]"
+              },
+              {
+                icon: "🏷️",
+                title: "Use Trending Hashtags",
+                description: "Add trending hashtags to increase discoverability. Your posts with hashtags get 12% more reach.",
+                action: "Find Hashtags →",
+                color: "from-[#FACC15] to-[#FDE047]",
+                textColor: "text-[#FACC15]"
+              }
+            ].map((rec, index) => (
+              <motion.div
+                key={rec.title}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.7 + index * 0.1 }}
+                whileHover={{ scale: 1.02, y: -4 }}
+                className="p-4 rounded-xl border border-gray-100 hover:border-[#87CEFA]/30 hover:shadow-lg transition-all duration-300 cursor-pointer group"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <div className={`w-10 h-10 bg-gradient-to-r ${rec.color} rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
+                    <span className="text-white text-lg">{rec.icon}</span>
+                  </div>
+                  <div className="font-semibold text-[#1F2937] group-hover:text-[#87CEFA] transition-colors duration-200">{rec.title}</div>
                 </div>
-                <div className="font-semibold text-[#1F2937]">Post More Videos</div>
-              </div>
-              <p className="text-sm text-[#6B7280] mb-3">
-                Video content gets 2.5x more engagement than static posts. Try creating more reels and stories.
-              </p>
-              <button className="text-[#87CEFA] text-sm font-medium hover:underline">
-                Create Video Content →
-              </button>
-            </div>
-
-            <div className="p-4 rounded-xl border border-gray-100">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-[#34D399] to-[#6EE7B7] rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">⏰</span>
-                </div>
-                <div className="font-semibold text-[#1F2937]">Optimize Timing</div>
-              </div>
-              <p className="text-sm text-[#6B7280] mb-3">
-                Your audience is most active at 2:00 PM. Schedule more posts during this time for better reach.
-              </p>
-              <button className="text-[#34D399] text-sm font-medium hover:underline">
-                Schedule Posts →
-              </button>
-            </div>
-
-            <div className="p-4 rounded-xl border border-gray-100">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 bg-gradient-to-r from-[#FACC15] to-[#FDE047] rounded-lg flex items-center justify-center">
-                  <span className="text-white text-lg">🏷️</span>
-                </div>
-                <div className="font-semibold text-[#1F2937]">Use Trending Hashtags</div>
-              </div>
-              <p className="text-sm text-[#6B7280] mb-3">
-                Add trending hashtags to increase discoverability. Your posts with hashtags get 12% more reach.
-              </p>
-              <button className="text-[#FACC15] text-sm font-medium hover:underline">
-                Find Hashtags →
-              </button>
-            </div>
+                <p className="text-sm text-[#6B7280] mb-3 group-hover:text-[#1F2937] transition-colors duration-200">
+                  {rec.description}
+                </p>
+                <button className={`${rec.textColor} text-sm font-medium hover:underline group-hover:scale-105 transition-transform duration-200`}>
+                  {rec.action}
+                </button>
+              </motion.div>
+            ))}
           </div>
         </motion.div>
       </Container>
