@@ -9,6 +9,8 @@ import PageHeader from "@/components/PageHeader";
 import Button from "@/components/ui/Button";
 import ProtectedRoute from "@/components/ProtectedRoute";
 import { EngagementChart, PlatformChart, AudienceChart } from "@/components/ui/Chart";
+import LiveNotifications from "@/components/ui/LiveNotifications";
+import ActivityFeed from "@/components/ui/ActivityFeed";
 
 interface AnalyticsData {
   engagementRate: number;
@@ -282,30 +284,33 @@ export default function DashboardPage() {
     <ProtectedRoute>
       <DashboardLayout>
         <Container className="py-8">
-        <PageHeader
-          title="Analytics Dashboard"
-          subtitle="Track your performance and optimize your social media strategy"
-          actions={(
-            <>
-              <div className="hidden md:flex gap-2">
-                {["7d", "30d", "90d"].map((range) => (
-                  <Button
-                    key={range}
-                    variant={timeRange === range ? "primary" : "secondary"}
-                    size="sm"
-                    onClick={() => setTimeRange(range)}
-                  >
-                    {range}
-                  </Button>
-                ))}
-              </div>
-              <div className="text-right min-w-[120px]">
-                <div className="text-sm text-[#6B7280]">Last updated</div>
-                <div className="text-lg font-semibold text-[#1F2937]">{currentTime}</div>
-              </div>
-            </>
-          )}
-        />
+        <div className="flex items-center justify-between mb-8">
+          <PageHeader
+            title="Analytics Dashboard"
+            subtitle="Track your performance and optimize your social media strategy"
+            actions={(
+              <>
+                <div className="hidden md:flex gap-2">
+                  {["7d", "30d", "90d"].map((range) => (
+                    <Button
+                      key={range}
+                      variant={timeRange === range ? "primary" : "secondary"}
+                      size="sm"
+                      onClick={() => setTimeRange(range)}
+                    >
+                      {range}
+                    </Button>
+                  ))}
+                </div>
+                <div className="text-right min-w-[120px]">
+                  <div className="text-sm text-[#6B7280]">Last updated</div>
+                  <div className="text-lg font-semibold text-[#1F2937]">{currentTime}</div>
+                </div>
+              </>
+            )}
+          />
+          <LiveNotifications />
+        </div>
 
         {/* Key Metrics */}
         <motion.div
@@ -602,11 +607,21 @@ export default function DashboardPage() {
           </motion.div>
         </div>
 
-        {/* Recommendations */}
+        {/* Live Activity Feed */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.6 }}
+          className="mb-8"
+        >
+          <ActivityFeed />
+        </motion.div>
+
+        {/* Recommendations */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7 }}
           className="bg-white rounded-2xl shadow-lg p-6"
         >
           <h3 className="text-xl font-bold text-[#1F2937] mb-6">AI-Powered Recommendations</h3>
