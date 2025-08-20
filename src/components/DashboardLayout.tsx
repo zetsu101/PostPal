@@ -12,6 +12,7 @@ import { safeLocalStorage, safeWindow } from "@/lib/utils";
 const navigation = [
   { name: "Home", href: "/dashboard", icon: "🏠" },
   { name: "Create", href: "/create", icon: "✏️" },
+  { name: "AI Generator", href: "/ai-generator", icon: "🤖" },
   { name: "Calendar", href: "/calendar", icon: "📅" },
   { name: "Analytics", href: "/analytics", icon: "📊" },
   { name: "Team", href: "/team", icon: "👥" },

@@ -1,435 +1,888 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import EditPostModal from "./EditPostModal";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Sparkles, 
+  Copy, 
+  Download, 
+  RefreshCw, 
+  Save, 
+  Share2, 
+  Zap,
+  Instagram,
+  Linkedin,
+  Facebook,
+  Twitter,
+  MessageCircle,
+  Image as ImageIcon,
+  Video,
+  FileText,
+  Hash,
+  Target,
+  Palette,
+  Clock,
+  TrendingUp,
+  BarChart3,
+  CheckCircle,
+  AlertCircle,
+  Loader2
+} from 'lucide-react';
+import { useAI } from '@/hooks/useAI';
+import { ContentPrompt, GeneratedContent } from '@/lib/ai-service';
+import Button from '@/components/ui/Button';
+import { useToast } from '@/components/ui/Toast';
 
-interface PostIdea {
-  id: string;
-  title: string;
-  caption: string;
-  hashtags: string[];
-  imagePrompt: string;
-  platform: string;
-  contentType: string;
-  engagement: number;
-  difficulty: "Easy" | "Medium" | "Hard";
-}
+const PLATFORMS = [
+  { id: 'instagram', name: 'Instagram', icon: Instagram, color: 'from-purple-500 to-pink-500' },
+  { id: 'linkedin', name: 'LinkedIn', icon: Linkedin, color: 'from-blue-600 to-blue-700' },
+  { id: 'facebook', name: 'Facebook', icon: Facebook, color: 'from-blue-500 to-blue-600' },
+  { id: 'twitter', name: 'Twitter', icon: Twitter, color: 'from-blue-400 to-blue-500' },
+  { id: 'tiktok', name: 'TikTok', icon: MessageCircle, color: 'from-black to-gray-800' },
+] as const;
 
-interface ContentType {
-  id: string;
-  name: string;
-  description: string;
-  icon: string;
-  color: string;
-}
+const CONTENT_TYPES = [
+  { id: 'post', name: 'Post', icon: FileText, description: 'Standard social media post' },
+  { id: 'story', name: 'Story', icon: ImageIcon, description: 'Temporary story content' },
+  { id: 'carousel', name: 'Carousel', icon: BarChart3, description: 'Multi-slide post' },
+  { id: 'video', name: 'Video', icon: Video, description: 'Video content' },
+  { id: 'reel', name: 'Reel', icon: Video, description: 'Short-form video' },
+] as const;
 
-interface Platform {
-  id: string;
-  name: string;
-  icon: string;
-  color: string;
-}
+const TONES = [
+  { id: 'professional', name: 'Professional', description: 'Formal and business-like' },
+  { id: 'casual', name: 'Casual', description: 'Relaxed and friendly' },
+  { id: 'friendly', name: 'Friendly', description: 'Warm and approachable' },
+  { id: 'humorous', name: 'Humorous', description: 'Funny and entertaining' },
+  { id: 'inspirational', name: 'Inspirational', description: 'Motivating and uplifting' },
+  { id: 'educational', name: 'Educational', description: 'Informative and instructive' },
+] as const;
 
 export default function AIContentGenerator() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [postIdeas, setPostIdeas] = useState<PostIdea[]>([]);
-  const [editingPost, setEditingPost] = useState<PostIdea | null>(null);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedContentType, setSelectedContentType] = useState<string>("");
-  const [selectedPlatform, setSelectedPlatform] = useState<string>("");
-  const [showAdvanced, setShowAdvanced] = useState(false);
-  const [customPrompt, setCustomPrompt] = useState("");
+  const { addToast } = useToast();
+  const {
+    isLoading,
+    isGenerating,
+    error,
+    generatedContent,
+    optimization,
+    generationHistory,
+    generateCaption,
+    generateHashtags,
+    generateImagePrompt,
+    generateCompletePost,
+    generateVideoScript,
+    generateCarouselContent,
+    getContentOptimization,
+    clearError,
+    clearGeneratedContent,
+    removeFromHistory,
+    clearHistory,
+  } = useAI();
 
-  const contentTypes: ContentType[] = [
-    { id: "educational", name: "Educational", description: "Teach your audience something new", icon: "📚", color: "from-[#60A5FA] to-[#93C5FD]" },
-    { id: "behind-scenes", name: "Behind the Scenes", description: "Show your process and team", icon: "🎬", color: "from-[#FF6B6B] to-[#FF8E8E]" },
-    { id: "tips", name: "Tips & Tricks", description: "Share valuable insights", icon: "💡", color: "from-[#FACC15] to-[#FDE047]" },
-    { id: "story", name: "Story", description: "Share personal experiences", icon: "📖", color: "from-[#34D399] to-[#6EE7B7]" },
-    { id: "promotional", name: "Promotional", description: "Showcase your products/services", icon: "🎯", color: "from-[#A78BFA] to-[#C4B5FD]" },
-    { id: "trending", name: "Trending", description: "Join current conversations", icon: "🔥", color: "from-[#FB7185] to-[#FDA4AF]" },
-  ];
+  const [formData, setFormData] = useState<ContentPrompt>({
+    topic: '',
+    platform: 'instagram',
+    contentType: 'post',
+    tone: 'professional',
+    targetAudience: '',
+    hashtagCount: 10,
+    language: 'English',
+    includeEmojis: true,
+    callToAction: '',
+  });
 
-  const platforms: Platform[] = [
-    { id: "instagram", name: "Instagram", icon: "📸", color: "from-pink-400 to-purple-500" },
-    { id: "linkedin", name: "LinkedIn", icon: "💼", color: "from-blue-500 to-blue-600" },
-    { id: "tiktok", name: "TikTok", icon: "🎵", color: "from-black to-gray-800" },
-    { id: "twitter", name: "Twitter/X", icon: "🐦", color: "from-black to-gray-900" },
-    { id: "facebook", name: "Facebook", icon: "📘", color: "from-blue-600 to-blue-700" },
-  ];
+  const [activeTab, setActiveTab] = useState<'generator' | 'history' | 'optimization'>('generator');
+  const [selectedGenerationType, setSelectedGenerationType] = useState<'caption' | 'hashtags' | 'image-prompt' | 'complete-post' | 'video-script' | 'carousel-content'>('caption');
 
-  const trendingTopics = [
-    "AI and Technology", "Sustainability", "Mental Health", "Remote Work", 
-    "Personal Development", "Creativity", "Business Growth", "Wellness"
-  ];
+  // Clear error when form data changes
+  useEffect(() => {
+    if (error) {
+      clearError();
+    }
+  }, [formData, error, clearError]);
 
-  // Mock data for demonstration (replace with actual OpenAI API call)
-  const generatePostIdeas = async () => {
-    setIsLoading(true);
-    setError("");
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    const mockIdeas: PostIdea[] = [
-      {
-        id: "1",
-        title: "Behind the Scenes: Our Creative Process",
-        caption: "Ever wondered how we bring your ideas to life? Here&apos;s a peek into our creative process! From initial concept to final design, every step is crafted with care. What&apos;s your favorite part of the creative journey? 🤔✨",
-        hashtags: ["#BehindTheScenes", "#CreativeProcess", "#DesignLife", "#BrandStory"],
-        imagePrompt: "A clean workspace with design tools, mood boards, and creative materials scattered around, soft natural lighting, professional photography style",
-        platform: "Instagram",
-        contentType: "behind-scenes",
-        engagement: 8.5,
-        difficulty: "Easy"
-      },
-      {
-        id: "2",
-        title: "Tip Tuesday: Boost Your Engagement",
-        caption: "Tuesday Tip: Engage with your audience by asking questions! People love to share their thoughts and experiences. Try ending your posts with a question that encourages conversation. What&apos;s your go-to engagement strategy? 💬",
-        hashtags: ["#TipTuesday", "#Engagement", "#SocialMediaTips", "#Community"],
-        imagePrompt: "A smartphone showing a social media post with engagement metrics, bright and colorful design, modern flat illustration style",
-        platform: "Instagram",
-        contentType: "tips",
-        engagement: 9.2,
-        difficulty: "Medium"
-      },
-      {
-        id: "3",
-        title: "Client Success Story: From Idea to Reality",
-        caption: "Nothing makes us happier than seeing our clients succeed! This project started as a simple idea and grew into something amazing. Your vision + our expertise = magic! What&apos;s your next big idea? 🚀",
-        hashtags: ["#ClientSuccess", "#SuccessStory", "#Collaboration", "#Results"],
-        imagePrompt: "Before and after comparison of a brand transformation, professional photography, clean layout with success metrics",
-        platform: "LinkedIn",
-        contentType: "story",
-        engagement: 7.8,
-        difficulty: "Hard"
-      },
-      {
-        id: "4",
-        title: "The Future of AI in Creative Industries",
-        caption: "AI isn&apos;t replacing creativity—it&apos;s amplifying it! Here&apos;s how we&apos;re using AI to enhance our creative process and deliver better results for our clients. The future is collaborative! 🤖✨",
-        hashtags: ["#AI", "#Creativity", "#Innovation", "#FutureOfWork"],
-        imagePrompt: "Futuristic workspace with AI elements, creative tools, and human-AI collaboration, modern tech aesthetic",
-        platform: "LinkedIn",
-        contentType: "educational",
-        engagement: 8.9,
-        difficulty: "Medium"
+  const handleInputChange = (field: keyof ContentPrompt, value: string | number | boolean) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
+
+  const handleGenerate = async () => {
+    if (!formData.topic.trim()) {
+      addToast({
+        title: 'Topic Required',
+        message: 'Please enter a topic for content generation',
+        type: 'error',
+      });
+      return;
+    }
+
+    try {
+      switch (selectedGenerationType) {
+        case 'caption':
+          await generateCaption(formData);
+          break;
+        case 'hashtags':
+          await generateHashtags(formData);
+          break;
+        case 'image-prompt':
+          await generateImagePrompt(formData);
+          break;
+        case 'complete-post':
+          await generateCompletePost(formData);
+          break;
+        case 'video-script':
+          await generateVideoScript(formData);
+          break;
+        case 'carousel-content':
+          await generateCarouselContent(formData);
+          break;
       }
-    ];
-    
-    setPostIdeas(mockIdeas);
-    setIsLoading(false);
+
+      addToast({
+        title: 'Content Generated!',
+        message: `Your ${selectedGenerationType.replace('-', ' ')} is ready`,
+        type: 'success',
+      });
+    } catch (error) {
+      addToast({
+        title: 'Generation Failed',
+        message: 'Please try again or check your inputs',
+        type: 'error',
+      });
+    }
+  };
+
+  const handleOptimize = async () => {
+    if (!formData.topic.trim()) {
+      addToast({
+        title: 'Topic Required',
+        message: 'Please enter a topic for optimization',
+        type: 'error',
+      });
+      return;
+    }
+
+    try {
+      await getContentOptimization(formData);
+      addToast({
+        title: 'Optimization Complete!',
+        message: 'Your content optimization suggestions are ready',
+        type: 'success',
+      });
+    } catch (error) {
+      addToast({
+        title: 'Optimization Failed',
+        message: 'Please try again or check your inputs',
+        type: 'error',
+      });
+    }
   };
 
   const copyToClipboard = async (text: string) => {
     try {
-      if (typeof navigator !== 'undefined' && navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        // You could add a toast notification here
-      }
-    } catch (err) {
-      console.error('Failed to copy text: ', err);
-      setError('Failed to copy text to clipboard. Please try again.');
+      await navigator.clipboard.writeText(text);
+      addToast({
+        title: 'Copied!',
+        message: 'Content copied to clipboard',
+        type: 'success',
+      });
+    } catch (error) {
+      addToast({
+        title: 'Copy Failed',
+        message: 'Please copy manually',
+        type: 'error',
+      });
     }
   };
 
-  const handleSave = (post: PostIdea) => {
-    // TODO: Save to saved posts or calendar
-    console.log('Saving post:', post);
+  const downloadContent = (content: GeneratedContent) => {
+    const blob = new Blob([content.content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${content.type}-${content.prompt.platform}-${Date.now()}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+          addToast({
+        title: 'Downloaded!',
+        message: 'Content saved to your device',
+        type: 'success',
+      });
   };
 
-  const handleEdit = (post: PostIdea) => {
-    setEditingPost(post);
-    setIsModalOpen(true);
-  };
-
-  const handleSaveEdit = (updatedPost: PostIdea) => {
-    setPostIdeas(prev => prev.map(post => 
-      post.id === updatedPost.id ? updatedPost : post
-    ));
-  };
-
-  const handleCloseModal = () => {
-    setIsModalOpen(false);
-    setEditingPost(null);
+  const getGenerationTypeIcon = (type: string) => {
+    switch (type) {
+      case 'caption': return FileText;
+      case 'hashtags': return Hash;
+      case 'image-prompt': return ImageIcon;
+      case 'complete-post': return FileText;
+      case 'video-script': return Video;
+      case 'carousel-content': return BarChart3;
+      default: return FileText;
+    }
   };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
-      case "Easy": return "text-[#34D399]";
-      case "Medium": return "text-[#FACC15]";
-      case "Hard": return "text-[#FF6B6B]";
-      default: return "text-[#6B7280]";
+      case 'Easy': return 'text-green-600 bg-green-100';
+      case 'Medium': return 'text-yellow-600 bg-yellow-100';
+      case 'Hard': return 'text-red-600 bg-red-100';
+      default: return 'text-gray-600 bg-gray-100';
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Enhanced Generate Section */}
-      <div className="bg-gradient-to-r from-[#F9FAFB] to-[#E5E7EB] rounded-2xl p-6">
-        <div className="text-center mb-6">
-          <h3 className="text-xl font-bold text-[#1F2937] mb-2">Generate AI Content</h3>
-          <p className="text-[#6B7280]">Choose your content type and platform for personalized ideas</p>
+    <div className="max-w-6xl mx-auto p-6 space-y-8">
+      {/* Header */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="text-center"
+      >
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-2xl mb-4">
+          <Sparkles className="w-8 h-8 text-white" />
         </div>
+        <h1 className="text-4xl font-bold text-gray-900 mb-2">
+          AI Content Generator
+        </h1>
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+          Create engaging social media content in seconds with AI-powered generation. 
+          Get captions, hashtags, image prompts, and complete posts optimized for your platform.
+        </p>
+      </motion.div>
 
-        {/* Content Type Selection */}
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-[#1F2937] mb-3">Content Type</label>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            {contentTypes.map((type) => (
-              <motion.button
-                key={type.id}
-                onClick={() => setSelectedContentType(type.id)}
-                className={`p-4 rounded-xl border-2 transition-all duration-300 text-left ${
-                  selectedContentType === type.id
-                    ? 'border-[#C7D2FE] bg-gradient-to-r from-[#E0E7FF]/10 to-[#C7D2FE]/10'
-                    : 'border-gray-200 hover:border-[#C7D2FE]/50 hover:bg-gray-50'
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center gap-3">
-                  <div className={`w-10 h-10 bg-gradient-to-r ${type.color} rounded-xl flex items-center justify-center`}>
-                    <span className="text-lg">{type.icon}</span>
+      {/* Navigation Tabs */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="flex justify-center"
+      >
+        <div className="bg-gray-100 rounded-xl p-1">
+          {[
+            { id: 'generator', name: 'Content Generator', icon: Sparkles },
+            { id: 'history', name: 'Generation History', icon: Clock },
+            { id: 'optimization', name: 'Optimization', icon: TrendingUp },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id as 'generator' | 'history' | 'optimization')}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
+                activeTab === tab.id
+                  ? 'bg-white text-purple-600 shadow-sm'
+                  : 'text-gray-600 hover:text-gray-900'
+              }`}
+            >
+              <tab.icon className="w-4 h-4" />
+              {tab.name}
+            </button>
+          ))}
+        </div>
+      </motion.div>
+
+      {/* Content Generator Tab */}
+      {activeTab === 'generator' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="grid grid-cols-1 lg:grid-cols-2 gap-8"
+        >
+          {/* Form Section */}
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h2 className="text-2xl font-bold text-gray-900 mb-6">Content Parameters</h2>
+              
+              {/* Topic Input */}
+              <div className="space-y-4">
+                <div>
+                                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                      What&apos;s your content about? *
+                    </label>
+                  <textarea
+                    value={formData.topic}
+                    onChange={(e) => handleInputChange('topic', e.target.value)}
+                    placeholder="e.g., AI in business, sustainable living, remote work tips..."
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                {/* Platform Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Platform
+                  </label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {PLATFORMS.map((platform) => {
+                      const Icon = platform.icon;
+                      return (
+                        <button
+                          key={platform.id}
+                          onClick={() => handleInputChange('platform', platform.id)}
+                          className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all duration-200 ${
+                            formData.platform === platform.id
+                              ? `border-purple-500 bg-gradient-to-br ${platform.color} text-white`
+                              : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <Icon className="w-5 h-5 mb-1" />
+                          <span className="text-xs font-medium">{platform.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Content Type Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Content Type
+                  </label>
+                  <div className="grid grid-cols-5 gap-2">
+                    {CONTENT_TYPES.map((type) => {
+                      const Icon = type.icon;
+                      return (
+                        <button
+                          key={type.id}
+                          onClick={() => handleInputChange('contentType', type.id)}
+                          className={`flex flex-col items-center p-3 rounded-xl border-2 transition-all duration-200 ${
+                            formData.contentType === type.id
+                              ? 'border-purple-500 bg-purple-50 text-purple-600'
+                              : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:text-gray-900'
+                          }`}
+                        >
+                          <Icon className="w-5 h-5 mb-1" />
+                          <span className="text-xs font-medium">{type.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* Tone Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    Tone & Voice
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    {TONES.map((tone) => (
+                      <button
+                        key={tone.id}
+                        onClick={() => handleInputChange('tone', tone.id)}
+                        className={`text-left p-3 rounded-xl border-2 transition-all duration-200 ${
+                          formData.tone === tone.id
+                            ? 'border-purple-500 bg-purple-50 text-purple-600'
+                            : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:text-gray-900'
+                        }`}
+                      >
+                        <div className="font-medium">{tone.name}</div>
+                        <div className="text-xs opacity-75">{tone.description}</div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Additional Parameters */}
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Target Audience
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.targetAudience}
+                      onChange={(e) => handleInputChange('targetAudience', e.target.value)}
+                      placeholder="e.g., entrepreneurs, students..."
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
                   </div>
                   <div>
-                    <div className="font-semibold text-[#1F2937] text-sm">{type.name}</div>
-                    <div className="text-xs text-[#6B7280]">{type.description}</div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Hashtag Count
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      max="30"
+                      value={formData.hashtagCount}
+                      onChange={(e) => handleInputChange('hashtagCount', parseInt(e.target.value))}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
                   </div>
                 </div>
-              </motion.button>
-            ))}
-          </div>
-        </div>
 
-        {/* Platform Selection */}
-        <div className="mb-6">
-          <label className="block text-sm font-semibold text-[#1F2937] mb-3">Target Platform</label>
-          <div className="flex flex-wrap gap-3">
-            {platforms.map((platform) => (
-              <motion.button
-                key={platform.id}
-                onClick={() => setSelectedPlatform(platform.id)}
-                className={`px-4 py-2 rounded-xl border-2 transition-all duration-300 flex items-center gap-2 ${
-                  selectedPlatform === platform.id
-                    ? 'border-[#C7D2FE] bg-gradient-to-r from-[#E0E7FF]/10 to-[#C7D2FE]/10'
-                    : 'border-gray-200 hover:border-[#C7D2FE]/50 hover:bg-gray-50'
-                }`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className={`w-6 h-6 bg-gradient-to-r ${platform.color} rounded-lg flex items-center justify-center`}>
-                  <span className="text-sm">{platform.icon}</span>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Language
+                    </label>
+                    <select
+                      value={formData.language}
+                      onChange={(e) => handleInputChange('language', e.target.value)}
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    >
+                      <option value="English">English</option>
+                      <option value="Spanish">Spanish</option>
+                      <option value="French">French</option>
+                      <option value="German">German</option>
+                      <option value="Portuguese">Portuguese</option>
+                      <option value="Italian">Italian</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Call to Action
+                    </label>
+                    <input
+                      type="text"
+                      value={formData.callToAction}
+                      onChange={(e) => handleInputChange('callToAction', e.target.value)}
+                      placeholder="e.g., Share your thoughts below!"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    />
+                  </div>
                 </div>
-                <span className="font-medium text-sm">{platform.name}</span>
-              </motion.button>
-            ))}
-          </div>
-        </div>
 
-        {/* Advanced Options */}
-        <motion.div
-          initial={false}
-          animate={{ height: showAdvanced ? "auto" : 0 }}
-          className="overflow-hidden"
-        >
-          <div className="space-y-4 pt-4 border-t border-gray-200">
-            <div>
-              <label className="block text-sm font-semibold text-[#1F2937] mb-2">Custom Prompt (Optional)</label>
-              <textarea
-                value={customPrompt}
-                onChange={(e) => setCustomPrompt(e.target.value)}
-                placeholder="Add specific details or requirements for your content..."
-                className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:border-[#FF6B6B] focus:outline-none resize-none"
-                rows={3}
-              />
-            </div>
-            
-            <div>
-              <label className="block text-sm font-semibold text-[#1F2937] mb-2">Trending Topics</label>
-              <div className="flex flex-wrap gap-2">
-                {trendingTopics.map((topic) => (
-                  <span key={topic} className="px-3 py-1 bg-[#F3F4F6] text-[#6B7280] rounded-full text-sm">
-                    {topic}
-                  </span>
-                ))}
+                <div className="flex items-center">
+                  <input
+                    id="includeEmojis"
+                    type="checkbox"
+                    checked={formData.includeEmojis}
+                    onChange={(e) => handleInputChange('includeEmojis', e.target.checked)}
+                    className="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="includeEmojis" className="ml-2 text-sm text-gray-700">
+                    Include emojis for better engagement
+                  </label>
+                </div>
               </div>
             </div>
           </div>
-        </motion.div>
 
-        {/* Toggle Advanced Options */}
-        <div className="text-center mt-4">
-          <button
-            onClick={() => setShowAdvanced(!showAdvanced)}
-            className="text-[#FF6B6B] text-sm font-medium hover:underline"
-          >
-            {showAdvanced ? "Hide" : "Show"} Advanced Options
-          </button>
-        </div>
-
-        {/* Generate Button */}
-        <div className="text-center mt-6">
-          <motion.button
-            onClick={generatePostIdeas}
-            disabled={isLoading}
-            className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] hover:from-[#C7D2FE] hover:to-[#E0E7FF] disabled:from-[#9CA3AF] disabled:to-[#9CA3AF] text-[#1F2937] font-semibold px-8 py-4 rounded-xl transition-all duration-300 flex items-center gap-3 mx-auto shadow-lg hover:shadow-xl"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {isLoading ? (
-              <>
-                <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                Generating Ideas...
-              </>
-            ) : (
-              <>
-                <span className="text-xl">✨</span>
-                Generate AI Content
-              </>
-            )}
-          </motion.button>
-        </div>
-      </div>
-
-      {/* Error Message */}
-      <AnimatePresence>
-        {error && (
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-xl"
-          >
-            {error}
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Generated Post Ideas */}
-      <AnimatePresence>
-        {postIdeas.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <div className="flex items-center justify-between">
-              <h3 className="text-lg font-bold text-[#1F2937]">Generated Ideas ({postIdeas.length})</h3>
-              <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-                <span>Sort by:</span>
-                <select className="border border-gray-200 rounded-lg px-2 py-1 text-sm">
-                  <option>Engagement</option>
-                  <option>Difficulty</option>
-                  <option>Platform</option>
-                </select>
+          {/* Generation Section */}
+          <div className="space-y-6">
+            {/* Generation Type Selection */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">What would you like to generate?</h3>
+              <div className="grid grid-cols-2 gap-3">
+                {[
+                  { id: 'caption', name: 'Caption', icon: FileText, description: 'Engaging post text' },
+                  { id: 'hashtags', name: 'Hashtags', icon: Hash, description: 'Trending hashtags' },
+                  { id: 'image-prompt', name: 'Image Prompt', icon: ImageIcon, description: 'Visual description' },
+                  { id: 'complete-post', name: 'Complete Post', icon: FileText, description: 'Full post package' },
+                  { id: 'video-script', name: 'Video Script', icon: Video, description: 'Video content script' },
+                  { id: 'carousel-content', name: 'Carousel', icon: BarChart3, description: 'Multi-slide content' },
+                ].map((type) => {
+                  const Icon = type.icon;
+                  return (
+                    <button
+                      key={type.id}
+                      onClick={() => setSelectedGenerationType(type.id as 'caption' | 'hashtags' | 'image-prompt' | 'complete-post' | 'video-script' | 'carousel-content')}
+                      className={`flex flex-col items-center p-4 rounded-xl border-2 transition-all duration-200 ${
+                        selectedGenerationType === type.id
+                          ? 'border-purple-500 bg-purple-50 text-purple-600'
+                          : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:text-gray-900'
+                      }`}
+                    >
+                      <Icon className="w-6 h-6 mb-2" />
+                      <div className="font-medium text-sm">{type.name}</div>
+                      <div className="text-xs opacity-75 text-center">{type.description}</div>
+                    </button>
+                  );
+                })}
               </div>
             </div>
 
-            <div className="grid gap-6 md:grid-cols-2">
-              {postIdeas.map((post, index) => (
+            {/* Generate Button */}
+            <Button
+              onClick={handleGenerate}
+              disabled={isLoading || isGenerating || !formData.topic.trim()}
+              loading={isGenerating}
+              className="w-full py-4 text-lg font-semibold bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+            >
+              {isGenerating ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Generating {selectedGenerationType.replace('-', ' ')}...
+                </>
+              ) : (
+                <>
+                  <Zap className="w-5 h-5 mr-2" />
+                  Generate {selectedGenerationType.replace('-', ' ')}
+                </>
+              )}
+            </Button>
+
+            {/* Error Display */}
+            <AnimatePresence>
+              {error && (
                 <motion.div
-                  key={post.id}
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="bg-red-50 border border-red-200 rounded-xl p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Generated Content Display */}
+            <AnimatePresence>
+              {generatedContent && (
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-2xl shadow-sm border border-[#E5E7EB] overflow-hidden hover:shadow-lg transition-all duration-300"
+                  exit={{ opacity: 0, y: 20 }}
+                  className="bg-white rounded-2xl shadow-lg p-6"
                 >
-                  {/* Header */}
-                  <div className="bg-gradient-to-r from-[#F3F4F6] to-[#E5E7EB] px-6 py-4 border-b border-[#E5E7EB]">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 bg-gradient-to-r ${
-                          platforms.find(p => p.id === post.platform.toLowerCase())?.color || "from-gray-400 to-gray-500"
-                        } rounded-lg flex items-center justify-center`}>
-                          <span className="text-sm">{platforms.find(p => p.id === post.platform.toLowerCase())?.icon || "📱"}</span>
-                        </div>
-                        <div>
-                          <div className="font-semibold text-[#1F2937] text-sm">{post.platform}</div>
-                          <div className="text-xs text-[#6B7280]">{post.contentType}</div>
-                        </div>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2 bg-purple-100 rounded-lg">
+                        {(() => {
+                          const Icon = getGenerationTypeIcon(generatedContent.type);
+                          return <Icon className="w-5 h-5 text-purple-600" />;
+                        })()}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-xs font-semibold ${getDifficultyColor(post.difficulty)}`}>
-                          {post.difficulty}
-                        </span>
-                        <div className="flex items-center gap-1 text-xs text-[#6B7280]">
-                          <span>📈</span>
-                          <span>{post.engagement}</span>
-                        </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 capitalize">
+                          {generatedContent.type.replace('-', ' ')}
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Generated for {generatedContent.prompt.platform}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1 text-sm text-gray-500">
+                        <Clock className="w-4 h-4" />
+                        <span>{generatedContent.metadata.estimatedReadTime} min read</span>
                       </div>
                     </div>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-6 space-y-4">
-                    <h3 className="font-bold text-[#1F2937] text-lg leading-tight">{post.title}</h3>
-                    
-                    <p className="text-[#6B7280] text-sm leading-relaxed">
-                      {post.caption}
+                  <div className="bg-gray-50 rounded-xl p-4 mb-4">
+                    <pre className="whitespace-pre-wrap text-sm text-gray-800 font-mono">
+                      {generatedContent.content}
+                    </pre>
+                  </div>
+
+                  {/* Content Metadata */}
+                  <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+                    <div className="flex items-center gap-2">
+                      <FileText className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-600">{generatedContent.metadata.wordCount} words</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Hash className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-600">{generatedContent.metadata.hashtagCount} hashtags</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-gray-400">😊</span>
+                      <span className="text-gray-600">{generatedContent.metadata.emojiCount} emojis</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 text-gray-400" />
+                      <span className="text-gray-600">{generatedContent.metadata.estimatedReadTime} min read</span>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => copyToClipboard(generatedContent.content)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                    >
+                      <Copy className="w-4 h-4 mr-2" />
+                      Copy
+                    </Button>
+                    <Button
+                      onClick={() => downloadContent(generatedContent)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                    >
+                      <Download className="w-4 h-4 mr-2" />
+                      Download
+                    </Button>
+                    <Button
+                      onClick={() => {
+                        // Share functionality would go here
+                                                 addToast({
+                           title: 'Share Feature',
+                           message: 'Coming soon!',
+                           type: 'info',
+                         });
+                      }}
+                      variant="outline"
+                      size="sm"
+                    >
+                      <Share2 className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </motion.div>
+      )}
+
+      {/* History Tab */}
+      {activeTab === 'history' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <div className="flex items-center justify-between">
+            <h2 className="text-2xl font-bold text-gray-900">Generation History</h2>
+            {generationHistory.length > 0 && (
+              <Button
+                onClick={clearHistory}
+                variant="outline"
+                size="sm"
+              >
+                Clear History
+              </Button>
+            )}
+          </div>
+
+          {generationHistory.length === 0 ? (
+            <div className="text-center py-12">
+              <Clock className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+              <h3 className="text-lg font-medium text-gray-900 mb-2">No content generated yet</h3>
+              <p className="text-gray-500">Start creating content to see your generation history here.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {generationHistory.map((content) => (
+                <motion.div
+                  key={content.id}
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="bg-white rounded-2xl shadow-lg p-6"
+                >
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <div className="p-2 bg-purple-100 rounded-lg">
+                        {(() => {
+                          const Icon = getGenerationTypeIcon(content.type);
+                          return <Icon className="w-4 h-4 text-purple-600" />;
+                        })()}
+                      </div>
+                      <span className="text-sm font-medium text-gray-900 capitalize">
+                        {content.type.replace('-', ' ')}
+                      </span>
+                    </div>
+                    <button
+                      onClick={() => removeFromHistory(content.id)}
+                      className="text-gray-400 hover:text-red-500 transition-colors"
+                    >
+                      ×
+                    </button>
+                  </div>
+
+                  <div className="mb-3">
+                    <p className="text-sm text-gray-600 mb-2">
+                                              Platform: <span className="font-medium">{content.prompt.platform}</span>
                     </p>
-
-                    {/* Hashtags */}
-                    <div className="flex flex-wrap gap-1">
-                      {post.hashtags.map((tag) => (
-                        <span key={tag} className="text-xs bg-[#F3F4F6] text-[#6B7280] px-2 py-1 rounded">
-                          {tag}
-                        </span>
-                      ))}
+                    <p className="text-sm text-gray-600 mb-2">
+                      Tone: <span className="font-medium">{content.prompt.tone}</span>
+                    </p>
+                    <div className="flex items-center gap-2">
+                      <span className="text-sm text-gray-500">
+                        {content.metadata.wordCount} words
+                      </span>
                     </div>
+                  </div>
 
-                    {/* Image Prompt */}
-                    <div className="bg-[#F9FAFB] p-3 rounded-xl">
-                      <p className="text-xs text-[#6B7280] font-medium mb-1">🎨 Image Prompt:</p>
-                      <p className="text-xs text-[#6B7280]">{post.imagePrompt}</p>
-                    </div>
+                  <div className="bg-gray-50 rounded-lg p-3 mb-3">
+                    <p className="text-sm text-gray-800 line-clamp-3">
+                      {content.content}
+                    </p>
+                  </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-2 pt-2">
-                      <motion.button
-                        onClick={() => copyToClipboard(post.caption)}
-                        aria-label={`Copy caption for ${post.title}`}
-                        className="flex-1 bg-[#60A5FA] text-white text-xs font-medium py-2 rounded-lg hover:bg-[#3B82F6] transition-colors"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Copy
-                      </motion.button>
-                      <motion.button
-                        onClick={() => handleEdit(post)}
-                        aria-label={`Edit post: ${post.title}`}
-                        className="flex-1 bg-[#34D399] text-white text-xs font-medium py-2 rounded-lg hover:bg-[#10B981] transition-colors"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Edit
-                      </motion.button>
-                      <motion.button
-                        onClick={() => handleSave(post)}
-                        aria-label={`Save post: ${post.title}`}
-                        className="flex-1 bg-[#FACC15] text-white text-xs font-medium py-2 rounded-lg hover:bg-[#EAB308] transition-colors"
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        Save
-                      </motion.button>
-                    </div>
+                  <div className="flex gap-2">
+                    <Button
+                      onClick={() => copyToClipboard(content.content)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                    >
+                      <Copy className="w-4 h-4 mr-1" />
+                      Copy
+                    </Button>
+                    <Button
+                      onClick={() => downloadContent(content)}
+                      variant="outline"
+                      size="sm"
+                      className="flex-1"
+                    >
+                      <Download className="w-4 h-4 mr-1" />
+                      Save
+                    </Button>
                   </div>
                 </motion.div>
               ))}
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </motion.div>
+      )}
 
-      {/* Edit Modal */}
-      <EditPostModal
-        post={editingPost}
-        isOpen={isModalOpen}
-        onClose={handleCloseModal}
-        onSave={handleSaveEdit}
-      />
+      {/* Optimization Tab */}
+      {activeTab === 'optimization' && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="space-y-6"
+        >
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Content Optimization</h2>
+            <p className="text-gray-600">
+              Get AI-powered suggestions to optimize your content for maximum engagement
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Form for Optimization */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Get Optimization Tips</h3>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Content Topic
+                  </label>
+                  <textarea
+                    value={formData.topic}
+                    onChange={(e) => handleInputChange('topic', e.target.value)}
+                    placeholder="What content would you like to optimize?"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    rows={3}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Platform
+                  </label>
+                  <select
+                    value={formData.platform}
+                    onChange={(e) => handleInputChange('platform', e.target.value as 'instagram' | 'linkedin' | 'facebook' | 'twitter' | 'tiktok')}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                  >
+                    {PLATFORMS.map((platform) => (
+                      <option key={platform.id} value={platform.id}>
+                        {platform.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <Button
+                  onClick={handleOptimize}
+                  disabled={isLoading || !formData.topic.trim()}
+                  loading={isLoading}
+                  className="w-full py-3 bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600"
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                      Analyzing...
+                    </>
+                  ) : (
+                    <>
+                      <TrendingUp className="w-5 h-5 mr-2" />
+                      Get Optimization Tips
+                    </>
+                  )}
+                </Button>
+              </div>
+            </div>
+
+            {/* Optimization Results */}
+            <div className="bg-white rounded-2xl shadow-lg p-6">
+              <h3 className="text-lg font-semibold text-gray-900 mb-4">Optimization Suggestions</h3>
+              
+              {!optimization ? (
+                <div className="text-center py-12 text-gray-500">
+                  <TrendingUp className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+                  <p>Enter a topic and platform to get optimization suggestions</p>
+                </div>
+              ) : (
+                <div className="space-y-6">
+                  {/* Best Posting Time */}
+                  <div className="bg-blue-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Clock className="w-5 h-5 text-blue-600" />
+                      <span className="font-semibold text-blue-900">Best Posting Time</span>
+                    </div>
+                    <p className="text-blue-800">{optimization.suggestions.bestPostingTime}</p>
+                  </div>
+
+                  {/* Optimal Length */}
+                  <div className="bg-green-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <BarChart3 className="w-5 h-5 text-green-600" />
+                      <span className="font-semibold text-green-900">Optimal Content Length</span>
+                    </div>
+                    <p className="text-green-800">{optimization.suggestions.optimalLength} characters</p>
+                  </div>
+
+                  {/* Hashtag Strategy */}
+                  <div className="bg-purple-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Hash className="w-5 h-5 text-purple-600" />
+                      <span className="font-semibold text-purple-900">Hashtag Strategy</span>
+                    </div>
+                    <p className="text-purple-800">{optimization.suggestions.hashtagStrategy}</p>
+                  </div>
+
+                  {/* Engagement Tips */}
+                  <div className="bg-yellow-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Target className="w-5 h-5 text-yellow-600" />
+                      <span className="font-semibold text-yellow-900">Engagement Tips</span>
+                    </div>
+                    <ul className="text-yellow-800 space-y-1">
+                      {optimization.suggestions.engagementTips.map((tip, index) => (
+                        <li key={index} className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          {tip}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  {/* Trending Topics */}
+                  <div className="bg-pink-50 rounded-xl p-4">
+                    <div className="flex items-center gap-2 mb-2">
+                      <TrendingUp className="w-5 h-5 text-pink-600" />
+                      <span className="font-semibold text-pink-900">Trending Topics</span>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {optimization.suggestions.trendingTopics.map((topic, index) => (
+                        <span
+                          key={index}
+                          className="px-2 py-1 bg-pink-100 text-pink-800 rounded-lg text-sm"
+                        >
+                          {topic}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 } 
