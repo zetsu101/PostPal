@@ -12,6 +12,7 @@ import { EngagementChart, PlatformChart, AudienceChart } from "@/components/ui/C
 import LiveNotifications from "@/components/ui/LiveNotifications";
 import ActivityFeed from "@/components/ui/ActivityFeed";
 import { CompactThemeToggle } from "@/components/ui/ThemeToggle";
+import { PullToRefresh, TouchFeedback } from "@/components/ui/MobileEnhancements";
 
 interface AnalyticsData {
   engagementRate: number;
@@ -102,74 +103,74 @@ export default function DashboardPage() {
     return data;
   }
 
+  const loadData = async () => {
+    setIsLoading(true);
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // Set the data (static demo values)
+    setAnalyticsData({
+      engagementRate: 8.2,
+      followersGrowth: 12.5,
+      totalImpressions: 124700,
+      totalReach: 89200,
+      totalLikes: 15600,
+      totalComments: 2300,
+      totalShares: 890,
+      bestPostingTime: "2:00 PM",
+      topPerformingPost: "Behind the Scenes: Our Creative Process",
+      audienceGrowth: 15.3,
+    });
+
+    const newTopPosts: PostPerformance[] = [
+      {
+        id: "1",
+        title: "Behind the Scenes: Our Creative Process",
+        platform: "Instagram",
+        date: "2024-01-15",
+        impressions: 15420,
+        engagement: 12.5,
+        likes: 1890,
+        comments: 234,
+        shares: 89,
+        reach: 12340,
+      },
+      {
+        id: "2",
+        title: "Tip Tuesday: Boost Your Engagement",
+        platform: "LinkedIn",
+        date: "2024-01-14",
+        impressions: 8920,
+        engagement: 15.2,
+        likes: 1340,
+        comments: 189,
+        shares: 156,
+        reach: 7450,
+      },
+      {
+        id: "3",
+        title: "Product Launch Announcement",
+        platform: "Facebook",
+        date: "2024-01-13",
+        impressions: 12340,
+        engagement: 9.8,
+        likes: 1200,
+        comments: 167,
+        shares: 234,
+        reach: 9870,
+      },
+    ];
+    setTopPosts(newTopPosts);
+
+    // Generate chart data on the client only to avoid SSR hydration mismatch
+    setChartData(generateChartData(7));
+
+    setIsLoading(false);
+  };
+
   // Simulate data loading
   useEffect(() => {
-    const loadData = async () => {
-      setIsLoading(true);
-      
-      // Simulate API call delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      
-      // Set the data (static demo values)
-      setAnalyticsData({
-        engagementRate: 8.2,
-        followersGrowth: 12.5,
-        totalImpressions: 124700,
-        totalReach: 89200,
-        totalLikes: 15600,
-        totalComments: 2300,
-        totalShares: 890,
-        bestPostingTime: "2:00 PM",
-        topPerformingPost: "Behind the Scenes: Our Creative Process",
-        audienceGrowth: 15.3,
-      });
-
-      const newTopPosts: PostPerformance[] = [
-        {
-          id: "1",
-          title: "Behind the Scenes: Our Creative Process",
-          platform: "Instagram",
-          date: "2024-01-15",
-          impressions: 15420,
-          engagement: 12.5,
-          likes: 1890,
-          comments: 234,
-          shares: 89,
-          reach: 12340,
-        },
-        {
-          id: "2",
-          title: "Tip Tuesday: Boost Your Engagement",
-          platform: "LinkedIn",
-          date: "2024-01-14",
-          impressions: 8920,
-          engagement: 15.2,
-          likes: 1340,
-          comments: 189,
-          shares: 156,
-          reach: 7450,
-        },
-        {
-          id: "3",
-          title: "Product Launch Announcement",
-          platform: "Facebook",
-          date: "2024-01-13",
-          impressions: 12340,
-          engagement: 9.8,
-          likes: 1200,
-          comments: 167,
-          shares: 234,
-          reach: 9870,
-        },
-      ];
-      setTopPosts(newTopPosts);
-
-      // Generate chart data on the client only to avoid SSR hydration mismatch
-      setChartData(generateChartData(7));
-
-      setIsLoading(false);
-    };
-
     loadData();
   }, []);
 
@@ -192,6 +193,15 @@ export default function DashboardPage() {
 
     return () => clearInterval(timeInterval);
   }, []);
+
+  // Refresh function for pull-to-refresh
+  const handleRefresh = async () => {
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    // Reload data
+    setIsLoading(true);
+    await loadData();
+  };
 
   // Loading state
   if (isLoading) {
@@ -316,13 +326,15 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Key Metrics */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
-        >
+        {/* Pull to Refresh Wrapper */}
+        <PullToRefresh onRefresh={handleRefresh}>
+          {/* Key Metrics */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.1 }}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8"
+          >
           {[
             {
               label: "Engagement Rate",
@@ -356,16 +368,16 @@ export default function DashboardPage() {
               color: "from-[#A78BFA] to-[#C4B5FD]",
               trend: "up",
             },
-          ].map((metric, index) => (
-            <motion.div
-              key={metric.label}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 + index * 0.1 }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
-            >
+                      ].map((metric, index) => (
+              <TouchFeedback key={metric.label} feedbackType="ripple">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.1 + index * 0.1 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="bg-white rounded-2xl p-6 shadow-lg hover:shadow-xl transition-all duration-300 cursor-pointer group"
+                >
               <div className="flex items-center justify-between mb-4">
                 <div className={`w-12 h-12 bg-gradient-to-r ${metric.color} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-200`}>
                   <span className="text-xl">{metric.icon}</span>
@@ -381,8 +393,9 @@ export default function DashboardPage() {
               </div>
               <div className="text-2xl font-bold text-[#1F2937] mb-1 group-hover:text-[#87CEFA] transition-colors duration-200">{metric.value}</div>
               <div className="text-sm text-[#6B7280] group-hover:text-[#1F2937] transition-colors duration-200">{metric.label}</div>
-            </motion.div>
-          ))}
+                </motion.div>
+              </TouchFeedback>
+            ))}
         </motion.div>
 
         {/* Main Analytics Grid - widen center area */}
@@ -680,6 +693,7 @@ export default function DashboardPage() {
             ))}
           </div>
         </motion.div>
+        </PullToRefresh>
       </Container>
       </DashboardLayout>
     </ProtectedRoute>

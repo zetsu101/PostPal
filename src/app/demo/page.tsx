@@ -453,19 +453,19 @@ export default function DemoPage() {
               <div>
                 <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Touch Feedback</h3>
                 <div className="space-y-3">
-                  <TouchFeedback feedback="ripple">
+                  <TouchFeedback feedbackType="ripple">
                     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center">
                       Tap for Ripple Effect
                     </div>
                   </TouchFeedback>
                   
-                  <TouchFeedback feedback="scale">
+                  <TouchFeedback feedbackType="scale">
                     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center">
                       Tap for Scale Effect
                     </div>
                   </TouchFeedback>
                   
-                  <TouchFeedback feedback="glow">
+                  <TouchFeedback feedbackType="glow">
                     <div className="p-4 bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 text-center">
                       Tap for Glow Effect
                     </div>
@@ -495,10 +495,10 @@ export default function DemoPage() {
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Mobile Optimized List</h3>
               <MobileOptimizedList
                 items={[
-                  { id: 1, content: <div className="flex items-center gap-3"><span>📱</span> <span>Mobile First Design</span></div> },
-                  { id: 2, content: <div className="flex items-center gap-3"><span>👆</span> <span>Touch Gestures</span></div> },
-                  { id: 3, content: <div className="flex items-center gap-3"><span>🔄</span> <span>Pull to Refresh</span></div> },
-                  { id: 4, content: <div className="flex items-center gap-3"><span>✨</span> <span>Smooth Animations</span></div> }
+                  { id: "1", content: <div className="flex items-center gap-3"><span>📱</span> <span>Mobile First Design</span></div> },
+                  { id: "2", content: <div className="flex items-center gap-3"><span>👆</span> <span>Touch Gestures</span></div> },
+                  { id: "3", content: <div className="flex items-center gap-3"><span>🔄</span> <span>Pull to Refresh</span></div> },
+                  { id: "4", content: <div className="flex items-center gap-3"><span>✨</span> <span>Smooth Animations</span></div> }
                 ]}
                 onItemPress={(id) => addToast({ type: 'success', title: 'Item Pressed', message: `You pressed item ${id}` })}
               />
