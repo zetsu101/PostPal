@@ -1,96 +1,223 @@
 "use client";
-export const dynamic = "force-dynamic";
-
-import React, { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { useAuth } from "@/lib/auth";
-import LoadingSpinner from "@/components/LoadingSpinner";
-import { safeLocalStorage, safeWindow } from "@/lib/utils";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import Link from 'next/link';
+import { useAuth } from '@/contexts/AuthContext';
+import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
+import Button from '@/components/ui/Button';
+import Container from '@/components/Container';
 
 export default function LoginPage() {
-  const { login, isLoading, error, isAuthenticated } = useAuth();
-  const router = useRouter();
-  const pathname = usePathname();
+  const { login, isLoading, error, clearError } = useAuth();
   const [formData, setFormData] = useState({
-    email: "",
-    password: "",
+    email: '',
+    password: '',
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
 
-  // Redirect to dashboard if already authenticated (but only if not on login page)
+  // Clear errors when component mounts
   useEffect(() => {
-    if (isAuthenticated && pathname !== "/login") {
-      router.push("/dashboard");
+    clearError();
+  }, [clearError]);
+
+  const validateForm = () => {
+    const errors: Record<string, string> = {};
+
+    if (!formData.email) {
+      errors.email = 'Email is required';
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      errors.email = 'Please enter a valid email address';
     }
-  }, [isAuthenticated, router, pathname]);
+
+    if (!formData.password) {
+      errors.password = 'Password is required';
+    } else if (formData.password.length < 6) {
+      errors.password = 'Password must be at least 6 characters';
+    }
+
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await login(formData);
-    if (result.isAuthenticated) {
-      router.push("/dashboard");
+    
+    if (!validateForm()) return;
+
+    try {
+      await login(formData);
+    } catch (error) {
+      // Error is handled by the auth context
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [e.target.name]: e.target.value,
-    }));
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Clear validation error when user starts typing
+    if (validationErrors[field]) {
+      setValidationErrors(prev => ({ ...prev, [field]: '' }));
+    }
+  };
+
+  const handleOAuthLogin = (provider: 'google' | 'github' | 'twitter') => {
+    // This will be implemented when we add OAuth
+    console.log(`OAuth login with ${provider}`);
+  };
+
+  const getOAuthButtonStyle = (provider: 'google' | 'github' | 'twitter') => {
+    const styles = {
+      google: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
+      github: 'bg-gray-900 text-white hover:bg-gray-800',
+      twitter: 'bg-blue-500 text-white hover:bg-blue-600',
+    };
+    return styles[provider];
+  };
+
+  const getOAuthIcon = (provider: 'google' | 'github' | 'twitter') => {
+    const icons = {
+      google: '🔍',
+      github: '🐙',
+      twitter: '🐦',
+    };
+    return icons[provider];
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#E0E7FF] via-[#C7D2FE] to-[#E2E8F0] flex items-center justify-center p-4">
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="w-full max-w-md"
-      >
-        {/* Logo and Header */}
-        <div className="text-center mb-8">
-          <motion.div
-            initial={{ scale: 0.8 }}
-            animate={{ scale: 1 }}
-            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-            className="inline-flex items-center justify-center w-16 h-16 bg-white rounded-full shadow-lg mb-4"
-          >
-            <span className="text-3xl">📱</span>
-          </motion.div>
-          <h1 className="text-3xl font-bold text-white mb-2">Welcome Back</h1>
-          <p className="text-white/80">Sign in to your PostPal account</p>
-        </div>
-
-        {/* Login Form */}
+    <Container>
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="bg-white rounded-2xl shadow-2xl p-8"
+          className="max-w-md w-full space-y-8"
         >
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Header */}
+          <div className="text-center">
+            <motion.div
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="mx-auto h-16 w-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mb-6"
+            >
+              <span className="text-white text-2xl font-bold">P</span>
+            </motion.div>
+            
+            <motion.h2
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+              className="text-3xl font-bold text-gray-900 mb-2"
+            >
+              Welcome back to PostPal
+            </motion.h2>
+            
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 }}
+              className="text-gray-600"
+            >
+              Sign in to your account to continue creating amazing content
+            </motion.p>
+          </div>
+
+          {/* OAuth Buttons */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.5 }}
+            className="space-y-3"
+          >
+            <p className="text-center text-sm text-gray-500">Or continue with</p>
+            
+            <div className="grid grid-cols-3 gap-3">
+              {(['google', 'github', 'twitter'] as const).map((provider) => (
+                <button
+                  key={provider}
+                  onClick={() => handleOAuthLogin(provider)}
+                  disabled={isLoading}
+                  className={`flex items-center justify-center px-4 py-3 rounded-xl font-medium transition-all duration-200 ${getOAuthButtonStyle(provider)} disabled:opacity-50 disabled:cursor-not-allowed`}
+                >
+                  <span className="text-lg">{getOAuthIcon(provider)}</span>
+                </button>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Divider */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.6 }}
+            className="relative"
+          >
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-gray-300" />
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-gray-500">Or sign in with email</span>
+            </div>
+          </motion.div>
+
+          {/* Login Form */}
+          <motion.form
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.7 }}
+            onSubmit={handleSubmit}
+            className="space-y-6"
+          >
+            {/* Error Display */}
+            <AnimatePresence>
+              {error && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  className="bg-red-50 border border-red-200 rounded-xl p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
+                    <p className="text-sm text-red-700">{error}</p>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                Email Address
+                Email address
               </label>
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Mail className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
-                  type="email"
                   id="email"
                   name="email"
-                  value={formData.email}
-                  onChange={handleChange}
+                  type="email"
+                  autoComplete="email"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent transition-all duration-200"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange('email', e.target.value)}
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.email ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="Enter your email"
                 />
-                <div className="absolute inset-y-0 right-0 flex items-center pr-3">
-                  <span className="text-gray-400">📧</span>
-                </div>
               </div>
+              {validationErrors.email && (
+                <motion.p
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                >
+                  <AlertCircle className="w-4 h-4" />
+                  {validationErrors.email}
+                </motion.p>
+              )}
             </div>
 
             {/* Password Field */}
@@ -99,127 +226,121 @@ export default function LoginPage() {
                 Password
               </label>
               <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Lock className="h-5 w-5 text-gray-400" />
+                </div>
                 <input
-                  type={showPassword ? "text" : "password"}
                   id="password"
                   name="password"
-                  value={formData.password}
-                  onChange={handleChange}
+                  type={showPassword ? 'text' : 'password'}
+                  autoComplete="current-password"
                   required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent transition-all duration-200 pr-12"
+                  value={formData.password}
+                  onChange={(e) => handleInputChange('password', e.target.value)}
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.password ? 'border-red-300' : 'border-gray-300'
+                  }`}
                   placeholder="Enter your password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
-                  {showPassword ? "🙈" : "👁️"}
+                  {showPassword ? (
+                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  ) : (
+                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                  )}
                 </button>
               </div>
-            </div>
-
-            {/* Error Message */}
-            {error && (
-              <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="bg-red-50 border border-red-200 rounded-lg p-3"
-              >
-                <p className="text-red-600 text-sm flex items-center">
-                  <span className="mr-2">⚠️</span>
-                  {error}
-                </p>
-              </motion.div>
-            )}
-
-            {/* Demo Credentials */}
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3">
-              <p className="text-blue-700 text-sm">
-                <strong>Demo Account:</strong><br />
-                Email: demo@postpal.com<br />
-                Password: demo123
-              </p>
-              <button
-                type="button"
-                onClick={() => {
-                  safeLocalStorage.removeItem('postpal_token');
-                  safeLocalStorage.removeItem('postpal_user');
-                  if (safeWindow.location) {
-                    safeWindow.location.reload();
-                  }
-                }}
-                className="mt-2 text-blue-600 text-xs underline hover:text-blue-800"
-              >
-                Clear Session & Reload
-              </button>
-            </div>
-
-            {/* Submit Button */}
-            <button
-              type="submit"
-              disabled={isLoading}
-              className="w-full bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] font-semibold py-3 px-6 rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-            >
-              {isLoading ? (
-                <div className="flex items-center justify-center">
-                  <LoadingSpinner size="sm" />
-                  <span className="ml-2">Signing in...</span>
-                </div>
-              ) : (
-                "Sign In"
+              {validationErrors.password && (
+                <motion.p
+                  initial={{ opacity: 0, y: -5 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                >
+                  <AlertCircle className="w-4 h-4" />
+                  {validationErrors.password}
+                </motion.p>
               )}
-            </button>
-          </form>
+            </div>
 
-          {/* Additional Links */}
-          <div className="mt-6 space-y-4">
-            <div className="text-center">
+            {/* Remember Me & Forgot Password */}
+            <div className="flex items-center justify-between">
+              <div className="flex items-center">
+                <input
+                  id="remember-me"
+                  name="remember-me"
+                  type="checkbox"
+                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                />
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                  Remember me
+                </label>
+              </div>
               <Link
                 href="/forgot-password"
-                className="text-[#64748B] hover:text-[#475569] text-sm font-medium transition-colors"
+                className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
               >
-                Forgot your password?
+                Forgot password?
               </Link>
             </div>
 
-            <div className="relative">
-              <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-300" />
-              </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-white text-gray-500">Don&apos;t have an account?</span>
-              </div>
-            </div>
-
-            <Link
-              href="/signup"
-              className="w-full block text-center bg-gray-100 text-gray-700 font-medium py-3 px-6 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isLoading}
+              loading={isLoading}
+              className="w-full py-3 text-base font-medium"
             >
-              Create Account
-            </Link>
-          </div>
-        </motion.div>
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Signing in...
+                </>
+              ) : (
+                'Sign in to PostPal'
+              )}
+            </Button>
+          </motion.form>
 
-        {/* Footer */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.6, duration: 0.6 }}
-          className="text-center mt-6"
-        >
-          <p className="text-white/60 text-sm">
-            By signing in, you agree to our{" "}
-            <Link href="/terms" className="text-white hover:underline">
-              Terms of Service
-            </Link>{" "}
-            and{" "}
-            <Link href="/privacy" className="text-white hover:underline">
-              Privacy Policy
-            </Link>
-          </p>
+          {/* Sign Up Link */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8 }}
+            className="text-center"
+          >
+            <p className="text-gray-600">
+              Don&apos;t have an account?{' '}
+              <Link
+                href="/signup"
+                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+              >
+                Sign up for free
+              </Link>
+            </p>
+          </motion.div>
+
+          {/* Demo Credentials */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9 }}
+            className="bg-blue-50 border border-blue-200 rounded-xl p-4"
+          >
+            <div className="flex items-center gap-2 mb-2">
+              <CheckCircle className="w-4 h-4 text-blue-600" />
+              <span className="text-sm font-medium text-blue-800">Demo Account</span>
+            </div>
+            <p className="text-xs text-blue-700">
+              Email: <span className="font-mono">demo@postpal.app</span><br />
+              Password: <span className="font-mono">demo123</span>
+            </p>
+          </motion.div>
         </motion.div>
-      </motion.div>
-    </div>
+      </div>
+    </Container>
   );
 } 

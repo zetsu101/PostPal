@@ -3,6 +3,7 @@ import { Inter, Lato } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -168,9 +169,11 @@ export default function RootLayout({
       </head>
       <body className="antialiased font-sans">
         <ThemeProvider>
-          <ToastProvider>
-            {children}
-          </ToastProvider>
+          <AuthProvider>
+            <ToastProvider>
+              {children}
+            </ToastProvider>
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
