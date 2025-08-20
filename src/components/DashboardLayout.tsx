@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth";
-import MobileFeatures from "./MobileFeatures";
+
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Bell, Search, User } from "lucide-react";

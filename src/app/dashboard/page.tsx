@@ -1,6 +1,6 @@
 "use client";
 export const dynamic = "force-dynamic";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import DashboardLayout from "@/components/DashboardLayout";
 import Skeleton, { MetricSkeleton } from "@/components/ui/Skeleton";
@@ -103,7 +103,7 @@ export default function DashboardPage() {
     return data;
   }
 
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     setIsLoading(true);
     
     // Simulate API call delay
@@ -167,12 +167,12 @@ export default function DashboardPage() {
     setChartData(generateChartData(7));
 
     setIsLoading(false);
-  };
+  }, []);
 
   // Simulate data loading
   useEffect(() => {
     loadData();
-  }, []);
+  }, [loadData]);
 
   // Time update effect
   useEffect(() => {

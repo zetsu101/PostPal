@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, PanInfo, useMotionValue, useTransform, useSpring } from 'framer-motion';
+import { motion, PanInfo, useMotionValue, useSpring } from 'framer-motion';
 import { RefreshCw } from 'lucide-react';
 
 // Pull to Refresh Component
@@ -69,11 +69,7 @@ export function PullToRefresh({ onRefresh, children, threshold = 80 }: PullToRef
     };
   }, [handleTouchStart, handleTouchMove, handleTouchEnd]);
 
-  const rotation = useTransform(
-    useMotionValue(pullDistance),
-    [0, threshold],
-    [0, 180]
-  );
+
 
   return (
     <div ref={containerRef} className="relative overflow-hidden">
