@@ -15,6 +15,18 @@
     --postpal-gray-muted: #6B7280;
   }
 
+  .dark {
+    --postpal-bg: #0F172A;
+    --postpal-text: #F8FAFC;
+    --postpal-primary: #60A5FA;
+    --postpal-accent: #34D399;
+    --postpal-coral: #F87171;
+    --postpal-peach: #EF4444;
+    --postpal-gray-light: #1E293B;
+    --postpal-gray-dark: #64748B;
+    --postpal-gray-muted: #CBD5E1;
+  }
+
   body {
     font-family: var(--font-lato), var(--font-inter), system-ui, sans-serif;
     background: var(--postpal-bg);

@@ -11,6 +11,7 @@ import ProtectedRoute from "@/components/ProtectedRoute";
 import { EngagementChart, PlatformChart, AudienceChart } from "@/components/ui/Chart";
 import LiveNotifications from "@/components/ui/LiveNotifications";
 import ActivityFeed from "@/components/ui/ActivityFeed";
+import { CompactThemeToggle } from "@/components/ui/ThemeToggle";
 
 interface AnalyticsData {
   engagementRate: number;
@@ -309,7 +310,10 @@ export default function DashboardPage() {
               </>
             )}
           />
-          <LiveNotifications />
+          <div className="flex items-center gap-3">
+            <CompactThemeToggle />
+            <LiveNotifications />
+          </div>
         </div>
 
         {/* Key Metrics */}

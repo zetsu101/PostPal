@@ -6,7 +6,7 @@ import Button, { IconButton, LoadingButton } from "@/components/ui/Button";
 import Skeleton, { CardSkeleton, MetricSkeleton, ChartSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/Toast";
 import { PageTransition, StaggeredContainer, StaggeredItem } from "@/components/ui/PageTransition";
-import { ThemeToggle } from "@/components/ui/ThemeToggle";
+import ThemeToggle from "@/components/ui/ThemeToggle";
 import { InteractiveCard, MetricCard } from "@/components/ui/InteractiveCard";
 import { EnhancedLoading, ContentLoading } from "@/components/ui/EnhancedLoading";
 import { SwipeableCard, TouchFeedback, MobileOptimizedList } from "@/components/ui/MobileEnhancements";

@@ -6,7 +6,7 @@ import MobileFeatures from "./MobileFeatures";
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { Bell, Search, User } from "lucide-react";
-import { ThemeToggle } from "./ui/ThemeToggle";
+import ThemeToggle from "./ui/ThemeToggle";
 import { safeLocalStorage, safeWindow } from "@/lib/utils";
 
 const navigation = [
