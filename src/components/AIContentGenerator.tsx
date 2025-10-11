@@ -106,6 +106,8 @@ export default function AIContentGenerator() {
   };
 
   const handleGenerate = async () => {
+    console.log('🚀 handleGenerate called with:', { selectedGenerationType, formData });
+    
     if (!formData.topic.trim()) {
       addToast({
         title: 'Topic Required',
@@ -116,33 +118,43 @@ export default function AIContentGenerator() {
     }
 
     try {
+      console.log('🎯 Calling AI generation for type:', selectedGenerationType);
+      
       switch (selectedGenerationType) {
         case 'caption':
+          console.log('📝 Generating caption...');
           await generateCaption(formData);
           break;
         case 'hashtags':
+          console.log('🏷️ Generating hashtags...');
           await generateHashtags(formData);
           break;
         case 'image-prompt':
+          console.log('🖼️ Generating image prompt...');
           await generateImagePrompt(formData);
           break;
         case 'complete-post':
+          console.log('📱 Generating complete post...');
           await generateCompletePost(formData);
           break;
         case 'video-script':
+          console.log('🎬 Generating video script...');
           await generateVideoScript(formData);
           break;
         case 'carousel-content':
+          console.log('🎠 Generating carousel content...');
           await generateCarouselContent(formData);
           break;
       }
 
+      console.log('✅ Generation completed successfully');
       addToast({
         title: 'Content Generated!',
         message: `Your ${selectedGenerationType.replace('-', ' ')} is ready`,
         type: 'success',
       });
     } catch (error) {
+      console.error('❌ Generation failed:', error);
       addToast({
         title: 'Generation Failed',
         message: 'Please try again or check your inputs',
@@ -234,7 +246,7 @@ export default function AIContentGenerator() {
   };
 
   return (
-    <div className="max-w-6xl mx-auto p-6 space-y-8">
+    <div className="ai-generator max-w-6xl mx-auto p-6 space-y-8">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
@@ -303,7 +315,8 @@ export default function AIContentGenerator() {
                     value={formData.topic}
                     onChange={(e) => handleInputChange('topic', e.target.value)}
                     placeholder="e.g., AI in business, sustainable living, remote work tips..."
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none text-gray-900 bg-white"
+                    style={{ backgroundColor: '#ffffff', color: '#111827' }}
                     rows={3}
                   />
                 </div>
@@ -394,7 +407,8 @@ export default function AIContentGenerator() {
                       value={formData.targetAudience}
                       onChange={(e) => handleInputChange('targetAudience', e.target.value)}
                       placeholder="e.g., entrepreneurs, students..."
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white"
+                      style={{ backgroundColor: '#ffffff', color: '#111827' }}
                     />
                   </div>
                   <div>
@@ -407,7 +421,8 @@ export default function AIContentGenerator() {
                       max="30"
                       value={formData.hashtagCount}
                       onChange={(e) => handleInputChange('hashtagCount', parseInt(e.target.value))}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white"
+                      style={{ backgroundColor: '#ffffff', color: '#111827' }}
                     />
                   </div>
                 </div>
@@ -420,7 +435,8 @@ export default function AIContentGenerator() {
                     <select
                       value={formData.language}
                       onChange={(e) => handleInputChange('language', e.target.value)}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white"
+                      style={{ backgroundColor: '#ffffff', color: '#111827' }}
                     >
                       <option value="English">English</option>
                       <option value="Spanish">Spanish</option>
@@ -439,7 +455,8 @@ export default function AIContentGenerator() {
                       value={formData.callToAction}
                       onChange={(e) => handleInputChange('callToAction', e.target.value)}
                       placeholder="e.g., Share your thoughts below!"
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white"
+                      style={{ backgroundColor: '#ffffff', color: '#111827' }}
                     />
                   </div>
                 </div>
@@ -775,7 +792,7 @@ export default function AIContentGenerator() {
                   <select
                     value={formData.platform}
                     onChange={(e) => handleInputChange('platform', e.target.value as 'instagram' | 'linkedin' | 'facebook' | 'twitter' | 'tiktok')}
-                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-gray-900 bg-white"
                   >
                     {PLATFORMS.map((platform) => (
                       <option key={platform.id} value={platform.id}>

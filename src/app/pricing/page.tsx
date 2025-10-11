@@ -1,6 +1,6 @@
 "use client";
-import PricingPage from "@/components/PricingPage";
+import StripePricingPage from "@/components/StripePricingPage";
 
 export default function PricingPageRoute() {
-  return <PricingPage />;
+  return <StripePricingPage />;
 } 

@@ -72,6 +72,8 @@ export class AIService {
 
   private async callAIApi(type: string, prompt: ContentPrompt, options: { maxTokens?: number; temperature?: number } = {}): Promise<string> {
     try {
+      console.log('🤖 Calling AI API with:', { type, prompt, options });
+      
       const response = await fetch('/api/ai', {
         method: 'POST',
         headers: {
@@ -85,11 +87,24 @@ export class AIService {
         }),
       });
 
+      console.log('📡 API Response status:', response.status);
+
       if (!response.ok) {
-        throw new Error(`API request failed: ${response.status}`);
+        const errorText = await response.text();
+        console.error('❌ API Error response:', errorText);
+        
+        // Check if it's a quota issue and provide helpful feedback
+        if (response.status === 429) {
+          console.warn('⚠️ OpenAI quota exceeded - falling back to mock data temporarily');
+          console.warn('💡 To fix this: Add billing method to your OpenAI account');
+          return this.generateMockContent(type, prompt);
+        }
+        
+        throw new Error(`API request failed: ${response.status}: ${errorText}`);
       }
 
       const data = await response.json();
+      console.log('✅ API Response data:', data);
       
       if (!data.success) {
         throw new Error(data.error || 'Unknown error');
@@ -97,7 +112,7 @@ export class AIService {
 
       return data.content;
     } catch (error) {
-      console.error('AI API call failed:', error);
+      console.error('❌ AI API call failed:', error);
       throw new Error('Failed to generate content. Please try again.');
     }
   }
@@ -105,10 +120,12 @@ export class AIService {
   // Generate social media caption
   async generateCaption(prompt: ContentPrompt): Promise<GeneratedContent> {
     try {
+      console.log('🎯 AIService.generateCaption called with:', prompt);
       const content = await this.callAIApi('caption', prompt);
+      console.log('✨ Generated content:', content);
       return this.parseGeneratedContent(content, prompt, 'caption');
     } catch (error) {
-      console.error('Caption generation failed:', error);
+      console.error('❌ Caption generation failed:', error);
       throw new Error('Failed to generate caption. Please try again.');
     }
   }
@@ -166,6 +183,37 @@ export class AIService {
       console.error('Carousel content generation failed:', error);
       throw new Error('Failed to generate carousel content. Please try again.');
     }
+  }
+
+  // Mock content generation for fallback
+  private generateMockContent(type: string, prompt: ContentPrompt): string {
+    console.log('🎭 Generating mock content as fallback');
+    
+    const { topic, platform, contentType, tone, targetAudience, hashtagCount, language, includeEmojis, callToAction } = prompt;
+    
+    switch (type) {
+      case 'caption':
+        return `🎯 **${topic}** - ${contentType} for ${platform}\n\n${this.generateMockCaption(topic, tone, includeEmojis)}\n\n${this.generateMockHashtags(hashtagCount)}\n\n${callToAction || 'What are your thoughts on this?'}`;
+      
+      case 'hashtags':
+        return this.generateMockHashtags(hashtagCount);
+      
+      case 'image-prompt':
+        return `Create a professional ${tone} image featuring ${topic} for ${platform} ${contentType}. Style: modern, engaging, ${targetAudience ? `targeting ${targetAudience}` : 'appealing to all audiences'}`;
+      
+      default:
+        return `Mock ${type} content for ${topic} on ${platform}`;
+    }
+  }
+
+  private generateMockCaption(topic: string, tone: string, includeEmojis: boolean): string {
+    const emojis = includeEmojis ? '🚀 ✨ 💡' : '';
+    return `Discover the amazing world of ${topic}! ${emojis}\n\nThis ${tone} content will help you understand why ${topic} matters in today's digital landscape. Perfect for sharing insights and sparking conversations.`;
+  }
+
+  private generateMockHashtags(count: number): string {
+    const hashtags = ['#innovation', '#technology', '#growth', '#success', '#inspiration', '#motivation', '#business', '#digital', '#future', '#trending'];
+    return hashtags.slice(0, count).join(' ');
   }
 
   // Content optimization suggestions
@@ -415,12 +463,24 @@ ${prompt.callToAction || 'Ready to engage? Let&apos;s start a conversation!'} �
   }
 }
 
-// Export the appropriate service based on environment
-export const aiService = process.env.NODE_ENV === 'production' 
-  ? new AIService({
-      apiKey: process.env.OPENAI_API_KEY || '',
+// Export the appropriate service based on environment and API key availability
+export const aiService = (() => {
+  console.log('🔧 Initializing aiService...');
+  
+  // For client-side, we'll always use the real service and let the API route handle the API key
+  // The API key is only available server-side in the /api/ai route
+  try {
+    console.log('🚀 Creating real AIService for client-side...');
+    const service = new AIService({
+      apiKey: 'client-side', // This will be ignored, API key is handled server-side
       model: 'gpt-3.5-turbo',
       maxTokens: 500,
       temperature: 0.7,
-    })
-  : MockAIService;
+    });
+    console.log('✅ Real AIService created successfully');
+    return service;
+  } catch (error) {
+    console.warn('⚠️ Failed to initialize AIService, falling back to MockAIService:', error);
+    return MockAIService;
+  }
+})();

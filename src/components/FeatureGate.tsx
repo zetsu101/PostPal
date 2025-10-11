@@ -1,29 +1,49 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { subscriptionManager } from "@/lib/subscription";
-import { useAuth } from "@/lib/auth";
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { Lock, Crown, Star, Zap } from 'lucide-react';
+import Button from './ui/Button';
+import { subscriptionService } from '@/lib/subscription-service';
 
 interface FeatureGateProps {
-  children: React.ReactNode;
   feature: string;
+  children: React.ReactNode;
   fallback?: React.ReactNode;
-  showUpgradePrompt?: boolean;
   userId?: string;
 }
 
 export default function FeatureGate({ 
-  children, 
   feature, 
+  children, 
   fallback, 
-  showUpgradePrompt = true,
-  userId 
+  userId = 'current-user' 
 }: FeatureGateProps) {
-  const { user } = useAuth();
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const resolvedUserId = userId || user?.id || '1';
-  const hasAccess = subscriptionManager.hasFeatureAccess(resolvedUserId, feature);
-  const upgradePlans = subscriptionManager.getUpgradeRecommendations(resolvedUserId);
+  const [hasAccess, setHasAccess] = useState<boolean | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    checkAccess();
+  }, [feature, userId]);
+
+  const checkAccess = async () => {
+    try {
+      const access = await subscriptionService.canUserAccessFeature(userId, feature);
+      setHasAccess(access);
+    } catch (error) {
+      console.error('Error checking feature access:', error);
+      setHasAccess(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-500"></div>
+      </div>
+    );
+  }
 
   if (hasAccess) {
     return <>{children}</>;
@@ -33,194 +53,114 @@ export default function FeatureGate({
     return <>{fallback}</>;
   }
 
-  if (!showUpgradePrompt) {
-    return null;
-  }
+  return <UpgradePrompt feature={feature} />;
+}
+
+function UpgradePrompt({ feature }: { feature: string }) {
+  const getFeatureInfo = (feature: string) => {
+    switch (feature) {
+      case 'ai_posts':
+        return {
+          title: 'Unlock Unlimited AI Posts',
+          description: 'Generate unlimited AI-powered content for all your social media platforms.',
+          icon: <Zap className="w-8 h-8 text-blue-500" />,
+          requiredPlan: 'Pro',
+        };
+      case 'advanced_analytics':
+        return {
+          title: 'Advanced Analytics',
+          description: 'Get detailed insights into your content performance and audience engagement.',
+          icon: <Star className="w-8 h-8 text-purple-500" />,
+          requiredPlan: 'Pro',
+        };
+      case 'content_scheduling':
+        return {
+          title: 'Content Scheduling',
+          description: 'Schedule your posts in advance and maintain a consistent posting schedule.',
+          icon: <Lock className="w-8 h-8 text-green-500" />,
+          requiredPlan: 'Pro',
+        };
+      case 'team_collaboration':
+        return {
+          title: 'Team Collaboration',
+          description: 'Invite team members and collaborate on content creation and management.',
+          icon: <Crown className="w-8 h-8 text-yellow-500" />,
+          requiredPlan: 'Pro',
+        };
+      case 'api_access':
+        return {
+          title: 'API Access',
+          description: 'Integrate PostPal with your existing tools and workflows.',
+          icon: <Crown className="w-8 h-8 text-gold-500" />,
+          requiredPlan: 'Enterprise',
+        };
+      default:
+        return {
+          title: 'Premium Feature',
+          description: 'This feature is available with our premium plans.',
+          icon: <Lock className="w-8 h-8 text-gray-500" />,
+          requiredPlan: 'Pro',
+        };
+    }
+  };
+
+  const featureInfo = getFeatureInfo(feature);
 
   return (
-    <>
-      {/* Feature Locked Overlay */}
-      <div className="relative">
-        <div className="blur-sm pointer-events-none">
-          {children}
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg">
-          <div className="text-center p-6">
-            <div className="text-4xl mb-4">🔒</div>
-            <h3 className="text-lg font-semibold text-[#1F2937] mb-2">Premium Feature</h3>
-            <p className="text-[#6B7280] mb-4">
-              This feature is available on {upgradePlans[0]?.name || 'Pro'} plan and above.
-            </p>
-            <button
-              onClick={() => setShowUpgradeModal(true)}
-              className="px-4 py-2 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white rounded-lg font-medium hover:shadow-lg transition-all"
-            >
-              Upgrade Now
-            </button>
-          </div>
-        </div>
+    <motion.div
+      initial={{ opacity: 0, scale: 0.95 }}
+      animate={{ opacity: 1, scale: 1 }}
+      className="bg-white rounded-xl border border-gray-200 p-8 text-center shadow-sm"
+    >
+      <div className="flex justify-center mb-4">
+        {featureInfo.icon}
       </div>
-
-      {/* Upgrade Modal */}
-      <AnimatePresence>
-        {showUpgradeModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-8 max-w-md w-full"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4">🚀</div>
-                <h3 className="text-2xl font-bold text-[#1F2937] mb-4">Unlock Premium Features</h3>
-                <p className="text-[#6B7280] mb-6">
-                  Upgrade your plan to access advanced features and unlock your full potential.
-                </p>
-                
-                <div className="space-y-3 mb-6">
-                  {upgradePlans.slice(0, 2).map((plan) => (
-                    <div key={plan.id} className="border border-gray-200 rounded-lg p-4 text-left">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-[#1F2937]">{plan.name}</h4>
-                        <span className="text-lg font-bold text-[#87CEFA]">
-                          ${plan.price}/month
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#6B7280] mb-3">{plan.description}</p>
-                      <button
-                        onClick={() => window.location.href = '/pricing'}
-                        className="w-full px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
-                      >
-                        Choose {plan.name}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setShowUpgradeModal(false)}
-                  className="px-4 py-2 bg-gray-100 text-[#6B7280] rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                >
-                  Maybe Later
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+      
+      <h3 className="text-xl font-bold text-gray-900 mb-2">
+        {featureInfo.title}
+      </h3>
+      
+      <p className="text-gray-600 mb-6 max-w-md mx-auto">
+        {featureInfo.description}
+      </p>
+      
+      <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg p-4 mb-6">
+        <p className="text-sm text-gray-700 mb-2">
+          Available with <span className="font-semibold text-blue-600">{featureInfo.requiredPlan}</span> plan and above
+        </p>
+      </div>
+      
+      <div className="flex flex-col sm:flex-row gap-3 justify-center">
+        <Button
+          onClick={() => window.location.href = '/pricing'}
+          className="bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white"
+        >
+          <Crown className="w-4 h-4 mr-2" />
+          Upgrade to {featureInfo.requiredPlan}
+        </Button>
+        
+        <Button
+          onClick={() => window.location.href = '/billing'}
+          variant="outline"
+        >
+          View Current Plan
+        </Button>
+      </div>
+    </motion.div>
   );
 }
 
-// Usage limit component
-interface UsageLimitProps {
-  children: React.ReactNode;
-  resource: 'postsThisMonth' | 'aiGenerationsThisMonth' | 'reportsThisMonth' | 'storageUsedGB' | 'apiCallsThisMonth';
-  fallback?: React.ReactNode;
-  userId?: string;
+// Higher-order component for easier usage
+export function withFeatureGate<P extends object>(
+  Component: React.ComponentType<P>,
+  feature: string,
+  userId?: string
+) {
+  return function FeatureGatedComponent(props: P) {
+    return (
+      <FeatureGate feature={feature} userId={userId}>
+        <Component {...props} />
+      </FeatureGate>
+    );
+  };
 }
-
-export function UsageLimit({ 
-  children, 
-  resource, 
-  fallback,
-  userId = 'user_1' 
-}: UsageLimitProps) {
-  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
-  const hasLimit = subscriptionManager.checkUsageLimit(userId, resource);
-  const upgradePlans = subscriptionManager.getUpgradeRecommendations(userId);
-
-  if (hasLimit) {
-    return <>{children}</>;
-  }
-
-  if (fallback) {
-    return <>{fallback}</>;
-  }
-
-  return (
-    <>
-      {/* Usage Limit Overlay */}
-      <div className="relative">
-        <div className="blur-sm pointer-events-none">
-          {children}
-        </div>
-        <div className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm rounded-lg">
-          <div className="text-center p-6">
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-lg font-semibold text-[#1F2937] mb-2">Usage Limit Reached</h3>
-            <p className="text-[#6B7280] mb-4">
-              You&apos;ve reached your monthly limit. Upgrade to continue using this feature.
-            </p>
-            <button
-              onClick={() => setShowUpgradeModal(true)}
-              className="px-4 py-2 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white rounded-lg font-medium hover:shadow-lg transition-all"
-            >
-              Upgrade Plan
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Upgrade Modal */}
-      <AnimatePresence>
-        {showUpgradeModal && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
-          >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-8 max-w-md w-full"
-            >
-              <div className="text-center">
-                <div className="text-4xl mb-4">📈</div>
-                <h3 className="text-2xl font-bold text-[#1F2937] mb-4">Upgrade for More</h3>
-                <p className="text-[#6B7280] mb-6">
-                  Get higher limits and unlock unlimited usage with our premium plans.
-                </p>
-                
-                <div className="space-y-3 mb-6">
-                  {upgradePlans.slice(0, 2).map((plan) => (
-                    <div key={plan.id} className="border border-gray-200 rounded-lg p-4 text-left">
-                      <div className="flex items-center justify-between mb-2">
-                        <h4 className="font-semibold text-[#1F2937]">{plan.name}</h4>
-                        <span className="text-lg font-bold text-[#87CEFA]">
-                          ${plan.price}/month
-                        </span>
-                      </div>
-                      <p className="text-sm text-[#6B7280] mb-3">{plan.description}</p>
-                      <button
-                        onClick={() => window.location.href = '/pricing'}
-                        className="w-full px-4 py-2 bg-[#87CEFA] text-white rounded-lg font-medium hover:bg-[#5F9EC7] transition-colors"
-                      >
-                        Choose {plan.name}
-                      </button>
-                    </div>
-                  ))}
-                </div>
-
-                <button
-                  onClick={() => setShowUpgradeModal(false)}
-                  className="px-4 py-2 bg-gray-100 text-[#6B7280] rounded-lg font-medium hover:bg-gray-200 transition-colors"
-                >
-                  Maybe Later
-                </button>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
-  );
-} 

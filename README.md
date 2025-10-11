@@ -1,57 +1,87 @@
-# PostPal - AI-Powered Social Media Content Assistant
+# PostPal - AI-Powered Social Media Management Platform
 
-PostPal is a modern web application that helps creators, brands, and freelancers generate engaging social media content using AI. The platform provides post ideas, captions, hashtags, and a drag-and-drop calendar for content planning.
+A comprehensive social media management platform that combines AI content generation with scheduling, analytics, and multi-platform posting capabilities.
 
-## Features
+## 🚀 Features
 
-### **Core Features**
-- **AI Content Generation**: Get personalized post ideas, captions, and hashtags based on your brand profile
-- **Multi-Platform Support**: Create content for Instagram, TikTok, LinkedIn, Facebook, and Twitter
-- **Interactive Onboarding**: Guided setup process to understand your brand, audience, and goals
-- **Content Calendar**: Plan and schedule your posts with a visual calendar interface
-- **Post Editor**: Rich editing interface with preview functionality
-- **Saved Posts**: Store and manage your favorite content ideas
-- **Responsive Design**: Works seamlessly on desktop and mobile devices
+### ✨ AI Content Generation
+- **Multi-format content creation**: Captions, hashtags, image prompts, video scripts, carousel content
+- **Platform optimization**: Tailored content for Instagram, LinkedIn, Facebook, Twitter, and TikTok
+- **Tone customization**: Professional, casual, friendly, humorous, inspirational, educational
+- **Smart hashtag generation**: Trending and relevant hashtags for maximum reach
+- **Content optimization**: AI-powered suggestions for better engagement
 
-### **Advanced Analytics & Reporting** 🆕
-- **Comprehensive Analytics Dashboard**: Real-time performance metrics and insights
-- **AI-Powered Insights**: Automated analysis of content performance and trends
-- **Competitor Analysis**: Benchmark against industry leaders and competitors
-- **Audience Demographics**: Detailed audience insights and behavior analysis
-- **Content Performance Tracking**: Track engagement, reach, and growth metrics
-- **Custom Reports**: Generate PDF, CSV, and JSON reports with white-label branding
-- **ROI & Business Metrics**: Track conversion rates, lead generation, and return on investment
-- **Predictive Analytics**: AI-driven recommendations for content optimization
-- **Cross-Platform Comparison**: Compare performance across different social media platforms
-- **Trend Analysis**: Identify industry trends and optimal posting strategies
+### 📅 Content Calendar & Scheduling
+- **Drag-and-drop calendar**: Visual scheduling interface with week, month, and list views
+- **Multi-platform posting**: Schedule posts across all connected social media accounts
+- **Best time recommendations**: AI-powered optimal posting time suggestions
+- **Bulk scheduling**: Schedule multiple posts at once
+- **Content preview**: See how posts will look before publishing
+- **Post status tracking**: Draft, scheduled, published, and failed status management
 
-### **Subscription & Monetization System** 🆕
-- **Multi-Tier Pricing**: Free, Pro ($19/month), Business ($49/month), Enterprise ($199/month)
-- **Feature Gating**: Restrict access to premium features based on subscription
-- **Usage Tracking**: Monitor and limit usage based on plan tiers
-- **Billing Management**: Complete subscription and billing interface
-- **Payment Processing**: Ready for Stripe integration
-- **Upgrade Flows**: Seamless plan upgrades and downgrades
-- **Usage Analytics**: Track feature usage and plan utilization
-- **Invoice Generation**: Professional billing and invoice management
-- **Trial Management**: Free trial periods for new users
-- **Cancellation Handling**: Graceful subscription cancellation
+### 📚 Content Library & Templates
+- **Save and organize**: Store generated content with categories and tags
+- **Reusable templates**: Create templates for consistent brand messaging
+- **Content recycling**: Automatically repost successful content
+- **Version history**: Track changes and iterations
+- **Collaboration features**: Team approval workflows and shared libraries
+- **Search and filter**: Find content quickly with advanced search
 
-## 🛠️ Tech Stack
+### 🔗 Social Media API Integration
+- **Multi-platform posting**: Direct posting to Instagram, LinkedIn, Facebook, Twitter, TikTok
+- **Rate limiting**: Intelligent API management to avoid platform limits
+- **Error handling**: Robust error handling and retry logic
+- **Analytics integration**: Real-time engagement data from all platforms
+- **Account management**: Connect and manage multiple social media accounts
 
-- **Framework**: Next.js 15.4.4 with App Router
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS v4
-- **Animations**: Framer Motion
-- **UI Components**: Custom components with modern design
-- **State Management**: React hooks and local state
-- **Build Tool**: Next.js built-in bundler
+### 📊 Advanced Analytics & Reporting
+- **Real-time metrics**: Engagement rate, impressions, reach, follower growth
+- **Platform performance**: Compare performance across different platforms
+- **Content insights**: Identify top-performing content and trends
+- **Audience analysis**: Deep insights into audience behavior and preferences
+- **Custom reports**: Export data for external analysis
+- **ROI tracking**: Measure the impact of your social media efforts
 
-## 📦 Installation
+### 👥 Team Collaboration
+- **User roles**: Admin, manager, creator, and viewer permissions
+- **Team workflows**: Content approval and review processes
+- **Shared calendars**: Collaborative content planning
+- **Activity logs**: Track all team actions and changes
+- **Notifications**: Real-time updates on content status
+
+## 🛠️ Technology Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, Framer Motion
+- **AI Integration**: OpenAI GPT-3.5/4 API
+- **Authentication**: Firebase Auth
+- **Database**: Firebase Firestore (planned)
+- **Payment**: Stripe
+- **Social APIs**: Instagram Basic Display, LinkedIn API, Facebook Graph API, Twitter API v2, TikTok Business API
+- **Deployment**: Vercel
+
+## 🎨 Design System
+
+PostPal uses a consistent design system with the following color palette:
+- **Primary**: Light Blue (#87CEFA, #ADD8E6)
+- **Accent**: Teal (#40E0D0, #20B2AA)
+- **Secondary**: Soft Coral/Peach (#FF7F50, #FFA07A)
+- **Backgrounds**: White (#FFFFFF) and Light Gray (#F5F5F5)
+- **Typography**: Dark Blue and Gray for text and buttons
+
+## 🚀 Getting Started
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- OpenAI API key
+- Social media platform API credentials (optional)
+
+### Installation
 
 1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/yourusername/postpal.git
    cd postpal
    ```
 
@@ -60,143 +90,206 @@ PostPal is a modern web application that helps creators, brands, and freelancers
    npm install
    ```
 
-3. **Run the development server**
+3. **Set up environment variables**
+   Create a `.env.local` file in the root directory:
+   ```env
+   # OpenAI Configuration
+   OPENAI_API_KEY=your_openai_api_key_here
+   
+   # Firebase Configuration (for authentication)
+   NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
+   NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_firebase_auth_domain
+   NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_firebase_project_id
+   
+   # Stripe Configuration (for payments)
+   STRIPE_SECRET_KEY=your_stripe_secret_key
+   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
+   
+   # Social Media API Keys (optional)
+   INSTAGRAM_ACCESS_TOKEN=your_instagram_access_token
+   INSTAGRAM_USER_ID=your_instagram_user_id
+   INSTAGRAM_BUSINESS_ACCOUNT_ID=your_instagram_business_account_id
+   
+   LINKEDIN_ACCESS_TOKEN=your_linkedin_access_token
+   LINKEDIN_PERSON_ID=your_linkedin_person_id
+   LINKEDIN_ORGANIZATION_ID=your_linkedin_organization_id
+   
+   FACEBOOK_ACCESS_TOKEN=your_facebook_access_token
+   FACEBOOK_PAGE_ID=your_facebook_page_id
+   
+   TWITTER_API_KEY=your_twitter_api_key
+   TWITTER_API_SECRET=your_twitter_api_secret
+   TWITTER_ACCESS_TOKEN=your_twitter_access_token
+   TWITTER_ACCESS_TOKEN_SECRET=your_twitter_access_token_secret
+   TWITTER_BEARER_TOKEN=your_twitter_bearer_token
+   ```
+
+4. **Run the development server**
    ```bash
    npm run dev
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
 
-## 🏗️ Project Structure
+## 📱 Platform Features
 
-```
-src/
-├── app/                    # Next.js App Router pages
-│   ├── analytics/         # Advanced analytics dashboard
-│   ├── billing/           # Subscription & billing management
-│   ├── calendar/          # Content calendar page
-│   ├── create/            # Post creation interface
-│   ├── dashboard/         # Main dashboard
-│   ├── onboarding/        # User onboarding flow
-│   ├── pricing/           # Pricing page & plan selection
-│   ├── saved/             # Saved posts management
-│   ├── settings/          # User settings & API integrations
-│   ├── team/              # Team collaboration features
-│   ├── globals.css        # Global styles
-│   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Landing page
-├── components/            # Reusable React components
-│   ├── AdvancedAnalytics.tsx
-│   ├── AIContentGenerator.tsx
-│   ├── APIIntegration.tsx
-│   ├── BillingManagement.tsx
-│   ├── CompetitorAnalysis.tsx
-│   ├── DashboardLayout.tsx
-│   ├── EditPostModal.tsx
-│   ├── FeatureGate.tsx
-│   ├── MobileFeatures.tsx
-│   ├── OnboardingWizard.tsx
-│   ├── PricingPage.tsx
-│   └── TeamCollaboration.tsx
-├── lib/                   # Core business logic
-│   ├── analytics.ts       # Advanced analytics engine
-│   ├── socialMediaAPI.ts  # Social media API integrations
-│   └── subscription.ts    # Subscription & billing management
-```
+### AI Content Generator (`/ai-generator`)
+- Generate captions, hashtags, image prompts, and complete posts
+- Platform-specific optimization
+- Tone and style customization
+- Content optimization suggestions
+- Generation history and favorites
 
-## 🎯 Key Components
+### Content Calendar (`/calendar`)
+- Visual calendar interface with multiple views
+- Drag-and-drop scheduling
+- Multi-platform posting queue
+- Best time recommendations
+- Post status tracking
 
-### AdvancedAnalytics
-Comprehensive analytics dashboard with real-time metrics, AI-powered insights, competitor analysis, and custom reporting capabilities.
+### Content Library (`/saved`)
+- Save and organize generated content
+- Create reusable templates
+- Categorize content with tags
+- Search and filter functionality
+- Content analytics and usage tracking
 
-### AIContentGenerator
-Generates AI-powered post ideas with captions, hashtags, and image prompts. Currently uses mock data but is designed to integrate with OpenAI API.
+### Analytics Dashboard (`/dashboard`)
+- Real-time performance metrics
+- Platform comparison charts
+- Top-performing content analysis
+- Audience insights
+- Engagement trends
 
-### APIIntegration
-Manages real social media platform connections with OAuth authentication, rate limiting, and posting capabilities.
+### Team Management (`/team`)
+- User role management
+- Content approval workflows
+- Team collaboration features
+- Activity monitoring
+- Shared resources
 
-### BillingManagement
-Complete subscription and billing management interface with usage tracking, payment methods, and invoice history.
+## 🔧 API Integration Guide
 
-### CompetitorAnalysis
-Provides competitor benchmarking, industry insights, and strategic recommendations based on competitor performance.
+### Setting Up Social Media APIs
 
-### FeatureGate
-Feature gating component that restricts access to premium features based on subscription plans and usage limits.
+#### Instagram
+1. Create a Facebook Developer account
+2. Set up an Instagram Basic Display app
+3. Configure OAuth redirect URIs
+4. Get access tokens for your Instagram business account
 
-### OnboardingWizard
-Multi-step onboarding process that collects brand information, target audience, platforms, tone, and posting frequency goals.
+#### LinkedIn
+1. Create a LinkedIn Developer account
+2. Register your application
+3. Configure OAuth 2.0 settings
+4. Request necessary API permissions
 
-### EditPostModal
-Rich post editor with live preview, platform selection, and scheduling options.
+#### Facebook
+1. Create a Facebook Developer account
+2. Set up a Facebook app
+3. Configure page access tokens
+4. Set up webhook endpoints
 
-### DashboardLayout
-Responsive layout component with sidebar navigation for desktop and bottom navigation for mobile.
+#### Twitter
+1. Create a Twitter Developer account
+2. Apply for API access
+3. Generate API keys and tokens
+4. Configure OAuth 2.0 settings
 
-### PricingPage
-Modern, conversion-optimized pricing page with plan comparison, upgrade flows, and billing cycle toggles.
+#### TikTok
+1. Create a TikTok Developer account
+2. Register your application
+3. Configure OAuth settings
+4. Set up webhook endpoints
 
-### TeamCollaboration
-Multi-user team management with roles, workspaces, approval workflows, and collaboration features.
+## 🚀 Deployment
 
-### MobileFeatures
-PWA features including offline support, push notifications, and mobile-optimized user experience.
+### Vercel (Recommended)
 
-## 🚀 Available Scripts
+1. **Connect your repository**
+   - Push your code to GitHub
+   - Connect your repository to Vercel
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
+2. **Configure environment variables**
+   - Add all environment variables in Vercel dashboard
+   - Ensure production API keys are set
 
-## 🔧 Configuration
+3. **Deploy**
+   - Vercel will automatically deploy on push to main branch
+   - Set up custom domain if needed
 
-The project uses several configuration files:
+### Other Platforms
 
-- `tailwind.config.ts` - Tailwind CSS configuration
-- `next.config.ts` - Next.js configuration
-- `tsconfig.json` - TypeScript configuration
-- `eslint.config.mjs` - ESLint configuration
+The app can be deployed to any platform that supports Next.js:
+- Netlify
+- AWS Amplify
+- Railway
+- Heroku
 
-## 🎨 Design System
+## 🔒 Security Considerations
 
-PostPal uses a consistent design system with:
-
-- **Colors**: Primary (#87CEFA - Light Sky Blue), Accent (#40E0D0 - Turquoise), Warm (#FF7F50 - Coral)
-- **Typography**: Inter for headings, Lato for body text
-- **Spacing**: Consistent spacing scale using Tailwind utilities
-- **Components**: Reusable UI components with consistent styling
-
-## 🔮 Future Enhancements
-
-- [ ] OpenAI API integration for real AI content generation
-- [ ] Firebase authentication and user management
-- [ ] Real-time collaboration features
-- [ ] Advanced automation and workflow features
-- [ ] Native mobile app development
-- [ ] Advanced AI features (content optimization, predictive analytics)
-- [ ] White-label solutions for agencies
-- [ ] Advanced reporting and custom dashboards
-- [ ] Integration with more social media platforms
-- [ ] Advanced team collaboration features
+- **API Key Management**: Never commit API keys to version control
+- **Rate Limiting**: Implement proper rate limiting for all API calls
+- **Data Encryption**: Encrypt sensitive user data
+- **Authentication**: Use secure authentication methods
+- **CORS**: Configure CORS properly for API endpoints
 
 ## 🤝 Contributing
 
 1. Fork the repository
 2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
 4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
 
-## 📄 License
+## 📝 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🆘 Support
 
-If you encounter any issues or have questions, please open an issue on GitHub or contact the development team.
+- **Documentation**: Check the [docs](docs/) folder for detailed guides
+- **Issues**: Report bugs and request features on [GitHub Issues](https://github.com/yourusername/postpal/issues)
+- **Discussions**: Join the [GitHub Discussions](https://github.com/yourusername/postpal/discussions) for community support
+
+## 🗺️ Roadmap
+
+### Phase 1: Core Features ✅
+- [x] AI Content Generation
+- [x] Content Calendar & Scheduling
+- [x] Content Library & Templates
+- [x] Basic Analytics Dashboard
+- [x] Social Media API Integration
+
+### Phase 2: Advanced Features 🚧
+- [ ] Advanced Analytics & Reporting
+- [ ] Team Collaboration Features
+- [ ] Content Performance Prediction
+- [ ] Automated Content Recycling
+- [ ] Advanced Scheduling Algorithms
+
+### Phase 3: Enterprise Features 📋
+- [ ] White-label Solutions
+- [ ] Advanced Team Management
+- [ ] Custom Integrations
+- [ ] Advanced Security Features
+- [ ] Mobile App Development
+
+### Phase 4: AI Enhancement 🤖
+- [ ] Content Performance Prediction
+- [ ] Automated Content Optimization
+- [ ] Audience Behavior Analysis
+- [ ] Competitor Analysis
+- [ ] Trend Prediction
+
+## 🙏 Acknowledgments
+
+- OpenAI for providing the AI capabilities
+- Social media platforms for their APIs
+- The open-source community for various libraries and tools
+- All contributors and beta testers
 
 ---
 
-Built with ❤️ using Next.js and modern web technologies.
+**PostPal** - Transform your social media presence with AI-powered content creation and management.

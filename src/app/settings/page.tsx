@@ -5,6 +5,7 @@ import DashboardLayout from "@/components/DashboardLayout";
 import Container from "@/components/Container";
 import PageHeader from "@/components/PageHeader";
 import APIIntegration from "@/components/APIIntegration";
+import EmailSettings from "@/components/EmailSettings";
 
 interface SocialAccount {
   id: string;
@@ -187,7 +188,8 @@ export default function SettingsPage() {
             { id: "accounts", label: "Social Accounts", icon: "🔗" },
             { id: "integrations", label: "Integrations", icon: "⚙️" },
             { id: "automation", label: "Automation", icon: "🤖" },
-            { id: "notifications", label: "Notifications", icon: "🔔" }
+            { id: "notifications", label: "Notifications", icon: "🔔" },
+            { id: "email", label: "Email Settings", icon: "📧" }
           ].map((tab) => (
             <button
               key={tab.id}
@@ -443,6 +445,10 @@ export default function SettingsPage() {
                 </div>
               </div>
             </motion.div>
+          )}
+
+          {activeTab === "email" && (
+            <EmailSettings />
           )}
         </AnimatePresence>
 

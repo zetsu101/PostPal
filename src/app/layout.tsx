@@ -4,6 +4,7 @@ import "./globals.css";
 import { ToastProvider } from "@/components/ui/Toast";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
+import MigrationBanner from "@/components/MigrationBanner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -171,6 +172,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ToastProvider>
+              <MigrationBanner />
               {children}
             </ToastProvider>
           </AuthProvider>

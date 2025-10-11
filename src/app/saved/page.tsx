@@ -1,453 +1,625 @@
 "use client";
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import DashboardLayout from "@/components/DashboardLayout";
-import Container from "@/components/Container";
-import PageHeader from "@/components/PageHeader";
+import { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { 
+  Bookmark, 
+  Folder, 
+  Search, 
+  Filter, 
+  Plus, 
+  MoreVertical,
+  Edit,
+  Trash2,
+  Copy,
+  Download,
+  Share2,
+  Star,
+  Tag,
+  Calendar,
+  Eye,
+  EyeOff,
+  Grid,
+  List,
+  Sparkles,
+  Zap,
+  Target,
+  BarChart3,
+  Clock,
+  CheckCircle,
+  AlertCircle,
+  Loader2,
+  FolderPlus,
+  BookmarkPlus,
+  RefreshCw,
+  Upload,
+  Download as DownloadIcon
+} from 'lucide-react';
+import Button from '@/components/ui/Button';
+import { useToast } from '@/components/ui/Toast';
+import Container from '@/components/Container';
+import PageHeader from '@/components/PageHeader';
+import { GeneratedContent } from '@/lib/ai-service';
 
-interface AITool {
+interface SavedContent extends GeneratedContent {
+  id: string;
+  title: string;
+  category: string;
+  tags: string[];
+  isFavorite: boolean;
+  isTemplate: boolean;
+  usageCount: number;
+  lastUsed?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface Category {
   id: string;
   name: string;
-  description: string;
-  icon: string;
   color: string;
-  status: "available" | "premium" | "coming-soon";
-  features: string[];
+  icon: any;
+  count: number;
 }
 
-interface GeneratedContent {
-  id: string;
-  type: "image" | "hashtags" | "caption" | "prediction";
-  title: string;
-  content: string;
-  platform: string;
-  createdAt: string;
-  status: "generated" | "processing" | "failed";
-}
+const CATEGORIES: Category[] = [
+  { id: 'all', name: 'All Content', color: 'from-gray-500 to-gray-600', icon: Bookmark, count: 0 },
+  { id: 'captions', name: 'Captions', color: 'from-purple-500 to-pink-500', icon: Sparkles, count: 0 },
+  { id: 'hashtags', name: 'Hashtags', color: 'from-blue-500 to-blue-600', icon: Tag, count: 0 },
+  { id: 'image-prompts', name: 'Image Prompts', color: 'from-green-500 to-green-600', icon: Eye, count: 0 },
+  { id: 'video-scripts', name: 'Video Scripts', color: 'from-orange-500 to-red-500', icon: Zap, count: 0 },
+  { id: 'carousel', name: 'Carousel Content', color: 'from-teal-500 to-cyan-500', icon: BarChart3, count: 0 },
+  { id: 'templates', name: 'Templates', color: 'from-indigo-500 to-purple-500', icon: Target, count: 0 },
+  { id: 'favorites', name: 'Favorites', color: 'from-yellow-500 to-orange-500', icon: Star, count: 0 },
+];
+
+const PLATFORMS = [
+  { id: 'instagram', name: 'Instagram', color: 'from-purple-500 to-pink-500' },
+  { id: 'linkedin', name: 'LinkedIn', color: 'from-blue-600 to-blue-700' },
+  { id: 'facebook', name: 'Facebook', color: 'from-blue-500 to-blue-600' },
+  { id: 'twitter', name: 'Twitter', color: 'from-blue-400 to-blue-500' },
+  { id: 'tiktok', name: 'TikTok', color: 'from-black to-gray-800' },
+];
 
 export default function SavedPage() {
-  const [activeTab, setActiveTab] = useState("ai-tools");
-  const [selectedTool, setSelectedTool] = useState<string | null>(null);
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generatedContent, setGeneratedContent] = useState<GeneratedContent[]>([]);
+  const { addToast } = useToast();
+  const [savedContent, setSavedContent] = useState<SavedContent[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filterPlatform, setFilterPlatform] = useState('all');
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [selectedContent, setSelectedContent] = useState<SavedContent | null>(null);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [contentToDelete, setContentToDelete] = useState<SavedContent | null>(null);
 
-  const aiTools: AITool[] = [
-    {
-      id: "image-generation",
-      name: "AI Image Generation",
-      description: "Create stunning visuals for your posts using AI",
-      icon: "🎨",
-      color: "from-[#FF6B6B] to-[#FF8E8E]",
-      status: "premium",
-      features: [
-        "Generate custom images from text prompts",
-        "Multiple style options (realistic, artistic, minimalist)",
-        "Brand-consistent color schemes",
-        "High-resolution outputs",
-        "Quick generation (30 seconds)"
-      ]
-    },
-    {
-      id: "hashtag-optimization",
-      name: "Hashtag Optimization",
-      description: "Find trending and relevant hashtags for maximum reach",
-      icon: "🏷️",
-      color: "from-[#4ECDC4] to-[#44A08D]",
-      status: "available",
-      features: [
-        "Trending hashtag suggestions",
-        "Industry-specific recommendations",
-        "Engagement rate analysis",
-        "Competitor hashtag research",
-        "Optimal hashtag count per platform"
-      ]
-    },
-    {
-      id: "content-prediction",
-      name: "Content Performance Prediction",
-      description: "Predict how your posts will perform before publishing",
-      icon: "🔮",
-      color: "from-[#A8E6CF] to-[#7FCDCD]",
-      status: "premium",
-      features: [
-        "Engagement rate predictions",
-        "Best posting time recommendations",
-        "Content type optimization",
-        "Audience response forecasting",
-        "ROI estimation"
-      ]
-    },
-    {
-      id: "caption-generator",
-      name: "AI Caption Generator",
-      description: "Create engaging captions that drive engagement",
-      icon: "✍️",
-      color: "from-[#FFD93D] to-[#FF6B6B]",
-      status: "available",
-      features: [
-        "Multiple tone options (professional, casual, humorous)",
-        "Platform-specific optimization",
-        "Call-to-action suggestions",
-        "Emoji recommendations",
-        "Character count optimization"
-      ]
-    },
-    {
-      id: "audience-analysis",
-      name: "Audience Analysis AI",
-      description: "Deep insights into your audience behavior and preferences",
-      icon: "👥",
-      color: "from-[#6C5CE7] to-[#A29BFE]",
-      status: "premium",
-      features: [
-        "Demographic analysis",
-        "Behavioral patterns",
-        "Content preference insights",
-        "Engagement timing analysis",
-        "Growth opportunity identification"
-      ]
-    },
-    {
-      id: "content-calendar-ai",
-      name: "Smart Content Calendar",
-      description: "AI-powered content planning and scheduling",
-      icon: "📅",
-      color: "from-[#FD79A8] to-[#FDCB6E]",
-      status: "coming-soon",
-      features: [
-        "Optimal posting schedule",
-        "Content mix recommendations",
-        "Seasonal trend integration",
-        "Competitor analysis",
-        "Automated content planning"
-      ]
-    }
-  ];
-
-  const handleGenerateContent = async (toolId: string) => {
-    setIsGenerating(true);
-    setSelectedTool(toolId);
-    
-    // Simulate AI generation
-    setTimeout(() => {
-      const newContent: GeneratedContent = {
-        id: Date.now().toString(),
-        type: toolId.includes("image") ? "image" : toolId.includes("hashtag") ? "hashtags" : "caption",
-        title: `Generated ${aiTools.find(t => t.id === toolId)?.name}`,
-        content: generateMockContent(toolId),
-        platform: "Instagram",
-        createdAt: new Date().toISOString(),
-        status: "generated"
-      };
+  // Mock data generation
+  useEffect(() => {
+    const generateMockContent = () => {
+      const content: SavedContent[] = [];
+      const contentTypes = ['caption', 'hashtags', 'image-prompt', 'video-script', 'carousel-content'] as const;
+      const platforms = ['instagram', 'linkedin', 'facebook', 'twitter', 'tiktok'] as const;
+      const categories = ['captions', 'hashtags', 'image-prompts', 'video-scripts', 'carousel', 'templates'] as const;
       
-      setGeneratedContent(prev => [newContent, ...prev]);
-      setIsGenerating(false);
-      setSelectedTool(null);
-    }, 3000);
+      for (let i = 0; i < 25; i++) {
+        const contentType = contentTypes[i % contentTypes.length];
+        const platform = platforms[i % platforms.length];
+        const category = categories[i % categories.length];
+        
+        content.push({
+          id: `content-${i}`,
+          title: `Saved ${contentType.replace('-', ' ')} ${i + 1}`,
+          type: contentType,
+          content: `This is a sample ${contentType} content for ${platform}. It includes engaging content that will resonate with our audience.`,
+          prompt: {
+            topic: `Topic ${i + 1}`,
+            platform,
+            contentType: 'post',
+            tone: 'professional',
+            targetAudience: 'Business professionals',
+            hashtagCount: 5,
+            language: 'English',
+            includeEmojis: true,
+          },
+          metadata: {
+            wordCount: Math.floor(Math.random() * 200) + 50,
+            hashtagCount: Math.floor(Math.random() * 10) + 1,
+            emojiCount: Math.floor(Math.random() * 5),
+            estimatedReadTime: Math.floor(Math.random() * 3) + 1,
+            generatedAt: new Date(),
+          },
+          category,
+          tags: ['business', 'marketing', 'social-media', 'content-creation'],
+          isFavorite: Math.random() > 0.7,
+          isTemplate: Math.random() > 0.8,
+          usageCount: Math.floor(Math.random() * 10),
+          lastUsed: Math.random() > 0.5 ? new Date() : undefined,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        });
+      }
+      
+      return content;
+    };
+
+    setTimeout(() => {
+      setSavedContent(generateMockContent());
+      setIsLoading(false);
+    }, 1000);
+  }, []);
+
+  // Update category counts
+  useEffect(() => {
+    const updatedCategories = CATEGORIES.map(category => ({
+      ...category,
+      count: category.id === 'all' 
+        ? savedContent.length 
+        : category.id === 'favorites'
+          ? savedContent.filter(content => content.isFavorite).length
+          : savedContent.filter(content => content.category === category.id).length
+    }));
+    // In a real app, you'd update the categories state here
+  }, [savedContent]);
+
+  const filteredContent = savedContent.filter(content => {
+    const matchesCategory = selectedCategory === 'all' || 
+      (selectedCategory === 'favorites' ? content.isFavorite : content.category === selectedCategory);
+    const matchesPlatform = filterPlatform === 'all' || content.prompt.platform === filterPlatform;
+    const matchesSearch = searchQuery === '' || 
+      content.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      content.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      content.tags.some(tag => tag.toLowerCase().includes(searchQuery.toLowerCase()));
+    
+    return matchesCategory && matchesPlatform && matchesSearch;
+  });
+
+  const handleFavorite = (contentId: string) => {
+    setSavedContent(prev => prev.map(content => 
+      content.id === contentId 
+        ? { ...content, isFavorite: !content.isFavorite }
+        : content
+    ));
+    addToast({
+      title: 'Favorite Updated',
+      message: 'Content favorite status has been updated',
+      type: 'success',
+    });
   };
 
-  const generateMockContent = (toolId: string): string => {
-    switch (toolId) {
-      case "image-generation":
-        return "A modern workspace with a laptop showing social media analytics, surrounded by creative elements like colorful sticky notes, a coffee cup, and natural lighting";
-      case "hashtag-optimization":
-        return "#SocialMediaMarketing #DigitalMarketing #ContentCreation #MarketingTips #BusinessGrowth #SocialMediaStrategy #Marketing #Entrepreneur #SmallBusiness #Branding";
-      case "caption-generator":
-        return "🚀 Ready to transform your social media game? Our latest insights show that consistent posting can increase engagement by up to 40%! 💡\n\nWhat's your biggest social media challenge? Drop it below! 👇\n\n#SocialMediaTips #GrowthHacking #DigitalMarketing";
-      case "content-prediction":
-        return "Predicted Engagement Rate: 8.5%\nEstimated Reach: 12,400\nBest Posting Time: 2:00 PM\nRecommended Hashtags: 5-7\nContent Type: Video (2.5x more engagement)";
-      default:
-        return "AI-generated content based on your brand profile and current trends";
+  const handleDuplicate = (content: SavedContent) => {
+    const newContent: SavedContent = {
+      ...content,
+      id: `content-${Date.now()}`,
+      title: `${content.title} (Copy)`,
+      isFavorite: false,
+      usageCount: 0,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+    setSavedContent(prev => [...prev, newContent]);
+    addToast({
+      title: 'Content Duplicated',
+      message: 'A copy has been created',
+      type: 'success',
+    });
+  };
+
+  const handleDelete = (content: SavedContent) => {
+    setContentToDelete(content);
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = () => {
+    if (contentToDelete) {
+      setSavedContent(prev => prev.filter(content => content.id !== contentToDelete.id));
+      addToast({
+        title: 'Content Deleted',
+        message: 'The content has been permanently removed',
+        type: 'success',
+      });
+    }
+    setShowDeleteModal(false);
+    setContentToDelete(null);
+  };
+
+  const handleUseContent = (content: SavedContent) => {
+    setSavedContent(prev => prev.map(c => 
+      c.id === content.id 
+        ? { ...c, usageCount: c.usageCount + 1, lastUsed: new Date() }
+        : c
+    ));
+    addToast({
+      title: 'Content Used',
+      message: 'Content has been marked as used',
+      type: 'success',
+    });
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      addToast({
+        title: 'Copied!',
+        message: 'Content copied to clipboard',
+        type: 'success',
+      });
+    } catch (error) {
+      addToast({
+        title: 'Copy Failed',
+        message: 'Please copy manually',
+        type: 'error',
+      });
     }
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case "available":
-        return <span className="bg-[#34D399] text-white px-2 py-1 rounded-full text-xs font-medium">Available</span>;
-      case "premium":
-        return <span className="bg-[#F59E0B] text-white px-2 py-1 rounded-full text-xs font-medium">Premium</span>;
-      case "coming-soon":
-        return <span className="bg-[#6B7280] text-white px-2 py-1 rounded-full text-xs font-medium">Coming Soon</span>;
-      default:
-        return null;
-    }
+  const downloadContent = (content: SavedContent) => {
+    const blob = new Blob([content.content], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${content.title}-${content.prompt.platform}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    addToast({
+      title: 'Downloaded!',
+      message: 'Content saved to your device',
+      type: 'success',
+    });
   };
+
+  const getCategoryIcon = (categoryId: string) => {
+    const category = CATEGORIES.find(c => c.id === categoryId);
+    return category?.icon || Bookmark;
+  };
+
+  const getCategoryColor = (categoryId: string) => {
+    const category = CATEGORIES.find(c => c.id === categoryId);
+    return category?.color || 'from-gray-500 to-gray-600';
+  };
+
+  const getPlatformColor = (platform: string) => {
+    const platformData = PLATFORMS.find(p => p.id === platform);
+    return platformData?.color || 'from-gray-500 to-gray-600';
+  };
+
+  if (isLoading) {
+    return (
+      <Container className="py-8">
+        <div className="flex items-center justify-center min-h-[400px]">
+          <Loader2 className="w-8 h-8 animate-spin text-[#87CEFA]" />
+        </div>
+      </Container>
+    );
+  }
 
   return (
-    <DashboardLayout>
-      <Container className="py-8">
-        <PageHeader
-          title="AI-Powered Features"
-          subtitle="Leverage AI to create, optimize, and predict your social success"
-        />
+    <Container className="py-8">
+      <PageHeader
+        title="Content Library"
+        subtitle="Save, organize, and reuse your generated content with templates and categories"
+        actions={
+          <div className="flex gap-3">
+            <Button
+              onClick={() => setShowCreateModal(true)}
+              className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] hover:from-[#87CEFA]/90 hover:to-[#40E0D0]/90"
+            >
+              <Plus className="w-4 h-4 mr-2" />
+              Save Content
+            </Button>
+            <Button variant="outline">
+              <Upload className="w-4 h-4 mr-2" />
+              Import
+            </Button>
+          </div>
+        }
+      />
 
-        {/* Navigation Tabs */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-          className="flex space-x-1 bg-gray-100 p-1 rounded-xl mb-8"
-        >
-          {[
-            { id: "ai-tools", label: "AI Tools", icon: "🤖" },
-            { id: "generated", label: "Generated Content", icon: "✨" },
-            { id: "insights", label: "AI Insights", icon: "📊" }
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center gap-2 px-6 py-3 rounded-lg font-semibold transition-all ${
-                activeTab === tab.id
-                  ? "bg-white text-[#64748B] shadow-md"
-                  : "text-[#6B7280] hover:text-[#1F2937]"
+      {/* Categories */}
+      <div className="mb-8">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-xl font-bold text-gray-900">Categories</h2>
+          <Button variant="outline" size="sm">
+            <FolderPlus className="w-4 h-4 mr-2" />
+            New Category
+          </Button>
+        </div>
+        
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-8 gap-4">
+          {CATEGORIES.map((category) => {
+            const Icon = category.icon;
+            const count = category.id === 'all' 
+              ? savedContent.length 
+              : category.id === 'favorites'
+                ? savedContent.filter(content => content.isFavorite).length
+                : savedContent.filter(content => content.category === category.id).length;
+            
+            return (
+              <motion.button
+                key={category.id}
+                onClick={() => setSelectedCategory(category.id)}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className={`p-4 rounded-xl border-2 transition-all duration-200 ${
+                  selectedCategory === category.id
+                    ? `border-[#87CEFA] bg-gradient-to-r ${category.color} text-white`
+                    : 'border-gray-200 hover:border-gray-300 text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                <div className="flex flex-col items-center gap-2">
+                  <Icon className="w-6 h-6" />
+                  <div className="text-center">
+                    <div className="font-medium text-sm">{category.name}</div>
+                    <div className="text-xs opacity-75">{count} items</div>
+                  </div>
+                </div>
+              </motion.button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Filters and Controls */}
+      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+        <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Search content..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
+              />
+            </div>
+            
+            <select
+              value={filterPlatform}
+              onChange={(e) => setFilterPlatform(e.target.value)}
+              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
+            >
+              <option value="all">All Platforms</option>
+              {PLATFORMS.map((platform) => (
+                <option key={platform.id} value={platform.id}>
+                  {platform.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              variant={viewMode === 'grid' ? 'primary' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('grid')}
+            >
+              <Grid className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'primary' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between text-sm text-gray-500">
+          <span>{filteredContent.length} items found</span>
+          <div className="flex items-center gap-4">
+            <span>Sort by:</span>
+            <select className="border-none bg-transparent focus:outline-none focus:ring-0">
+              <option value="recent">Most Recent</option>
+              <option value="oldest">Oldest First</option>
+              <option value="usage">Most Used</option>
+              <option value="favorite">Favorites First</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      {/* Content Grid/List */}
+      <div className={viewMode === 'grid' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6' : 'space-y-4'}>
+        <AnimatePresence>
+          {filteredContent.map((content, index) => (
+            <motion.div
+              key={content.id}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.1 }}
+              whileHover={{ scale: 1.02 }}
+              className={`bg-white rounded-xl shadow-lg overflow-hidden ${
+                viewMode === 'grid' ? 'p-6' : 'p-4'
               }`}
             >
-              <span>{tab.icon}</span>
-              <span>{tab.label}</span>
-            </button>
-          ))}
-        </motion.div>
-
-        {/* Content Based on Active Tab */}
-        <AnimatePresence mode="wait">
-          {activeTab === "ai-tools" && (
-            <motion.div
-              key="ai-tools"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
-            >
-              {/* AI Tools Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {aiTools.map((tool) => (
-                  <motion.div
-                    key={tool.id}
-                    whileHover={{ scale: 1.02 }}
-                    className="bg-white rounded-2xl shadow-lg p-6 border border-gray-100 hover:border-[#C7D2FE]/50 transition-all"
-                  >
-                    <div className="flex items-start justify-between mb-4">
-                      <div className={`w-12 h-12 bg-gradient-to-r ${tool.color} rounded-xl flex items-center justify-center`}>
-                        <span className="text-white text-2xl">{tool.icon}</span>
-                      </div>
-                      {getStatusBadge(tool.status)}
-                    </div>
-
-                    <h3 className="text-xl font-bold text-[#1F2937] mb-2">{tool.name}</h3>
-                    <p className="text-[#6B7280] mb-4">{tool.description}</p>
-
-                    <div className="space-y-2 mb-6">
-                      {tool.features.map((feature, index) => (
-                        <div key={index} className="flex items-center gap-2 text-sm text-[#6B7280]">
-                          <span className="text-[#34D399]">✓</span>
-                          <span>{feature}</span>
-                        </div>
-                      ))}
-                    </div>
-
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => handleGenerateContent(tool.id)}
-                      disabled={tool.status === "coming-soon" || isGenerating}
-                      className={`w-full py-3 rounded-xl font-semibold transition-all ${
-                        tool.status === "coming-soon"
-                          ? "bg-gray-100 text-[#6B7280] cursor-not-allowed"
-                          : isGenerating && selectedTool === tool.id
-                          ? "bg-[#C7D2FE] text-[#1F2937]"
-                          : "bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] hover:shadow-lg"
-                      }`}
-                    >
-                      {tool.status === "coming-soon" ? (
-                        "Coming Soon"
-                      ) : isGenerating && selectedTool === tool.id ? (
-                        <div className="flex items-center justify-center gap-2">
-                          <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                          <span>Generating...</span>
-                        </div>
-                      ) : (
-                        `Use ${tool.name}`
+              {/* Header */}
+              <div className="flex items-start justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <div className={`w-10 h-10 bg-gradient-to-r ${getCategoryColor(content.category)} rounded-lg flex items-center justify-center`}>
+                    {(() => {
+                      const Icon = getCategoryIcon(content.category);
+                      return <Icon className="w-5 h-5 text-white" />;
+                    })()}
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900 text-sm">{content.title}</h3>
+                    <div className="flex items-center gap-2 text-xs text-gray-500">
+                      <span className={`px-2 py-1 rounded-full bg-gradient-to-r ${getPlatformColor(content.prompt.platform)} text-white`}>
+                        {content.prompt.platform}
+                      </span>
+                      {content.isTemplate && (
+                        <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-600">
+                          Template
+                        </span>
                       )}
-                    </motion.button>
-                  </motion.div>
-                ))}
-              </div>
-
-              {/* AI Stats */}
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] rounded-lg flex items-center justify-center">
-                      <span className="text-white text-lg">🎨</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-[#1F2937]">156</div>
-                      <div className="text-sm text-[#6B7280]">Images Generated</div>
                     </div>
                   </div>
                 </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-[#34D399] to-[#6EE7B7] rounded-lg flex items-center justify-center">
-                      <span className="text-white text-lg">🏷️</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-[#1F2937]">2,340</div>
-                      <div className="text-sm text-[#6B7280]">Hashtags Suggested</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-[#FACC15] to-[#FDE047] rounded-lg flex items-center justify-center">
-                      <span className="text-white text-lg">✍️</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-[#1F2937]">89</div>
-                      <div className="text-sm text-[#6B7280]">Captions Created</div>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="bg-white rounded-2xl shadow-lg p-6">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="w-10 h-10 bg-gradient-to-r from-[#A78BFA] to-[#C4B5FD] rounded-lg flex items-center justify-center">
-                      <span className="text-white text-lg">🔮</span>
-                    </div>
-                    <div>
-                      <div className="text-2xl font-bold text-[#1F2937]">94%</div>
-                      <div className="text-sm text-[#6B7280]">Prediction Accuracy</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {activeTab === "generated" && (
-            <motion.div
-              key="generated"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
-            >
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#1F2937] mb-6">Generated Content</h2>
                 
-                {generatedContent.length === 0 ? (
-                  <div className="text-center py-12">
-                    <span className="text-6xl mb-4 block">✨</span>
-                    <h3 className="text-xl font-semibold text-[#1F2937] mb-2">No Generated Content Yet</h3>
-                    <p className="text-[#6B7280] mb-6">Start using AI tools to create amazing content</p>
-                    <button
-                      onClick={() => setActiveTab("ai-tools")}
-                      className="bg-gradient-to-r from-[#E0E7FF] to-[#C7D2FE] text-[#1F2937] px-6 py-3 rounded-xl font-semibold hover:shadow-lg transition-all"
-                    >
-                      Explore AI Tools
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-4">
-                    {generatedContent.map((content) => (
-                      <div key={content.id} className="p-6 border border-gray-200 rounded-xl hover:border-[#C7D2FE]/50 transition-all">
-                        <div className="flex items-start justify-between mb-4">
-                          <div>
-                            <h3 className="font-semibold text-[#1F2937] mb-1">{content.title}</h3>
-                            <div className="flex items-center gap-2 text-sm text-[#6B7280]">
-                              <span>{content.platform}</span>
-                              <span>•</span>
-                              <span>{new Date(content.createdAt).toLocaleDateString()}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-2">
-                            <span className={`w-2 h-2 rounded-full ${
-                              content.status === "generated" ? "bg-[#34D399]" : 
-                              content.status === "processing" ? "bg-[#F59E0B]" : "bg-[#EF4444]"
-                            }`}></span>
-                            <span className="text-sm text-[#6B7280] capitalize">{content.status}</span>
-                          </div>
-                        </div>
-                        
-                        <div className="bg-gray-50 rounded-lg p-4 mb-4">
-                          <p className="text-[#1F2937] whitespace-pre-wrap">{content.content}</p>
-                        </div>
-                        
-                        <div className="flex gap-2">
-                          <button className="px-4 py-2 bg-[#C7D2FE] text-[#1F2937] rounded-lg text-sm font-medium hover:bg-[#A5B4FC] transition-colors">
-                            Use Content
-                          </button>
-                          <button className="px-4 py-2 bg-gray-100 text-[#1F2937] rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                            Regenerate
-                          </button>
-                          <button className="px-4 py-2 bg-gray-100 text-[#1F2937] rounded-lg text-sm font-medium hover:bg-gray-200 transition-colors">
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
+                <div className="flex items-center gap-1">
+                  <button
+                    onClick={() => handleFavorite(content.id)}
+                    className={`p-1 rounded hover:bg-gray-100 ${
+                      content.isFavorite ? 'text-yellow-500' : 'text-gray-400'
+                    }`}
+                  >
+                    <Star className="w-4 h-4" fill={content.isFavorite ? 'currentColor' : 'none'} />
+                  </button>
+                  <button className="p-1 rounded hover:bg-gray-100 text-gray-400">
+                    <MoreVertical className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Content Preview */}
+              <div className="mb-4">
+                <p className="text-sm text-gray-600 line-clamp-3">{content.content}</p>
+              </div>
+
+              {/* Tags */}
+              <div className="flex flex-wrap gap-1 mb-4">
+                {content.tags.slice(0, 3).map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+                {content.tags.length > 3 && (
+                  <span className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs">
+                    +{content.tags.length - 3}
+                  </span>
                 )}
               </div>
-            </motion.div>
-          )}
 
-          {activeTab === "insights" && (
+              {/* Stats */}
+              <div className="flex items-center justify-between text-xs text-gray-500 mb-4">
+                <div className="flex items-center gap-4">
+                  <span>{content.metadata.wordCount} words</span>
+                  <span>{content.usageCount} uses</span>
+                  {content.lastUsed && (
+                    <span>{content.lastUsed.toLocaleDateString()}</span>
+                  )}
+                </div>
+              </div>
+
+              {/* Actions */}
+              <div className="flex gap-2">
+                <Button
+                  onClick={() => handleUseContent(content)}
+                  size="sm"
+                  className="flex-1 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] hover:from-[#87CEFA]/90 hover:to-[#40E0D0]/90"
+                >
+                  <Zap className="w-3 h-3 mr-1" />
+                  Use
+                </Button>
+                <Button
+                  onClick={() => copyToClipboard(content.content)}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Copy className="w-3 h-3" />
+                </Button>
+                <Button
+                  onClick={() => downloadContent(content)}
+                  variant="outline"
+                  size="sm"
+                >
+                  <DownloadIcon className="w-3 h-3" />
+                </Button>
+                <Button
+                  onClick={() => handleDuplicate(content)}
+                  variant="outline"
+                  size="sm"
+                >
+                  <Copy className="w-3 h-3" />
+                </Button>
+                <Button
+                  onClick={() => handleDelete(content)}
+                  variant="outline"
+                  size="sm"
+                  className="text-red-500 hover:text-red-600"
+                >
+                  <Trash2 className="w-3 h-3" />
+                </Button>
+              </div>
+            </motion.div>
+          ))}
+        </AnimatePresence>
+      </div>
+
+      {/* Empty State */}
+      {filteredContent.length === 0 && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="text-center py-12"
+        >
+          <Bookmark className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+          <h3 className="text-lg font-medium text-gray-900 mb-2">No content found</h3>
+          <p className="text-gray-500 mb-6">
+            {searchQuery || filterPlatform !== 'all' || selectedCategory !== 'all'
+              ? 'Try adjusting your search or filters'
+              : 'Start by saving some content from your AI generator'}
+          </p>
+          <Button
+            onClick={() => setShowCreateModal(true)}
+            className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] hover:from-[#87CEFA]/90 hover:to-[#40E0D0]/90"
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Save Your First Content
+          </Button>
+        </motion.div>
+      )}
+
+      {/* Delete Confirmation Modal */}
+      <AnimatePresence>
+        {showDeleteModal && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+            onClick={() => setShowDeleteModal(false)}
+          >
             <motion.div
-              key="insights"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="space-y-8"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-2xl p-6 w-full max-w-md mx-4"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="bg-white rounded-2xl shadow-lg p-6">
-                <h2 className="text-2xl font-bold text-[#1F2937] mb-6">AI Insights</h2>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="p-6 border border-gray-200 rounded-xl">
-                    <h3 className="font-semibold text-[#1F2937] mb-4">Content Performance Insights</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#6B7280]">Best performing content type</span>
-                        <span className="font-semibold text-[#1F2937]">Video Posts</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#6B7280]">Optimal posting frequency</span>
-                        <span className="font-semibold text-[#1F2937]">3-4 times per week</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#6B7280]">Peak engagement time</span>
-                        <span className="font-semibold text-[#1F2937]">2:00 PM - 4:00 PM</span>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <div className="p-6 border border-gray-200 rounded-xl">
-                    <h3 className="font-semibold text-[#1F2937] mb-4">Audience Insights</h3>
-                    <div className="space-y-3">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#6B7280]">Primary audience age</span>
-                        <span className="font-semibold text-[#1F2937]">25-34 years</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#6B7280]">Top interests</span>
-                        <span className="font-semibold text-[#1F2937]">Technology, Business</span>
-                      </div>
-                      <div className="flex justify-between text-sm">
-                        <span className="text-[#6B7280]">Engagement rate trend</span>
-                        <span className="font-semibold text-[#34D399]">+12% this month</span>
-                      </div>
-                    </div>
-                  </div>
+              <div className="text-center">
+                <AlertCircle className="w-12 h-12 text-red-500 mx-auto mb-4" />
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Content?</h3>
+                <p className="text-gray-600 mb-6">
+                  This action cannot be undone. The content will be permanently removed from your library.
+                </p>
+                <div className="flex gap-3">
+                  <Button
+                    onClick={() => setShowDeleteModal(false)}
+                    variant="outline"
+                    className="flex-1"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={confirmDelete}
+                    className="flex-1 bg-red-500 hover:bg-red-600"
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
             </motion.div>
-          )}
-        </AnimatePresence>
-      </Container>
-    </DashboardLayout>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </Container>
   );
 } 

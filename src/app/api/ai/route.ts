@@ -1,6 +1,32 @@
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
 
+// Mock content generation for fallback
+function generateMockContent(type: string, prompt: any): string {
+  console.log('🎭 Generating mock content as fallback');
+  
+  const { topic, platform, contentType, tone, targetAudience, hashtagCount, language, includeEmojis, callToAction } = prompt;
+  
+  switch (type) {
+    case 'caption':
+      return `🎯 **${topic}** - ${contentType} for ${platform}\n\nDiscover the amazing world of ${topic}! ${includeEmojis ? '🚀 ✨ 💡' : ''}\n\nThis ${tone} content will help you understand why ${topic} matters in today's digital landscape. Perfect for sharing insights and sparking conversations.\n\n${generateMockHashtags(hashtagCount)}\n\n${callToAction || 'What are your thoughts on this?'}`;
+    
+    case 'hashtags':
+      return generateMockHashtags(hashtagCount);
+    
+    case 'image-prompt':
+      return `Create a professional ${tone} image featuring ${topic} for ${platform} ${contentType}. Style: modern, engaging, ${targetAudience ? `targeting ${targetAudience}` : 'appealing to all audiences'}`;
+    
+    default:
+      return `Mock ${type} content for ${topic} on ${platform}`;
+  }
+}
+
+function generateMockHashtags(count: number): string {
+  const hashtags = ['#innovation', '#technology', '#growth', '#success', '#inspiration', '#motivation', '#business', '#digital', '#future', '#trending'];
+  return hashtags.slice(0, count).join(' ');
+}
+
 // Initialize OpenAI client (server-side only) - only when needed
 let openai: OpenAI | null = null;
 
@@ -15,7 +41,13 @@ function getOpenAI() {
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('🚀 AI API route called');
+    console.log('🔑 Environment check - NODE_ENV:', process.env.NODE_ENV);
+    console.log('🔑 Environment check - OPENAI_API_KEY exists:', !!process.env.OPENAI_API_KEY);
+    
     const body = await request.json();
+    console.log('📝 Request body:', body);
+    
     const { 
       type, 
       prompt, 
@@ -80,30 +112,63 @@ export async function POST(request: NextRequest) {
 
           const openaiClient = getOpenAI();
       if (!openaiClient) {
+        console.error('❌ OpenAI client not initialized');
         return NextResponse.json(
           { error: 'OpenAI API key not configured' },
           { status: 500 }
         );
       }
 
-      const completion = await openaiClient.chat.completions.create({
-      model,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
-      max_tokens: maxTokens,
-      temperature,
-    });
+      console.log('🤖 Making OpenAI API call...');
+      console.log('📝 System prompt:', systemPrompt);
+      console.log('👤 User prompt:', userPrompt);
 
-    const content = completion.choices[0]?.message?.content || '';
+      try {
+        const completion = await openaiClient.chat.completions.create({
+          model,
+          messages: [
+            { role: 'system', content: systemPrompt },
+            { role: 'user', content: userPrompt }
+          ],
+          max_tokens: maxTokens,
+          temperature,
+        });
 
-    return NextResponse.json({
-      success: true,
-      content,
-      type,
-      prompt
-    });
+        console.log('✅ OpenAI API call successful');
+        const content = completion.choices[0]?.message?.content || '';
+        console.log('📄 Generated content:', content);
+
+        return NextResponse.json({
+          success: true,
+          content,
+          type,
+          prompt
+        });
+      } catch (openaiError) {
+        console.error('❌ OpenAI API error:', openaiError);
+        
+        // Check if it's a quota issue and provide helpful feedback
+        if (openaiError && typeof openaiError === 'object' && 'status' in openaiError && openaiError.status === 429) {
+          console.warn('⚠️ OpenAI quota exceeded - falling back to mock data temporarily');
+          console.warn('💡 To fix this: Add billing method to your OpenAI account');
+          
+          // Generate mock content as fallback
+          const mockContent = generateMockContent(type, prompt);
+          return NextResponse.json({
+            success: true,
+            content: mockContent,
+            type,
+            prompt,
+            isMock: true,
+            message: 'Using mock data due to OpenAI quota limit. Add billing method to unlock real AI generation.'
+          });
+        }
+        
+        return NextResponse.json(
+          { error: `OpenAI API error: ${openaiError instanceof Error ? openaiError.message : 'Unknown error'}` },
+          { status: 500 }
+        );
+      }
 
   } catch (error) {
     console.error('AI API error:', error);
