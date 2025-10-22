@@ -1,6 +1,7 @@
 import { NextRequest } from 'next/server';
 import { stripe, CreateCheckoutSessionParams } from '@/lib/stripe';
 import { APIResponse, createValidationMiddleware, validationSchemas } from '@/lib/api-middleware';
+import Stripe from 'stripe';
 
 const checkoutValidationSchema = validationSchemas.pagination.extend({
   customerId: validationSchemas.pagination.shape.page.optional(),
@@ -13,7 +14,7 @@ const checkoutValidationSchema = validationSchemas.pagination.extend({
 export async function POST(request: NextRequest) {
   try {
     // Validate request
-    const validation = createValidationMiddleware(checkoutValidationSchema)(request);
+    const validation = await createValidationMiddleware(checkoutValidationSchema)(request);
     if (!validation.success) {
       return APIResponse.validationError(validation.errors);
     }

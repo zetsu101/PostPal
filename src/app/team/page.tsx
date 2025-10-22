@@ -1,8 +1,8 @@
 "use client";
 import DashboardLayout from "@/components/DashboardLayout";
-import TeamCollaboration from "@/components/TeamCollaboration";
-import Container from "@/components/Container";
-import PageHeader from "@/components/PageHeader";
+import TeamCollaborationAdvanced from "@/components/TeamCollaborationAdvanced";
+import { Container } from "@/components/Container";
+import { PageHeader } from "@/components/PageHeader";
 
 export default function TeamPage() {
   return (
@@ -12,7 +12,7 @@ export default function TeamPage() {
           title="Team Collaboration"
           subtitle="Manage members, workspaces, and approvals"
         />
-        <TeamCollaboration />
+        <TeamCollaborationAdvanced />
       </Container>
     </DashboardLayout>
   );

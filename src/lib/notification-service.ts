@@ -1,5 +1,18 @@
-import { emailService } from './email';
-import { supabase } from './supabase';
+"use client";
+
+import { useToast } from '@/components/ui/Toast';
+
+export interface NotificationData {
+  id: string;
+  type: 'success' | 'error' | 'warning' | 'info';
+  title: string;
+  message: string;
+  timestamp: Date;
+  isRead: boolean;
+  category?: 'post' | 'analytics' | 'team' | 'system' | 'billing';
+  actionUrl?: string;
+  actionLabel?: string;
+}
 
 export interface NotificationPreferences {
   email: boolean;
@@ -11,303 +24,268 @@ export interface NotificationPreferences {
   weeklyDigest: boolean;
 }
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  notificationPreferences?: NotificationPreferences;
-}
+class NotificationService {
+  private listeners: Array<(notifications: NotificationData[]) => void> = [];
+  private notifications: NotificationData[] = [];
+  private maxNotifications = 50;
 
-export class NotificationService {
-  private defaultPreferences: NotificationPreferences = {
-    email: true,
-    postScheduled: true,
-    postPublished: false,
-    postFailed: true,
-    analyticsSummary: true,
-    paymentNotifications: true,
-    weeklyDigest: true,
-  };
-
-  async getUser(userId: string): Promise<User | null> {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, email, name, notification_preferences')
-        .eq('id', userId)
-        .single();
-
-      if (error) {
-        console.error('Error fetching user:', error);
-        return null;
-      }
-
-      return {
-        id: data.id,
-        email: data.email,
-        name: data.name,
-        notificationPreferences: data.notification_preferences || this.defaultPreferences,
-      };
-    } catch (error) {
-      console.error('Error in getUser:', error);
-      return null;
-    }
+  // Subscribe to notification updates
+  subscribe(listener: (notifications: NotificationData[]) => void) {
+    this.listeners.push(listener);
+    return () => {
+      this.listeners = this.listeners.filter(l => l !== listener);
+    };
   }
 
-  async sendWelcomeEmail(userId: string): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.email) {
-      return false;
-    }
-
-    const result = await emailService.sendWelcomeEmail(user.email, user.name);
-    return result.success;
+  // Notify all listeners
+  private notify() {
+    this.listeners.forEach(listener => listener([...this.notifications]));
   }
 
-  async sendPostScheduledNotification(
-    userId: string, 
-    platform: string, 
-    scheduledTime: string, 
-    content: string
-  ): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.postScheduled) {
-      return false;
-    }
+  // Add a new notification
+  addNotification(notification: Omit<NotificationData, 'id' | 'timestamp' | 'isRead'>) {
+    const newNotification: NotificationData = {
+      ...notification,
+      id: Math.random().toString(36).substr(2, 9),
+      timestamp: new Date(),
+      isRead: false,
+    };
 
-    const result = await emailService.sendPostScheduled(user.email, {
-      platform,
-      scheduledTime,
-      content,
-    });
-    return result.success;
-  }
-
-  async sendPaymentConfirmationNotification(
-    userId: string,
-    amount: number,
-    plan: string,
-    invoiceUrl?: string
-  ): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.paymentNotifications) {
-      return false;
-    }
-
-    const result = await emailService.sendPaymentConfirmation(user.email, {
-      amount,
-      plan,
-      invoiceUrl,
-    });
-    return result.success;
-  }
-
-  async sendAnalyticsSummaryNotification(userId: string): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.analyticsSummary) {
-      return false;
-    }
-
-    // Fetch user's analytics data
-    const analyticsData = await this.getUserAnalytics(userId);
-    if (!analyticsData) {
-      return false;
-    }
-
-    const result = await emailService.sendAnalyticsSummary(user.email, analyticsData);
-    return result.success;
-  }
-
-  async sendPostFailedNotification(
-    userId: string,
-    platform: string,
-    error: string
-  ): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.postFailed) {
-      return false;
-    }
-
-    const result = await emailService.sendEmail(user.email, 'post-failed', {
-      platform,
-      error,
-      userName: user.name,
-      dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
-    });
-    return result.success;
-  }
-
-  async sendPostPublishedNotification(
-    userId: string,
-    platform: string,
-    postUrl: string,
-    content: string
-  ): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.postPublished) {
-      return false;
-    }
-
-    const result = await emailService.sendEmail(user.email, 'post-published', {
-      platform,
-      postUrl,
-      content,
-      userName: user.name,
-      dashboardUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard`,
-    });
-    return result.success;
-  }
-
-  async sendSubscriptionCancelledNotification(userId: string): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user || !user.notificationPreferences?.paymentNotifications) {
-      return false;
-    }
-
-    const result = await emailService.sendEmail(user.email, 'subscription-cancelled', {
-      userName: user.name,
-      supportUrl: `${process.env.NEXT_PUBLIC_APP_URL}/support`,
-      billingUrl: `${process.env.NEXT_PUBLIC_APP_URL}/billing`,
-    });
-    return result.success;
-  }
-
-  async sendPasswordResetNotification(
-    userId: string,
-    resetToken: string
-  ): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user) {
-      return false;
-    }
-
-    const resetUrl = `${process.env.NEXT_PUBLIC_APP_URL}/reset-password?token=${resetToken}`;
+    this.notifications.unshift(newNotification);
     
-    const result = await emailService.sendEmail(user.email, 'password-reset', {
-      userName: user.name,
-      resetUrl,
-      expiresIn: '1 hour',
-    });
-    return result.success;
-  }
-
-  async sendAccountVerificationNotification(
-    userId: string,
-    verificationToken: string
-  ): Promise<boolean> {
-    const user = await this.getUser(userId);
-    if (!user) {
-      return false;
+    // Keep only the latest notifications
+    if (this.notifications.length > this.maxNotifications) {
+      this.notifications = this.notifications.slice(0, this.maxNotifications);
     }
 
-    const verificationUrl = `${process.env.NEXT_PUBLIC_APP_URL}/verify-account?token=${verificationToken}`;
-    
-    const result = await emailService.sendEmail(user.email, 'account-verification', {
-      userName: user.name,
-      verificationUrl,
-    });
-    return result.success;
+    this.notify();
+
+    // Show browser notification if permission is granted
+    this.showBrowserNotification(newNotification);
+
+    return newNotification.id;
   }
 
-  private async getUserAnalytics(userId: string) {
-    try {
-      // Fetch user's analytics data from the last week
-      const oneWeekAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-      
-      const { data: posts, error: postsError } = await supabase
-        .from('posts')
-        .select('platform, analytics')
-        .eq('user_id', userId)
-        .gte('published_at', oneWeekAgo.toISOString())
-        .eq('status', 'published');
+  // Mark notification as read
+  markAsRead(id: string) {
+    const notification = this.notifications.find(n => n.id === id);
+    if (notification && !notification.isRead) {
+      notification.isRead = true;
+      this.notify();
+    }
+  }
 
-      if (postsError) {
-        console.error('Error fetching posts:', postsError);
-        return null;
-      }
+  // Mark all notifications as read
+  markAllAsRead() {
+    this.notifications.forEach(n => n.isRead = true);
+    this.notify();
+  }
 
-      const user = await this.getUser(userId);
-      if (!user) return null;
+  // Get all notifications
+  getNotifications() {
+    return [...this.notifications];
+  }
 
-      // Calculate analytics
-      const totalPosts = posts?.length || 0;
-      const totalEngagement = posts?.reduce((sum, post) => {
-        const analytics = post.analytics || {};
-        return sum + (analytics.likes || 0) + (analytics.comments || 0) + (analytics.shares || 0);
-      }, 0) || 0;
+  // Get unread count
+  getUnreadCount() {
+    return this.notifications.filter(n => !n.isRead).length;
+  }
 
-      // Find top platform
-      const platformCounts: Record<string, number> = {};
-      posts?.forEach(post => {
-        platformCounts[post.platform] = (platformCounts[post.platform] || 0) + 1;
+  // Clear all notifications
+  clearAll() {
+    this.notifications = [];
+    this.notify();
+  }
+
+  // Show browser notification
+  private async showBrowserNotification(notification: NotificationData) {
+    if (typeof window === 'undefined') return;
+
+    // Check if browser notifications are supported
+    if (!('Notification' in window)) return;
+
+    // Request permission if not already granted
+    if (Notification.permission === 'default') {
+      await Notification.requestPermission();
+    }
+
+    // Show notification if permission is granted
+    if (Notification.permission === 'granted') {
+      const browserNotification = new Notification(notification.title, {
+        body: notification.message,
+        icon: '/favicon.ico',
+        badge: '/favicon.ico',
+        tag: notification.id,
+        requireInteraction: notification.type === 'error' || notification.type === 'warning',
       });
 
-      const topPlatform = Object.entries(platformCounts)
-        .sort(([,a], [,b]) => b - a)[0]?.[0] || 'Instagram';
+      // Auto-close after 5 seconds for non-critical notifications
+      if (notification.type !== 'error' && notification.type !== 'warning') {
+        setTimeout(() => {
+          browserNotification.close();
+        }, 5000);
+      }
 
-      return {
-        userName: user.name,
-        totalPosts,
-        totalEngagement,
-        topPlatform,
+      // Handle notification click
+      browserNotification.onclick = () => {
+        window.focus();
+        browserNotification.close();
+        
+        // Navigate to action URL if provided
+        if (notification.actionUrl) {
+          window.location.href = notification.actionUrl;
+        }
       };
-    } catch (error) {
-      console.error('Error calculating analytics:', error);
-      return null;
     }
   }
 
-  async updateNotificationPreferences(
-    userId: string,
-    preferences: Partial<NotificationPreferences>
-  ): Promise<boolean> {
-    try {
-      const { error } = await supabase
-        .from('users')
-        .update({ 
-          notification_preferences: preferences,
-          updated_at: new Date().toISOString(),
-        })
-        .eq('id', userId);
+  // Predefined notification types
+  postPublished = (platform: string, postTitle: string) => {
+    this.addNotification({
+      type: 'success',
+      title: 'Post Published! 🎉',
+      message: `"${postTitle}" has been successfully published to ${platform}`,
+      category: 'post',
+    });
+  };
 
-      if (error) {
-        console.error('Error updating notification preferences:', error);
-        return false;
-      }
+  postFailed = (platform: string, error: string) => {
+    this.addNotification({
+      type: 'error',
+      title: 'Post Failed ❌',
+      message: `Failed to publish to ${platform}: ${error}`,
+      category: 'post',
+    });
+  };
 
-      return true;
-    } catch (error) {
-      console.error('Error in updateNotificationPreferences:', error);
-      return false;
-    }
-  }
+  analyticsMilestone = (metric: string, value: string) => {
+    this.addNotification({
+      type: 'info',
+      title: 'Analytics Milestone 📊',
+      message: `Your ${metric} reached ${value}! Great job!`,
+      category: 'analytics',
+    });
+  };
 
-  // Batch operations for efficiency
-  async sendWeeklyAnalyticsDigest(): Promise<void> {
-    try {
-      // Get all users who want weekly digest
-      const { data: users, error } = await supabase
-        .from('users')
-        .select('id')
-        .contains('notification_preferences', { weeklyDigest: true });
+  teamMemberJoined = (memberName: string) => {
+    this.addNotification({
+      type: 'info',
+      title: 'New Team Member 👥',
+      message: `${memberName} has joined your team`,
+      category: 'team',
+    });
+  };
 
-      if (error) {
-        console.error('Error fetching users for weekly digest:', error);
-        return;
-      }
+  billingAlert = (message: string) => {
+    this.addNotification({
+      type: 'warning',
+      title: 'Billing Alert 💳',
+      message,
+      category: 'billing',
+      actionUrl: '/billing',
+      actionLabel: 'View Billing',
+    });
+  };
 
-      // Send analytics summary to each user
-      const promises = users?.map(user => 
-        this.sendAnalyticsSummaryNotification(user.id)
-      ) || [];
+  systemUpdate = (message: string) => {
+    this.addNotification({
+      type: 'info',
+      title: 'System Update 🔄',
+      message,
+      category: 'system',
+    });
+  };
 
-      await Promise.allSettled(promises);
-      console.log(`✅ Weekly analytics digest sent to ${users?.length || 0} users`);
-    } catch (error) {
-      console.error('Error sending weekly analytics digest:', error);
-    }
-  }
+  // AI-generated insights
+  aiInsight = (insight: string, actionUrl?: string) => {
+    this.addNotification({
+      type: 'info',
+      title: 'AI Insight 🤖',
+      message: insight,
+      category: 'analytics',
+      actionUrl,
+      actionLabel: 'View Details',
+    });
+  };
+
+  // Content suggestions
+  contentSuggestion = (suggestion: string, platform: string) => {
+    this.addNotification({
+      type: 'info',
+      title: 'Content Suggestion ✨',
+      message: `AI suggests: "${suggestion}" for ${platform}`,
+      category: 'post',
+      actionUrl: '/create',
+      actionLabel: 'Create Post',
+    });
+  };
+
+  // Engagement alerts
+  highEngagement = (postTitle: string, engagementRate: string) => {
+    this.addNotification({
+      type: 'success',
+      title: 'High Engagement! 🔥',
+      message: `"${postTitle}" has ${engagementRate}% engagement rate`,
+      category: 'analytics',
+      actionUrl: '/analytics',
+      actionLabel: 'View Analytics',
+    });
+  };
+
+  // Trend alerts
+  trendingHashtag = (hashtag: string, mentions: number) => {
+    this.addNotification({
+      type: 'info',
+      title: 'Trending Hashtag 📈',
+      message: `#${hashtag} is trending with ${mentions} mentions`,
+      category: 'analytics',
+      actionUrl: '/create',
+      actionLabel: 'Use Hashtag',
+    });
+  };
 }
 
+// Create singleton instance
 export const notificationService = new NotificationService();
 
+// Hook for using notifications in React components
+export function useNotifications() {
+  const toast = useToast();
+
+  const showToast = (notification: Omit<NotificationData, 'id' | 'timestamp' | 'isRead'>) => {
+    // Add to notification service
+    const id = notificationService.addNotification(notification);
+    
+    // Also show as toast
+    toast.addToast({
+      type: notification.type,
+      title: notification.title,
+      message: notification.message,
+      duration: notification.type === 'error' ? 8000 : 5000,
+    });
+
+    return id;
+  };
+
+  return {
+    addNotification: notificationService.addNotification.bind(notificationService),
+    markAsRead: notificationService.markAsRead.bind(notificationService),
+    markAllAsRead: notificationService.markAllAsRead.bind(notificationService),
+    getNotifications: notificationService.getNotifications.bind(notificationService),
+    getUnreadCount: notificationService.getUnreadCount.bind(notificationService),
+    clearAll: notificationService.clearAll.bind(notificationService),
+    subscribe: notificationService.subscribe.bind(notificationService),
+    showToast,
+    // Predefined methods
+    postPublished: notificationService.postPublished.bind(notificationService),
+    postFailed: notificationService.postFailed.bind(notificationService),
+    analyticsMilestone: notificationService.analyticsMilestone.bind(notificationService),
+    teamMemberJoined: notificationService.teamMemberJoined.bind(notificationService),
+    billingAlert: notificationService.billingAlert.bind(notificationService),
+    systemUpdate: notificationService.systemUpdate.bind(notificationService),
+    aiInsight: notificationService.aiInsight.bind(notificationService),
+    contentSuggestion: notificationService.contentSuggestion.bind(notificationService),
+    highEngagement: notificationService.highEngagement.bind(notificationService),
+    trendingHashtag: notificationService.trendingHashtag.bind(notificationService),
+  };
+}

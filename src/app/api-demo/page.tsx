@@ -22,7 +22,7 @@ import { useAnalytics, useChartData, usePlatformPerformance, useTopPosts, useCon
 import { analyticsAPI } from '@/lib/api';
 import { localStorage, getStorageStats, sessionStorage, memoryCache } from '@/lib/storage';
 import Button from '@/components/ui/Button';
-import Container from '@/components/Container';
+import { Container } from '@/components/Container';
 
 export default function APIDemoPage() {
   const [activeTab, setActiveTab] = useState('analytics');

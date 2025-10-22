@@ -27,12 +27,12 @@ export default function Button({
   const baseClasses = 'inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed hover:scale-105 active:scale-95';
   
   const variantClasses = {
-    primary: 'bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] text-white hover:from-[#5F9EC7] hover:to-[#20B2AA] focus:ring-[#87CEFA] shadow-lg hover:shadow-xl',
-    secondary: 'bg-gray-100 text-gray-900 hover:bg-gray-200 focus:ring-gray-500',
-    outline: 'border-2 border-[#87CEFA] text-[#87CEFA] hover:bg-[#87CEFA] hover:text-white focus:ring-[#87CEFA]',
-    ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
-    danger: 'bg-red-500 text-white hover:bg-red-600 focus:ring-red-500 shadow-lg hover:shadow-xl',
-    success: 'bg-green-500 text-white hover:bg-green-600 focus:ring-green-500 shadow-lg hover:shadow-xl'
+    primary: 'bg-gradient-to-r from-blue-400 to-blue-600 dark:from-blue-500 dark:to-blue-700 text-white hover:from-blue-500 hover:to-blue-700 dark:hover:from-blue-600 dark:hover:to-blue-800 focus:ring-blue-500 dark:focus:ring-blue-400 shadow-lg hover:shadow-xl',
+    secondary: 'bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 focus:ring-gray-500 dark:focus:ring-gray-400',
+    outline: 'border-2 border-blue-400 dark:border-blue-500 text-blue-600 dark:text-blue-400 hover:bg-blue-400 dark:hover:bg-blue-500 hover:text-white focus:ring-blue-500 dark:focus:ring-blue-400',
+    ghost: 'text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 focus:ring-gray-500 dark:focus:ring-gray-400',
+    danger: 'bg-red-500 dark:bg-red-600 text-white hover:bg-red-600 dark:hover:bg-red-700 focus:ring-red-500 dark:focus:ring-red-400 shadow-lg hover:shadow-xl',
+    success: 'bg-green-500 dark:bg-green-600 text-white hover:bg-green-600 dark:hover:bg-green-700 focus:ring-green-500 dark:focus:ring-green-400 shadow-lg hover:shadow-xl'
   };
 
   const sizeClasses = {

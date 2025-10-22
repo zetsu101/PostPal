@@ -202,10 +202,11 @@ export class APIResponse {
 
 // Validation middleware factory
 export function createValidationMiddleware(schema: z.ZodSchema) {
-  return (request: NextRequest) => {
+  return async (request: NextRequest) => {
     try {
-      const body = request.body ? JSON.parse(request.body as string) : {};
-      const validatedData = schema.parse(body);
+      const body = request.body ? await request.text() : '{}';
+      const parsedBody = JSON.parse(body);
+      const validatedData = schema.parse(parsedBody);
       return { success: true, data: validatedData };
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -319,4 +320,27 @@ export function healthCheck() {
     version: process.env.npm_package_version || '1.0.0',
     environment: process.env.NODE_ENV || 'development',
   });
+}
+
+// Main API middleware function
+export async function apiMiddleware(request: NextRequest) {
+  try {
+    // Add security headers
+    const response = NextResponse.next();
+    Object.entries(securityHeaders).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+
+    // Handle CORS preflight
+    if (request.method === 'OPTIONS') {
+      return new NextResponse(null, { status: 200 });
+    }
+
+    // Basic rate limiting check (simplified for Next.js)
+    // In production, you'd use a proper rate limiting solution
+    
+    return null; // Continue to the actual handler
+  } catch (error) {
+    return handleApiError(error, request);
+  }
 }

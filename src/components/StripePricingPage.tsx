@@ -11,7 +11,7 @@ export default function StripePricingPage() {
   const [selectedPlan, setSelectedPlan] = useState<SubscriptionPlan>('free');
   const [isLoading, setIsLoading] = useState(false);
   const [currentUserPlan, setCurrentUserPlan] = useState<SubscriptionPlan>('free');
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     // In a real app, fetch user's current plan from your API
@@ -24,19 +24,19 @@ export default function StripePricingPage() {
   const handlePlanSelect = async (plan: SubscriptionPlan) => {
     if (plan === 'free') {
       setSelectedPlan(plan);
-      toast({
+      addToast({
         title: 'Plan Selected',
-        description: 'You are now on the free plan.',
-        variant: 'default',
+        message: 'You are now on the free plan.',
+        type: 'info',
       });
       return;
     }
 
     if (plan === currentUserPlan) {
-      toast({
+      addToast({
         title: 'Current Plan',
-        description: 'This is your current plan.',
-        variant: 'default',
+        message: 'This is your current plan.',
+        type: 'info',
       });
       return;
     }
@@ -76,10 +76,10 @@ export default function StripePricingPage() {
       }
     } catch (error) {
       console.error('Checkout error:', error);
-      toast({
+      addToast({
         title: 'Payment Error',
-        description: 'Failed to start checkout process. Please try again.',
-        variant: 'destructive',
+        message: 'Failed to start checkout process. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsLoading(false);
@@ -129,7 +129,7 @@ export default function StripePricingPage() {
                   name={plan.name}
                   description={plan.description}
                   price={plan.price}
-                  features={plan.features}
+                  features={[...plan.features]}
                   isPopular={isPopular}
                   onSelect={handlePlanSelect}
                   isSelected={isCurrentPlan}

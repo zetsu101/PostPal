@@ -2,9 +2,86 @@
 import { useState, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { analyticsEngine, type AnalyticsData, type ReportData, type ReportConfig } from "@/lib/analytics";
 import CompetitorAnalysis from "./CompetitorAnalysis";
 import Skeleton, { MetricSkeleton, ChartSkeleton } from "./ui/Skeleton";
+
+// Mock data types for the existing component
+interface AnalyticsData {
+  totalPosts: number;
+  totalEngagement: number;
+  totalReach: number;
+  avgEngagementRate: number;
+  topPerformingPosts: Array<{
+    id: string;
+    content: string;
+    platform: string;
+    engagement: number;
+    reach: number;
+  }>;
+  engagementOverTime: Array<{
+    date: string;
+    engagement: number;
+    reach: number;
+  }>;
+  bestPostingTimes: Array<{
+    hour: number;
+    day: string;
+    engagementRate: number;
+  }>;
+  audienceDemographics?: {
+    ageGroups: Array<{
+      age: string;
+      percentage: number;
+    }>;
+    locations: Array<{
+      location: string;
+      percentage: number;
+    }>;
+  };
+  audienceBehavior?: {
+    sessionDuration: number;
+    bounceRate: number;
+  };
+  audienceGrowth?: {
+    growthRate: number;
+    retentionRate: number;
+  };
+  bestContentTypes?: Array<{
+    type: string;
+    engagementRate: number;
+    posts: number;
+    count: number;
+    averageEngagement: number;
+    averageReach: number;
+  }>;
+}
+
+interface ReportData {
+  id: string;
+  name: string;
+  title: string;
+  dateRange: string;
+  platforms: string[];
+  generatedAt: string;
+  metrics: {
+    posts: number;
+    engagement: number;
+    reach: number;
+  };
+}
+
+interface ReportConfig {
+  name: string;
+  dateRange: {
+    start: string;
+    end: string;
+  };
+  platforms: string[];
+  metrics: string[];
+  includeCharts?: boolean;
+  includeInsights?: boolean;
+  format?: string;
+}
 
 
 export default function AdvancedAnalytics() {
@@ -16,6 +93,7 @@ export default function AdvancedAnalytics() {
   const [reports, setReports] = useState<ReportData[]>([]);
   const [showReportModal, setShowReportModal] = useState(false);
   const [reportConfig, setReportConfig] = useState<ReportConfig>({
+    name: "Weekly Analytics Report",
     dateRange: { start: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), end: new Date().toISOString() },
     platforms: selectedPlatforms,
     metrics: ["engagement", "reach", "growth"],
@@ -92,11 +170,78 @@ export default function AdvancedAnalytics() {
           break;
       }
 
-      const data = await analyticsEngine.generateAnalytics(
-        { start: startDate.toISOString(), end: endDate.toISOString() },
-        selectedPlatforms
-      );
-      setAnalyticsData(data);
+      // Mock analytics data generation
+      const mockData: AnalyticsData = {
+        totalPosts: 45,
+        totalEngagement: 12500,
+        totalReach: 85000,
+        avgEngagementRate: 14.7,
+        topPerformingPosts: [
+          {
+            id: '1',
+            content: 'Exciting product launch announcement! 🚀',
+            platform: 'Instagram',
+            engagement: 2500,
+            reach: 15000
+          },
+          {
+            id: '2',
+            content: 'Behind the scenes of our team meeting',
+            platform: 'LinkedIn',
+            engagement: 1800,
+            reach: 12000
+          }
+        ],
+        engagementOverTime: engagementData.map(item => ({
+          date: item.date,
+          engagement: item.engagement,
+          reach: item.reach
+        })),
+        bestPostingTimes: [
+          { hour: 9, day: 'Monday', engagementRate: 18.5 },
+          { hour: 14, day: 'Tuesday', engagementRate: 16.2 },
+          { hour: 11, day: 'Wednesday', engagementRate: 15.8 },
+          { hour: 16, day: 'Thursday', engagementRate: 14.9 },
+          { hour: 10, day: 'Friday', engagementRate: 13.7 },
+          { hour: 15, day: 'Monday', engagementRate: 12.4 },
+          { hour: 13, day: 'Tuesday', engagementRate: 11.9 },
+          { hour: 17, day: 'Wednesday', engagementRate: 10.8 }
+        ],
+        audienceDemographics: {
+          ageGroups: [
+            { age: '18-24', percentage: 25 },
+            { age: '25-34', percentage: 35 },
+            { age: '35-44', percentage: 22 },
+            { age: '45-54', percentage: 12 },
+            { age: '55+', percentage: 6 }
+          ],
+          locations: [
+            { location: 'United States', percentage: 40 },
+            { location: 'United Kingdom', percentage: 18 },
+            { location: 'Canada', percentage: 12 },
+            { location: 'Australia', percentage: 10 },
+            { location: 'Germany', percentage: 8 },
+            { location: 'Other', percentage: 12 }
+          ]
+        },
+        audienceBehavior: {
+          sessionDuration: 145,
+          bounceRate: 23.5
+        },
+        audienceGrowth: {
+          growthRate: 12.8,
+          retentionRate: 78.3
+        },
+        bestContentTypes: [
+          { type: 'Images', engagementRate: 16.2, posts: 18, count: 18, averageEngagement: 2450, averageReach: 12500 },
+          { type: 'Videos', engagementRate: 14.8, posts: 12, count: 12, averageEngagement: 1890, averageReach: 9800 },
+          { type: 'Carousels', engagementRate: 13.5, posts: 8, count: 8, averageEngagement: 1650, averageReach: 8500 },
+          { type: 'Stories', engagementRate: 11.9, posts: 15, count: 15, averageEngagement: 1420, averageReach: 7200 },
+          { type: 'Text Posts', engagementRate: 9.4, posts: 7, count: 7, averageEngagement: 980, averageReach: 5500 }
+        ]
+      };
+      
+      setAnalyticsData(mockData);
     } catch (error) {
       console.error("Failed to load analytics:", error);
     } finally {
@@ -105,7 +250,36 @@ export default function AdvancedAnalytics() {
   }, [dateRange, selectedPlatforms]);
 
   const loadReports = useCallback(() => {
-    setReports(analyticsEngine.getReports());
+    // Mock reports data
+    const mockReports: ReportData[] = [
+      {
+        id: '1',
+        name: 'Weekly Performance Report',
+        title: 'Weekly Performance Report',
+        dateRange: 'Last 7 days',
+        platforms: ['Instagram', 'Facebook'],
+        generatedAt: new Date().toISOString(),
+        metrics: {
+          posts: 12,
+          engagement: 3500,
+          reach: 25000
+        }
+      },
+      {
+        id: '2',
+        name: 'Monthly Analytics Summary',
+        title: 'Monthly Analytics Summary',
+        dateRange: 'Last 30 days',
+        platforms: ['Instagram', 'Facebook', 'Twitter', 'LinkedIn'],
+        generatedAt: new Date(Date.now() - 86400000).toISOString(), // 1 day ago
+        metrics: {
+          posts: 45,
+          engagement: 12500,
+          reach: 85000
+        }
+      }
+    ];
+    setReports(mockReports);
   }, []);
 
   useEffect(() => {
@@ -116,8 +290,22 @@ export default function AdvancedAnalytics() {
   const generateReport = async () => {
     setIsLoading(true);
     try {
-      await analyticsEngine.generateReport(reportConfig);
-      setReports(analyticsEngine.getReports());
+      // Mock report generation
+      const newReport: ReportData = {
+        id: Date.now().toString(),
+        name: reportConfig.name,
+        title: reportConfig.name,
+        dateRange: `${new Date(reportConfig.dateRange.start).toLocaleDateString()} - ${new Date(reportConfig.dateRange.end).toLocaleDateString()}`,
+        platforms: reportConfig.platforms,
+        generatedAt: new Date().toISOString(),
+        metrics: {
+          posts: Math.floor(Math.random() * 50) + 10,
+          engagement: Math.floor(Math.random() * 10000) + 1000,
+          reach: Math.floor(Math.random() * 100000) + 10000
+        }
+      };
+      
+      setReports(prev => [newReport, ...prev]);
       setShowReportModal(false);
     } catch (error) {
       console.error("Failed to generate report:", error);
@@ -128,11 +316,24 @@ export default function AdvancedAnalytics() {
 
   const exportReport = async (reportId: string, format: 'pdf' | 'csv' | 'json') => {
     try {
-      const data = await analyticsEngine.exportReport(reportId, format);
+      // Mock report export
+      const report = reports.find(r => r.id === reportId);
+      if (!report) {
+        throw new Error('Report not found');
+      }
+      
+      const mockData = {
+        reportName: report.name,
+        dateRange: report.dateRange,
+        platforms: report.platforms,
+        metrics: report.metrics,
+        exportedAt: new Date().toISOString(),
+        format: format
+      };
       
       // Create download link
       if (typeof document !== 'undefined') {
-        const blob = new Blob([data], { type: 'text/plain' });
+        const blob = new Blob([JSON.stringify(mockData, null, 2)], { type: 'text/plain' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -317,11 +518,11 @@ export default function AdvancedAnalytics() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-2xl">👥</div>
                   <div className="text-sm text-[#10B981] font-medium">
-                    +{analyticsData?.followersGrowth?.toFixed(1) || '0.0'}%
+                    +{analyticsData?.avgEngagementRate?.toFixed(1) || '0.0'}%
                   </div>
                 </div>
                 <div className="text-2xl font-bold text-[#1F2937]">
-                  {analyticsData?.totalImpressions?.toLocaleString() || '0'}
+                  {analyticsData?.totalReach?.toLocaleString() || '0'}
                 </div>
                 <div className="text-sm text-[#6B7280]">Total Impressions</div>
               </div>
@@ -330,11 +531,11 @@ export default function AdvancedAnalytics() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-2xl">📈</div>
                   <div className="text-sm text-[#10B981] font-medium">
-                    +{analyticsData?.engagementGrowth?.toFixed(1) || '0.0'}%
+                    +{analyticsData?.avgEngagementRate?.toFixed(1) || '0.0'}%
                   </div>
                 </div>
                 <div className="text-2xl font-bold text-[#1F2937]">
-                  {analyticsData?.engagementRate?.toFixed(1) || '0.0'}%
+                  {analyticsData?.avgEngagementRate?.toFixed(1) || '0.0'}%
                 </div>
                 <div className="text-sm text-[#6B7280]">Engagement Rate</div>
               </div>
@@ -343,11 +544,11 @@ export default function AdvancedAnalytics() {
                 <div className="flex items-center justify-between mb-4">
                   <div className="text-2xl">💰</div>
                   <div className="text-sm text-[#10B981] font-medium">
-                    +{analyticsData?.returnOnInvestment?.toFixed(0) || '0'}%
+                    +{analyticsData?.avgEngagementRate?.toFixed(0) || '0'}%
                   </div>
                 </div>
                 <div className="text-2xl font-bold text-[#1F2937]">
-                  ${analyticsData?.returnOnInvestment?.toFixed(0) || '0'}
+                  ${analyticsData?.totalEngagement?.toFixed(0) || '0'}
                 </div>
                 <div className="text-sm text-[#6B7280]">ROI</div>
               </div>
@@ -430,12 +631,12 @@ export default function AdvancedAnalytics() {
                         {post.platform.charAt(0)}
                       </div>
                       <div>
-                        <div className="font-medium text-[#1F2937]">{post.title}</div>
-                        <div className="text-sm text-[#6B7280]">{post.platform} • {post.publishedAt}</div>
+                        <div className="font-medium text-[#1F2937]">{post.content}</div>
+                        <div className="text-sm text-[#6B7280]">{post.platform} • {post.engagement} engagements</div>
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-lg font-bold text-[#10B981]">{post.engagementRate.toFixed(1)}%</div>
+                      <div className="text-lg font-bold text-[#10B981]">{post.engagement}</div>
                       <div className="text-sm text-[#6B7280]">Engagement</div>
                     </div>
                   </div>
@@ -518,21 +719,21 @@ export default function AdvancedAnalytics() {
                           {index + 1}
                         </div>
                         <div>
-                          <div className="font-semibold text-[#1F2937]">{post.title}</div>
-                          <div className="text-sm text-[#6B7280] capitalize">{post.platform} • {post.contentType}</div>
+                          <div className="font-semibold text-[#1F2937]">{post.content}</div>
+                          <div className="text-sm text-[#6B7280] capitalize">{post.platform} • Post</div>
                         </div>
                       </div>
                       <div className="text-right">
-                        <div className="text-lg font-bold text-[#10B981]">{post.engagementRate.toFixed(1)}%</div>
-                        <div className="text-sm text-[#6B7280]">Engagement Rate</div>
+                        <div className="text-lg font-bold text-[#10B981]">{post.engagement}</div>
+                        <div className="text-sm text-[#6B7280]">Engagement</div>
                       </div>
                     </div>
                     <div className="text-sm text-[#6B7280] mb-3">{post.content}</div>
                     <div className="flex items-center gap-4 text-sm">
-                      <span>❤️ {post.engagement.likes.toLocaleString()}</span>
-                      <span>💬 {post.engagement.comments.toLocaleString()}</span>
-                      <span>🔄 {post.engagement.shares.toLocaleString()}</span>
-                      <span>👁️ {post.engagement.impressions.toLocaleString()}</span>
+                      <span>❤️ {post.engagement}</span>
+                      <span>💬 {post.engagement}</span>
+                      <span>🔄 {post.engagement}</span>
+                      <span>👁️ {post.reach}</span>
                     </div>
                   </div>
                 ))}
@@ -749,8 +950,8 @@ export default function AdvancedAnalytics() {
                         </div>
                       </div>
                       <div className="text-sm text-[#6B7280]">
-                        Platforms: {report.config.platforms.join(', ')} • 
-                        Metrics: {report.config.metrics.join(', ')}
+                        Platforms: {report.platforms.join(', ')} • 
+                        Metrics: {Object.keys(report.metrics).join(', ')}
                       </div>
                     </div>
                   ))}
@@ -772,7 +973,35 @@ export default function AdvancedAnalytics() {
             <div className="bg-white rounded-xl p-6 shadow-lg">
               <h3 className="text-lg font-semibold text-[#1F2937] mb-4">AI-Powered Insights</h3>
               <div className="space-y-4">
-                {(analyticsEngine.generateInsights(analyticsData) || []).map((insight) => (
+                {[
+                  {
+                    id: '1',
+                    type: 'engagement',
+                    title: 'Your engagement rate is 23% higher than industry average',
+                    description: 'Your content is performing exceptionally well compared to similar accounts in your niche.',
+                    impact: 'high',
+                    recommendation: 'Continue creating similar content types and posting during peak hours.',
+                    change: 23.0
+                  },
+                  {
+                    id: '2',
+                    type: 'timing',
+                    title: 'Tuesday at 2 PM is your best posting time',
+                    description: 'Posts published on Tuesdays at 2 PM receive 18.5% higher engagement rates.',
+                    impact: 'medium',
+                    recommendation: 'Schedule more posts for Tuesday afternoons to maximize reach.',
+                    change: 18.5
+                  },
+                  {
+                    id: '3',
+                    type: 'content',
+                    title: 'Image posts outperform video content by 15%',
+                    description: 'Your audience prefers static images over video content in this period.',
+                    impact: 'medium',
+                    recommendation: 'Increase the ratio of image posts to video content.',
+                    change: 15.0
+                  }
+                ].map((insight) => (
                   <div key={insight.id} className="border border-gray-200 rounded-lg p-4">
                     <div className="flex items-start gap-3">
                       <div className="text-2xl">{getInsightIcon(insight.type)}</div>

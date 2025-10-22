@@ -20,7 +20,7 @@ export default function EmailSettings() {
   const [isSaving, setIsSaving] = useState(false);
   const [isTesting, setIsTesting] = useState(false);
   const [testEmail, setTestEmail] = useState('');
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadPreferences();
@@ -50,16 +50,16 @@ export default function EmailSettings() {
       // In a real app, save to API
       await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API call
       
-      toast({
+      addToast({
         title: 'Settings Saved',
-        description: 'Your email preferences have been updated successfully.',
-        variant: 'success',
+        message: 'Your email preferences have been updated successfully.',
+        type: 'success',
       });
     } catch (error) {
-      toast({
+      addToast({
         title: 'Error',
-        description: 'Failed to save email preferences.',
-        variant: 'destructive',
+        message: 'Failed to save email preferences.',
+        type: 'error',
       });
     } finally {
       setIsSaving(false);
@@ -68,10 +68,10 @@ export default function EmailSettings() {
 
   const handleTestEmail = async () => {
     if (!testEmail) {
-      toast({
+      addToast({
         title: 'Email Required',
-        description: 'Please enter an email address to test.',
-        variant: 'destructive',
+        message: 'Please enter an email address to test.',
+        type: 'error',
       });
       return;
     }
@@ -92,19 +92,19 @@ export default function EmailSettings() {
       const data = await response.json();
 
       if (data.success) {
-        toast({
+        addToast({
           title: 'Test Email Sent',
-          description: `Test email sent successfully to ${testEmail}`,
-          variant: 'success',
+          message: `Test email sent successfully to ${testEmail}`,
+          type: 'success',
         });
       } else {
         throw new Error(data.error);
       }
     } catch (error) {
-      toast({
+      addToast({
         title: 'Test Failed',
-        description: 'Failed to send test email. Please try again.',
-        variant: 'destructive',
+        message: 'Failed to send test email. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsTesting(false);

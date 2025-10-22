@@ -132,13 +132,13 @@ export default function LiveNotifications() {
   return (
     <div className="relative">
       {/* Live Metrics Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 mb-4">
+      <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-100 dark:border-gray-700 p-4 mb-4">
         <div className="flex items-center justify-between mb-3">
-          <h3 className="text-sm font-semibold text-gray-700 flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-gray-700 dark:text-gray-300 flex items-center gap-2">
             <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
             Live Metrics
           </h3>
-          <span className="text-xs text-gray-500">Updates every 3s</span>
+          <span className="text-xs text-gray-500 dark:text-gray-400">Updates every 3s</span>
         </div>
         <div className="grid grid-cols-3 gap-4">
           {liveMetrics.map((metric, index) => (
@@ -151,11 +151,11 @@ export default function LiveNotifications() {
             >
               <div className="flex items-center justify-center gap-1 mb-1">
                 {metric.icon}
-                <span className="text-xs text-gray-600">{metric.label}</span>
+                <span className="text-xs text-gray-600 dark:text-gray-400">{metric.label}</span>
               </div>
-              <div className="text-lg font-bold text-gray-900">{metric.value}</div>
+              <div className="text-lg font-bold text-gray-900 dark:text-white">{metric.value}</div>
               <div className={`text-xs font-medium flex items-center justify-center gap-1 ${
-                metric.trend === 'up' ? 'text-green-600' : 'text-red-600'
+                metric.trend === 'up' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
               }`}>
                 {metric.trend === 'up' ? <TrendingUp className="w-3 h-3" /> : <TrendingDown className="w-3 h-3" />}
                 {metric.change}
@@ -169,7 +169,7 @@ export default function LiveNotifications() {
       <div className="relative">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="relative p-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="relative p-2 text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors"
         >
           <Bell className="w-6 h-6" />
           {unreadCount > 0 && (
@@ -191,21 +191,21 @@ export default function LiveNotifications() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
               transition={{ duration: 0.2 }}
-              className="absolute right-0 top-12 w-80 bg-white rounded-xl shadow-xl border border-gray-200 z-50 max-h-96 overflow-hidden"
+              className="absolute right-0 top-12 w-80 bg-white dark:bg-gray-800 rounded-xl shadow-xl border border-gray-200 dark:border-gray-700 z-50 max-h-96 overflow-hidden"
             >
-              <div className="p-4 border-b border-gray-100">
+              <div className="p-4 border-b border-gray-100 dark:border-gray-700">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
                   <div className="flex items-center gap-2">
                     <button
                       onClick={markAllAsRead}
-                      className="text-xs text-blue-600 hover:text-blue-700 font-medium"
+                      className="text-xs text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                     >
                       Mark all read
                     </button>
                     <button
                       onClick={() => setIsOpen(false)}
-                      className="text-gray-400 hover:text-gray-600"
+                      className="text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                     >
                       <X className="w-4 h-4" />
                     </button>
@@ -215,20 +215,20 @@ export default function LiveNotifications() {
 
               <div className="max-h-80 overflow-y-auto">
                 {notifications.length === 0 ? (
-                  <div className="p-8 text-center text-gray-500">
-                    <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <div className="p-8 text-center text-gray-500 dark:text-gray-400">
+                    <Bell className="w-12 h-12 mx-auto mb-3 text-gray-300 dark:text-gray-600" />
                     <p>No notifications yet</p>
                     <p className="text-sm">We&apos;ll notify you when something important happens</p>
                   </div>
                 ) : (
-                  <div className="divide-y divide-gray-100">
+                  <div className="divide-y divide-gray-100 dark:divide-gray-700">
                     {notifications.map((notification) => (
                       <motion.div
                         key={notification.id}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className={`p-4 hover:bg-gray-50 transition-colors cursor-pointer ${
-                          !notification.isRead ? 'bg-blue-50' : ''
+                        className={`p-4 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors cursor-pointer ${
+                          !notification.isRead ? 'bg-blue-50 dark:bg-blue-900/20' : ''
                         }`}
                         onClick={() => markAsRead(notification.id)}
                       >
@@ -238,17 +238,17 @@ export default function LiveNotifications() {
                           </div>
                           <div className="flex-1 min-w-0">
                             <div className="flex items-center justify-between">
-                              <p className="text-sm font-medium text-gray-900">
+                              <p className="text-sm font-medium text-gray-900 dark:text-white">
                                 {notification.title}
                               </p>
-                              <span className="text-xs text-gray-500">
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
                                 {notification.timestamp.toLocaleTimeString([], { 
                                   hour: '2-digit', 
                                   minute: '2-digit' 
                                 })}
                               </span>
                             </div>
-                            <p className="text-sm text-gray-600 mt-1">
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                               {notification.message}
                             </p>
                           </div>

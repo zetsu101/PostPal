@@ -15,8 +15,8 @@ import {
   Save,
   TestTube
 } from 'lucide-react';
-import Container from '@/components/Container';
-import PageHeader from '@/components/PageHeader';
+import { Container } from '@/components/Container';
+import { PageHeader } from '@/components/PageHeader';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/components/ui/Toast';
 
@@ -98,7 +98,7 @@ export default function SocialMediaSettings() {
   const [loading, setLoading] = useState(false);
   const [testing, setTesting] = useState<string | null>(null);
   const [showTokens, setShowTokens] = useState<Record<string, boolean>>({});
-  const { showToast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadConfig();
@@ -119,10 +119,13 @@ export default function SocialMediaSettings() {
     setLoading(true);
     try {
       localStorage.setItem('socialMediaConfig', JSON.stringify(config));
-      showToast('Social media settings saved successfully!', 'success');
+      addToast({
+        title: 'Social media settings saved successfully!',
+        type: 'success',
+      });
     } catch (error) {
       console.error('Failed to save config:', error);
-      showToast('Failed to save settings', 'error');
+      addToast({ title: 'Failed to save settings', type: 'error' });
     } finally {
       setLoading(false);
     }
@@ -139,19 +142,19 @@ export default function SocialMediaSettings() {
       let response;
       switch (platform) {
         case 'instagram':
-          response = await fetch(`/api/social/instagram?accessToken=${platformConfig.accessToken}&userId=${platformConfig.userId}`);
+          response = await fetch(`/api/social/instagram?accessToken=${platformConfig.accessToken}&userId=${(platformConfig as any).userId}`);
           break;
         case 'linkedin':
-          response = await fetch(`/api/social/linkedin?accessToken=${platformConfig.accessToken}`);
+          response = await fetch(`/api/social/linkedin?accessToken=${platformConfig.accessToken}&personId=${(platformConfig as any).personId}`);
           break;
         case 'facebook':
-          response = await fetch(`/api/social/facebook?accessToken=${platformConfig.accessToken}&pageId=${platformConfig.pageId}`);
+          response = await fetch(`/api/social/facebook?accessToken=${platformConfig.accessToken}&pageId=${(platformConfig as any).pageId}`);
           break;
         case 'twitter':
-          response = await fetch(`/api/social/twitter?bearerToken=${platformConfig.bearerToken}`);
+          response = await fetch(`/api/social/twitter?bearerToken=${(platformConfig as any).bearerToken}`);
           break;
         case 'tiktok':
-          response = await fetch(`/api/social/tiktok?accessToken=${platformConfig.accessToken}&openId=${platformConfig.openId}`);
+          response = await fetch(`/api/social/tiktok?accessToken=${platformConfig.accessToken}&openId=${(platformConfig as any).openId}`);
           break;
         default:
           throw new Error('Unknown platform');
@@ -160,7 +163,7 @@ export default function SocialMediaSettings() {
       const data = await response.json();
       
       if (data.success) {
-        showToast(`${platform} connection successful!`, 'success');
+        addToast({ title: `${platform} connection successful!`, type: 'success' });
         setConfig(prev => ({
           ...prev,
           [platform]: { ...prev[platform as keyof SocialMediaConfig], connected: true }
@@ -170,7 +173,7 @@ export default function SocialMediaSettings() {
       }
     } catch (error) {
       console.error(`${platform} connection test failed:`, error);
-      showToast(`${platform} connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`, 'error');
+      addToast({ title: `${platform} connection failed: ${error instanceof Error ? error.message : 'Unknown error'}`, type: 'error' });
       setConfig(prev => ({
         ...prev,
         [platform]: { ...prev[platform as keyof SocialMediaConfig], connected: false }
@@ -199,7 +202,7 @@ export default function SocialMediaSettings() {
   };
 
   const getFieldValue = (platform: string, field: string) => {
-    return config[platform as keyof SocialMediaConfig]?.[field as keyof any] || '';
+    return (config[platform as keyof SocialMediaConfig] as any)?.[field] || '';
   };
 
   const isConnected = (platform: string) => {
@@ -210,13 +213,13 @@ export default function SocialMediaSettings() {
     <Container>
       <PageHeader
         title="Social Media Integration"
-        description="Connect your social media accounts to enable cross-platform posting and analytics"
+        subtitle="Connect your social media accounts to enable cross-platform posting and analytics"
       />
 
       <div className="space-y-8">
         {PLATFORMS.map((platform) => {
           const Icon = platform.icon;
-          const isPlatformConnected = isConnected(platform);
+          const isPlatformConnected = isConnected(platform.id);
           const isTesting = testing === platform.id;
 
           return (

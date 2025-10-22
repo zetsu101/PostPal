@@ -51,7 +51,7 @@ export default function SmartScheduler({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [customDateTime, setCustomDateTime] = useState('');
   const [isCustom, setIsCustom] = useState(false);
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     if (content.trim()) {
@@ -81,10 +81,10 @@ export default function SmartScheduler({
       setOptimalTimes(times);
     } catch (error) {
       console.error('Failed to analyze optimal times:', error);
-      toast({
+      addToast({
         title: 'Analysis Failed',
-        description: 'Unable to analyze optimal posting times.',
-        variant: 'destructive',
+        message: 'Unable to analyze optimal posting times.',
+        type: 'error',
       });
     } finally {
       setIsAnalyzing(false);
@@ -109,10 +109,10 @@ export default function SmartScheduler({
 
   const handleCustomSchedule = () => {
     if (!customDateTime) {
-      toast({
+      addToast({
         title: 'Date Required',
-        description: 'Please select a date and time.',
-        variant: 'destructive',
+        message: 'Please select a date and time.',
+        type: 'error',
       });
       return;
     }
@@ -135,19 +135,19 @@ export default function SmartScheduler({
 
   const handleSchedule = () => {
     if (!selectedTime) {
-      toast({
+      addToast({
         title: 'Time Required',
-        description: 'Please select a time to schedule your post.',
-        variant: 'destructive',
+        message: 'Please select a time to schedule your post.',
+        type: 'error',
       });
       return;
     }
 
     if (!content.trim()) {
-      toast({
+      addToast({
         title: 'Content Required',
-        description: 'Please add content before scheduling.',
-        variant: 'destructive',
+        message: 'Please add content before scheduling.',
+        type: 'error',
       });
       return;
     }
@@ -162,10 +162,10 @@ export default function SmartScheduler({
 
     onSchedule?.(scheduleData);
     
-    toast({
+    addToast({
       title: 'Post Scheduled',
-      description: `Your post is scheduled for ${scheduleData.scheduledTime.toLocaleString()}`,
-      variant: 'success',
+      message: `Your post is scheduled for ${scheduleData.scheduledTime.toLocaleString()}`,
+      type: 'success',
     });
   };
 

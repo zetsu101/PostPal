@@ -36,8 +36,8 @@ import {
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/components/ui/Toast';
-import Container from '@/components/Container';
-import PageHeader from '@/components/PageHeader';
+import { Container } from '@/components/Container';
+import { PageHeader } from '@/components/PageHeader';
 import { GeneratedContent } from '@/lib/ai-service';
 
 interface SavedContent extends GeneratedContent {

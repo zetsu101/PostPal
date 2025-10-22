@@ -74,7 +74,7 @@ function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast:
             animate={{ opacity: 1, x: 0, scale: 1 }}
             exit={{ opacity: 0, x: 300, scale: 0.8 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="bg-white rounded-lg shadow-lg border-l-4 min-w-[320px] max-w-[400px]"
+            className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border-l-4 min-w-[320px] max-w-[400px]"
             style={{
               borderLeftColor: getToastColor(toast.type)
             }}
@@ -86,11 +86,11 @@ function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast:
                     {getToastIcon(toast.type)}
                   </div>
                   <div className="flex-1">
-                    <h4 className="text-sm font-semibold text-gray-900 mb-1">
+                    <h4 className="text-sm font-semibold text-gray-900 dark:text-white mb-1">
                       {toast.title}
                     </h4>
                     {toast.message && (
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
                         {toast.message}
                       </p>
                     )}
@@ -98,7 +98,7 @@ function ToastContainer({ toasts, removeToast }: { toasts: Toast[]; removeToast:
                 </div>
                 <button
                   onClick={() => removeToast(toast.id)}
-                  className="flex-shrink-0 ml-3 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="flex-shrink-0 ml-3 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                 >
                   <X size={16} />
                 </button>

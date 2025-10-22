@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle, Loader2, Shield } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import Container from '@/components/Container';
+import { Container } from '@/components/Container';
 
 export default function SignupPage() {
   const { register, isLoading, error, clearError } = useAuth();

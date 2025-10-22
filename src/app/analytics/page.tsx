@@ -3,10 +3,10 @@ import { useState } from 'react';
 import DashboardLayout from "@/components/DashboardLayout";
 import AdvancedAnalytics from "@/components/AdvancedAnalytics";
 import AIInsightsDashboard from "@/components/AIInsightsDashboard";
-import Container from "@/components/Container";
-import PageHeader from "@/components/PageHeader";
+import { Container } from "@/components/Container";
+import { PageHeader } from "@/components/PageHeader";
 import { motion } from 'framer-motion';
-import { BarChart3, Brain, TrendingUp } from 'lucide-react';
+import { BarChart3, Brain } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const [activeTab, setActiveTab] = useState<'analytics' | 'insights'>('analytics');
@@ -40,7 +40,7 @@ export default function AnalyticsPage() {
           ].map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'analytics' | 'insights')}
               className={`flex items-center gap-2 px-6 py-3 rounded-lg font-medium transition-all ${
                 activeTab === tab.id
                   ? 'bg-white text-blue-600 shadow-md'

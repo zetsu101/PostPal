@@ -95,7 +95,7 @@ export async function POST(request: NextRequest) {
       businessAccountId: validationSchemas.postContent.shape.text,
     });
 
-    const validation = createValidationMiddleware(validationSchema)(request);
+    const validation = await createValidationMiddleware(validationSchema)(request);
     if (!validation.success) {
       return APIResponse.validationError(validation.errors);
     }

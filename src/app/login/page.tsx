@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
 import { Eye, EyeOff, Mail, Lock, AlertCircle, CheckCircle, Loader2 } from 'lucide-react';
 import Button from '@/components/ui/Button';
-import Container from '@/components/Container';
+import { Container } from '@/components/Container';
 
 export default function LoginPage() {
   const { login, isLoading, error, clearError } = useAuth();

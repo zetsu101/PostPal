@@ -143,7 +143,7 @@ export default function APIIntegration() {
       if (response.success) {
         setPostResult({
           success: true,
-          message: `Post published successfully! Rate limit remaining: ${response.rateLimitRemaining} posts/hour`
+          message: `Post published successfully!`
         });
         setTestPostContent("");
         setShowTestPost(null);

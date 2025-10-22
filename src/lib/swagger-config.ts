@@ -243,14 +243,6 @@ export const swaggerConfig = {
         },
       },
     },
-    security: [
-      {
-        BearerAuth: [],
-      },
-      {
-        ApiKeyAuth: [],
-      },
-    ],
     tags: [
       {
         name: 'Health',

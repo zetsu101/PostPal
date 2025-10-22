@@ -50,7 +50,7 @@ export function BaseEmail({
 
           {/* Footer */}
           <Section style={footer}>
-            <Text style={footerText}>
+            <Text style={footerTextStyle}>
               {footerText}
             </Text>
             <Text style={footerLink}>
@@ -113,7 +113,7 @@ const footer = {
   textAlign: 'center' as const,
 };
 
-const footerText = {
+const footerTextStyle = {
   color: '#6b7280',
   fontSize: '14px',
   lineHeight: '24px',

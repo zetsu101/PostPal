@@ -39,6 +39,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       setIsDark(theme === 'dark');
     }
     
+    // Update theme color meta tag
+    const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+    if (metaThemeColor) {
+      const isDarkMode = theme === 'system' 
+        ? window.matchMedia('(prefers-color-scheme: dark)').matches 
+        : theme === 'dark';
+      metaThemeColor.setAttribute('content', isDarkMode ? '#1F2937' : '#87CEFA');
+    }
+    
     // Save to localStorage
     localStorage.setItem('theme', theme);
   }, [theme]);
@@ -54,6 +63,12 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         root.classList.remove('light', 'dark');
         root.classList.add(systemTheme);
         setIsDark(systemTheme === 'dark');
+        
+        // Update theme color meta tag
+        const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+        if (metaThemeColor) {
+          metaThemeColor.setAttribute('content', systemTheme === 'dark' ? '#1F2937' : '#87CEFA');
+        }
       }
     };
 

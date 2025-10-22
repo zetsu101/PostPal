@@ -5,6 +5,7 @@ import { ToastProvider } from "@/components/ui/Toast";
 import { ThemeProvider } from "@/components/ui/ThemeProvider";
 import { AuthProvider } from "@/contexts/AuthContext";
 import MigrationBanner from "@/components/MigrationBanner";
+import MonitoringInitializer from "@/components/MonitoringInitializer";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -119,7 +120,8 @@ export default function RootLayout({
         <meta name="msapplication-config" content="/browserconfig.xml" />
         <meta name="msapplication-TileColor" content="#87CEFA" />
         <meta name="msapplication-tap-highlight" content="no" />
-        <meta name="theme-color" content="#87CEFA" />
+        <meta name="theme-color" content="#87CEFA" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#1F2937" media="(prefers-color-scheme: dark)" />
 
         {/* Apple Touch Icons */}
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
@@ -150,6 +152,44 @@ export default function RootLayout({
           }}
         />
         
+        {/* Dynamic Theme Color Script */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                function updateThemeColor() {
+                  const theme = localStorage.getItem('theme') || 'system';
+                  let isDark = false;
+                  
+                  if (theme === 'system') {
+                    isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  } else {
+                    isDark = theme === 'dark';
+                  }
+                  
+                  const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                  if (metaThemeColor) {
+                    metaThemeColor.setAttribute('content', isDark ? '#1F2937' : '#87CEFA');
+                  }
+                }
+                
+                // Update on load
+                updateThemeColor();
+                
+                // Listen for theme changes
+                window.addEventListener('storage', function(e) {
+                  if (e.key === 'theme') {
+                    updateThemeColor();
+                  }
+                });
+                
+                // Listen for system theme changes
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', updateThemeColor);
+              })();
+            `,
+          }}
+        />
+        
         {/* Force-unregister any previously installed service workers (old cache) */}
         <script
           dangerouslySetInnerHTML={{
@@ -172,6 +212,7 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <ToastProvider>
+              <MonitoringInitializer />
               <MigrationBanner />
               {children}
             </ToastProvider>

@@ -20,7 +20,7 @@ export interface EmailData {
   to: string;
   subject: string;
   template: EmailTemplate;
-  data: Record<string, any>;
+  data: Record<string, unknown>;
 }
 
 export interface EmailOptions {
@@ -80,7 +80,7 @@ export class EmailService {
   async sendEmail(
     to: string,
     template: EmailTemplate,
-    data: Record<string, any>,
+    data: Record<string, unknown>,
     options: EmailOptions = {}
   ): Promise<{ success: boolean; error?: string }> {
     try {
@@ -118,48 +118,48 @@ export class EmailService {
     }
   }
 
-  private async renderTemplate(template: EmailTemplate, data: Record<string, any>) {
+  private async renderTemplate(template: EmailTemplate, data: Record<string, unknown>) {
     // Dynamic import of email templates
     switch (template) {
       case 'welcome':
         const { WelcomeEmail } = await import('@/components/emails/WelcomeEmail');
-        return WelcomeEmail(data);
+        return WelcomeEmail(data as any);
       
       case 'payment-confirmation':
         const { PaymentConfirmationEmail } = await import('@/components/emails/PaymentConfirmationEmail');
-        return PaymentConfirmationEmail(data);
+        return PaymentConfirmationEmail(data as any);
       
       case 'payment-failed':
         const { PaymentFailedEmail } = await import('@/components/emails/PaymentFailedEmail');
-        return PaymentFailedEmail(data);
+        return PaymentFailedEmail(data as any);
       
       case 'subscription-cancelled':
         const { SubscriptionCancelledEmail } = await import('@/components/emails/SubscriptionCancelledEmail');
-        return SubscriptionCancelledEmail(data);
+        return SubscriptionCancelledEmail(data as any);
       
       case 'post-scheduled':
         const { PostScheduledEmail } = await import('@/components/emails/PostScheduledEmail');
-        return PostScheduledEmail(data);
+        return PostScheduledEmail(data as any);
       
       case 'post-published':
         const { PostPublishedEmail } = await import('@/components/emails/PostPublishedEmail');
-        return PostPublishedEmail(data);
+        return PostPublishedEmail(data as any);
       
       case 'post-failed':
         const { PostFailedEmail } = await import('@/components/emails/PostFailedEmail');
-        return PostFailedEmail(data);
+        return PostFailedEmail(data as any);
       
       case 'analytics-summary':
         const { AnalyticsSummaryEmail } = await import('@/components/emails/AnalyticsSummaryEmail');
-        return AnalyticsSummaryEmail(data);
+        return AnalyticsSummaryEmail(data as any);
       
       case 'password-reset':
         const { PasswordResetEmail } = await import('@/components/emails/PasswordResetEmail');
-        return PasswordResetEmail(data);
+        return PasswordResetEmail(data as any);
       
       case 'account-verification':
         const { AccountVerificationEmail } = await import('@/components/emails/AccountVerificationEmail');
-        return AccountVerificationEmail(data);
+        return AccountVerificationEmail(data as any);
       
       default:
         throw new Error(`Template renderer not implemented for: ${template}`);
@@ -175,7 +175,7 @@ export class EmailService {
     });
   }
 
-  async sendPaymentConfirmation(userEmail: string, paymentData: any) {
+  async sendPaymentConfirmation(userEmail: string, paymentData: Record<string, unknown>) {
     return this.sendEmail(userEmail, 'payment-confirmation', {
       amount: paymentData.amount,
       plan: paymentData.plan,
@@ -184,7 +184,7 @@ export class EmailService {
     });
   }
 
-  async sendPostScheduled(userEmail: string, postData: any) {
+  async sendPostScheduled(userEmail: string, postData: Record<string, unknown>) {
     return this.sendEmail(userEmail, 'post-scheduled', {
       platform: postData.platform,
       scheduledTime: postData.scheduledTime,
@@ -193,7 +193,7 @@ export class EmailService {
     });
   }
 
-  async sendAnalyticsSummary(userEmail: string, analyticsData: any) {
+  async sendAnalyticsSummary(userEmail: string, analyticsData: Record<string, unknown>) {
     return this.sendEmail(userEmail, 'analytics-summary', {
       userName: analyticsData.userName,
       totalPosts: analyticsData.totalPosts,

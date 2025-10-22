@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import Container from "@/components/Container";
-import PageHeader from "@/components/PageHeader";
+import { Container } from "@/components/Container";
+import { PageHeader } from "@/components/PageHeader";
 import Button, { IconButton, LoadingButton } from "@/components/ui/Button";
 import Skeleton, { CardSkeleton, MetricSkeleton, ChartSkeleton } from "@/components/ui/Skeleton";
 import { useToast } from "@/components/ui/Toast";

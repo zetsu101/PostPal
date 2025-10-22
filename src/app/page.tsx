@@ -1,38 +1,74 @@
 "use client";
 import Link from "next/link";
-import Container from "@/components/Container";
+import { Container } from "@/components/Container";
 import { motion } from "framer-motion";
+import ThemeToggle from "@/components/ui/ThemeToggle";
+import KeyboardShortcutsHelp from "@/components/ui/KeyboardShortcutsHelp";
+import { useKeyboardShortcuts, createAppShortcuts } from "@/lib/keyboard-shortcuts";
+import { useRouter } from "next/navigation";
 
 export default function LandingPage() {
+  const router = useRouter();
+  
+  // Set up keyboard shortcuts for landing page
+  useKeyboardShortcuts([
+    {
+      key: '?',
+      description: 'Show keyboard shortcuts help',
+      action: () => {
+        // Toggle help modal
+        const event = new CustomEvent('keyboard-shortcut-help');
+        window.dispatchEvent(event);
+      },
+      category: 'help',
+    },
+    {
+      key: 'd',
+      ctrl: true,
+      shift: true,
+      description: 'Toggle dark mode',
+      action: () => {
+        const currentTheme = localStorage.getItem('theme') || 'system';
+        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        localStorage.setItem('theme', newTheme);
+        window.dispatchEvent(new CustomEvent('theme-change', { detail: { theme: newTheme } }));
+      },
+      category: 'theme',
+    },
+  ]);
+
   return (
-    <div className="min-h-screen flex flex-col bg-[#F9FAFB] text-[#1F2937] font-sans">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-sm border-b">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
         <Container className="flex items-center justify-between py-4">
         <motion.span 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.6 }}
-          className="text-2xl font-bold tracking-tight text-[#87CEFA]"
+          className="text-2xl font-bold tracking-tight text-blue-400 dark:text-blue-300"
         >
           PostPal
         </motion.span>
-        <nav className="space-x-4">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            <Link href="/pricing" className="font-medium hover:text-[#87CEFA] transition-colors">Get Started Free</Link>
-          </motion.div>
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-          >
-            <Link href="/login" className="font-medium hover:text-[#87CEFA] transition-colors">Login</Link>
-          </motion.div>
-        </nav>
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          <nav className="space-x-4">
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+            >
+              <Link href="/pricing" className="font-medium hover:text-blue-400 dark:hover:text-blue-300 transition-colors">Get Started Free</Link>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+            >
+              <Link href="/login" className="font-medium hover:text-blue-400 dark:hover:text-blue-300 transition-colors">Login</Link>
+            </motion.div>
+          </nav>
+        </div>
         </Container>
       </header>
 
@@ -507,6 +543,9 @@ export default function LandingPage() {
           <div className="text-sm">© {new Date().getFullYear()} PostPal. All rights reserved.</div>
         </Container>
       </footer>
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <KeyboardShortcutsHelp />
     </div>
   );
 }

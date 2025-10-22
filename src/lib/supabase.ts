@@ -1,9 +1,40 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient as createSupabaseClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+export const supabase = createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    autoRefreshToken: true,
+    persistSession: true,
+    detectSessionInUrl: true,
+  },
+});
+
+// Export createClient function for server-side usage
+export const createClient = () => {
+  return createSupabaseClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true,
+    },
+  });
+};
+
+// Enhanced Supabase client for server-side operations
+export const createServerClient = () => {
+  return createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+};
 
 // Database types
 export interface User {
@@ -57,6 +88,74 @@ export interface SocialMediaConfig {
   is_active: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// Extended database types for new features
+export interface Organization {
+  id: string;
+  name: string;
+  description?: string;
+  owner_id: string;
+  subscription_plan: 'free' | 'pro' | 'enterprise';
+  settings?: any;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface TeamMember {
+  id: string;
+  organization_id: string;
+  user_id: string;
+  role: 'owner' | 'admin' | 'editor' | 'viewer';
+  status: 'active' | 'pending' | 'suspended' | 'invited';
+  department_id?: string;
+  permissions?: any;
+  joined_at: string;
+  last_active: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface Department {
+  id: string;
+  organization_id: string;
+  name: string;
+  description?: string;
+  manager_id?: string;
+  color: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AIOptimization {
+  id: string;
+  user_id: string;
+  organization_id?: string;
+  original_content: string;
+  optimized_content: string;
+  platform: string;
+  optimization_score: number;
+  improvements_applied?: any;
+  predicted_metrics?: any;
+  actual_metrics?: any;
+  model_used: string;
+  processing_time_ms: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PerformanceMetric {
+  id: string;
+  user_id?: string;
+  organization_id?: string;
+  metric_name: string;
+  metric_value: number;
+  metric_unit: string;
+  category: string;
+  platform?: string;
+  device_info?: any;
+  browser_info?: any;
+  recorded_at: string;
 }
 
 // Database helper functions
@@ -239,5 +338,102 @@ export class DatabaseService {
       totalReach: analytics.reduce((sum, a) => sum + a.reach, 0),
       totalImpressions: analytics.reduce((sum, a) => sum + a.impressions, 0),
     };
+  }
+
+  // Extended operations for new features
+  
+  // AI Optimization operations
+  static async createAIOptimization(optimizationData: Partial<AIOptimization>) {
+    const { data, error } = await supabase
+      .from('ai_optimizations')
+      .insert([optimizationData])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async getAIOptimizations(userId: string, limit = 50) {
+    const { data, error } = await supabase
+      .from('ai_optimizations')
+      .select('*')
+      .eq('user_id', userId)
+      .order('created_at', { ascending: false })
+      .limit(limit);
+    
+    if (error) throw error;
+    return data;
+  }
+
+  // Performance metrics operations
+  static async createPerformanceMetric(metricData: Partial<PerformanceMetric>) {
+    const { data, error } = await supabase
+      .from('performance_metrics')
+      .insert([metricData])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async getPerformanceMetrics(userId: string, category?: string, limit = 100) {
+    let query = supabase
+      .from('performance_metrics')
+      .select('*')
+      .eq('user_id', userId)
+      .order('recorded_at', { ascending: false })
+      .limit(limit);
+
+    if (category) {
+      query = query.eq('category', category);
+    }
+
+    const { data, error } = await query;
+    
+    if (error) throw error;
+    return data;
+  }
+
+  // Organization operations
+  static async getOrganizations(userId: string) {
+    const { data, error } = await supabase
+      .from('organizations')
+      .select(`
+        *,
+        team_members!inner(user_id)
+      `)
+      .eq('team_members.user_id', userId)
+      .or(`owner_id.eq.${userId}`);
+    
+    if (error) throw error;
+    return data;
+  }
+
+  static async createOrganization(orgData: Partial<Organization>) {
+    const { data, error } = await supabase
+      .from('organizations')
+      .insert([orgData])
+      .select()
+      .single();
+    
+    if (error) throw error;
+    return data;
+  }
+
+  // Team member operations
+  static async getTeamMembers(organizationId: string) {
+    const { data, error } = await supabase
+      .from('team_members')
+      .select(`
+        *,
+        user:users(id, name, email, avatar_url),
+        department:departments(id, name, color)
+      `)
+      .eq('organization_id', organizationId);
+    
+    if (error) throw error;
+    return data;
   }
 }

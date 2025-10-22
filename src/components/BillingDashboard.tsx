@@ -29,7 +29,7 @@ export default function BillingDashboard() {
   const [billingInfo, setBillingInfo] = useState<BillingInfo | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpeningPortal, setIsOpeningPortal] = useState(false);
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadBillingInfo();
@@ -70,10 +70,10 @@ export default function BillingDashboard() {
       setBillingInfo(mockBillingInfo);
     } catch (error) {
       console.error('Failed to load billing info:', error);
-      toast({
+      addToast({
         title: 'Error',
-        description: 'Failed to load billing information',
-        variant: 'destructive',
+        message: 'Failed to load billing information',
+        type: 'error',
       });
     } finally {
       setIsLoading(false);
@@ -105,10 +105,10 @@ export default function BillingDashboard() {
       }
     } catch (error) {
       console.error('Failed to open customer portal:', error);
-      toast({
+      addToast({
         title: 'Error',
-        description: 'Failed to open billing portal',
-        variant: 'destructive',
+        message: 'Failed to open billing portal',
+        type: 'error',
       });
     } finally {
       setIsOpeningPortal(false);
@@ -119,10 +119,10 @@ export default function BillingDashboard() {
     if (invoicePdf) {
       window.open(invoicePdf, '_blank');
     } else {
-      toast({
+      addToast({
         title: 'Invoice Download',
-        description: 'Invoice download not available',
-        variant: 'default',
+        message: 'Invoice download not available',
+        type: 'info',
       });
     }
   };

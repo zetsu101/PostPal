@@ -38,14 +38,14 @@ export default function SmartContentOptimizer({
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [isOptimizing, setIsOptimizing] = useState(false);
   const [activeTab, setActiveTab] = useState<'analysis' | 'optimization' | 'prediction'>('analysis');
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   const analyzeContent = async () => {
     if (!content.trim()) {
-      toast({
+      addToast({
         title: 'Content Required',
-        description: 'Please enter some content to analyze.',
-        variant: 'destructive',
+        message: 'Please enter some content to analyze.',
+        type: 'error',
       });
       return;
     }
@@ -62,10 +62,10 @@ export default function SmartContentOptimizer({
       setActiveTab('analysis');
     } catch (error) {
       console.error('Analysis failed:', error);
-      toast({
+      addToast({
         title: 'Analysis Failed',
-        description: 'Failed to analyze content. Please try again.',
-        variant: 'destructive',
+        message: 'Failed to analyze content. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsAnalyzing(false);
@@ -74,10 +74,10 @@ export default function SmartContentOptimizer({
 
   const optimizeContent = async () => {
     if (!content.trim()) {
-      toast({
+      addToast({
         title: 'Content Required',
-        description: 'Please enter some content to optimize.',
-        variant: 'destructive',
+        message: 'Please enter some content to optimize.',
+        type: 'error',
       });
       return;
     }
@@ -93,10 +93,10 @@ export default function SmartContentOptimizer({
       }
     } catch (error) {
       console.error('Optimization failed:', error);
-      toast({
+      addToast({
         title: 'Optimization Failed',
-        description: 'Failed to optimize content. Please try again.',
-        variant: 'destructive',
+        message: 'Failed to optimize content. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsOptimizing(false);
@@ -105,10 +105,10 @@ export default function SmartContentOptimizer({
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text);
-    toast({
+    addToast({
       title: 'Copied!',
-      description: 'Content copied to clipboard.',
-      variant: 'success',
+      message: 'Content copied to clipboard.',
+      type: 'success',
     });
   };
 

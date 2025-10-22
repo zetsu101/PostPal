@@ -2,8 +2,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import DashboardLayout from '@/components/DashboardLayout';
-import Container from '@/components/Container';
-import PageHeader from '@/components/PageHeader';
+import { Container } from '@/components/Container';
+import { PageHeader } from '@/components/PageHeader';
 import SmartContentOptimizer from '@/components/SmartContentOptimizer';
 import TrendAnalysis from '@/components/TrendAnalysis';
 import SmartScheduler from '@/components/SmartScheduler';
@@ -12,7 +12,7 @@ import { Brain, Sparkles, TrendingUp, Calendar } from 'lucide-react';
 export default function AICreatorPage() {
   const [activeTab, setActiveTab] = useState<'optimizer' | 'trends' | 'scheduler'>('optimizer');
   const [content, setContent] = useState('');
-  const [selectedPlatform, setSelectedPlatform] = useState('instagram');
+  const [selectedPlatform] = useState('instagram');
   const [optimizedContent, setOptimizedContent] = useState('');
 
   const handleContentOptimized = (newContent: string) => {
@@ -28,7 +28,13 @@ export default function AICreatorPage() {
     setContent(prev => prev + ` ${hashtag}`);
   };
 
-  const handleSchedule = (scheduleData: any) => {
+  interface ScheduleData {
+    scheduledTime: Date;
+    platform: string;
+    content: string;
+  }
+
+  const handleSchedule = (scheduleData: ScheduleData) => {
     console.log('Scheduling post:', scheduleData);
     // In a real app, this would save to database and trigger notifications
   };
@@ -72,7 +78,7 @@ export default function AICreatorPage() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'optimizer' | 'trends' | 'scheduler')}
               className={`flex-1 flex flex-col items-center gap-2 px-6 py-4 rounded-lg font-medium transition-all ${
                 activeTab === tab.id
                   ? 'bg-white text-blue-600 shadow-md'

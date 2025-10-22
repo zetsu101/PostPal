@@ -58,65 +58,16 @@
   }
 }
 
-/* Ensure input and textarea text is always visible */
+/* Form elements with proper dark mode support */
 input, textarea, select {
-  color: #111827 !important; /* text-gray-900 */
-  background-color: #ffffff !important; /* white background */
-  background: #ffffff !important; /* white background - more specific */
+  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700;
 }
 
 input::placeholder, textarea::placeholder {
-  color: #6b7280 !important; /* text-gray-500 */
+  @apply text-gray-500 dark:text-gray-400;
 }
 
-/* Dark mode overrides */
-.dark input, .dark textarea, .dark select {
-  color: #f9fafb !important; /* text-gray-100 */
-  background-color: #1f2937 !important; /* bg-gray-800 */
-  background: #1f2937 !important; /* bg-gray-800 - more specific */
-}
-
-/* Force white background for all input elements with maximum specificity */
-textarea, input[type="text"], input[type="email"], input[type="password"], input[type="number"], select {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  color: #111827 !important;
-}
-
-/* Override any Tailwind or component styles */
-input, textarea, select {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  color: #111827 !important;
-}
-
-/* Target specific classes that might be overriding */
-.bg-gray-800, .bg-gray-100, .dark\\:bg-gray-800 {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-}
-
-/* Maximum specificity override for all form elements */
-.ai-generator textarea,
-.ai-generator input[type="text"],
-.ai-generator input[type="email"],
-.ai-generator input[type="password"],
-.ai-generator input[type="number"],
-.ai-generator select {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  color: #111827 !important;
-}
-
-/* Force override for any remaining dark backgrounds */
-*[class*="bg-gray"] textarea,
-*[class*="bg-gray"] input,
-*[class*="bg-gray"] select {
-  background-color: #ffffff !important;
-  background: #ffffff !important;
-  color: #111827 !important;
-}
-
-.dark input::placeholder, .dark textarea::placeholder {
-  color: #9ca3af !important; /* text-gray-400 */
+/* Focus states for form elements */
+input:focus, textarea:focus, select:focus {
+  @apply ring-2 ring-blue-500 dark:ring-blue-400 border-blue-500 dark:border-blue-400 outline-none;
 }

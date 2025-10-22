@@ -33,8 +33,8 @@ import {
 } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { useToast } from '@/components/ui/Toast';
-import Container from '@/components/Container';
-import PageHeader from '@/components/PageHeader';
+import { Container } from '@/components/Container';
+import { PageHeader } from '@/components/PageHeader';
 import { useTheme } from '@/components/ui/ThemeProvider';
 import { Moon, Sun } from 'lucide-react';
 

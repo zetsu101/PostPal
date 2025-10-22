@@ -2,6 +2,8 @@
 import { useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import FileUploader from "@/components/FileUploader";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface PostData {
   title: string;
@@ -14,6 +16,16 @@ interface PostData {
   targetAudience: string;
 }
 
+interface UploadedFile {
+  id: string;
+  url: string;
+  filename: string;
+  size: number;
+  contentType: string;
+  thumbnailUrl?: string;
+  uploadedAt: string;
+}
+
 interface ContentTemplate {
   id: string;
   name: string;
@@ -23,6 +35,7 @@ interface ContentTemplate {
 }
 
 export default function CreatePage() {
+  const { user } = useAuth();
   const [postData, setPostData] = useState<PostData>({
     title: "",
     caption: "",
@@ -38,7 +51,7 @@ export default function CreatePage() {
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [showAIGenerator, setShowAIGenerator] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [uploadedMedia, setUploadedMedia] = useState<File[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
   const [scheduleType, setScheduleType] = useState("draft");
   const [scheduledTime, setScheduledTime] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -70,14 +83,24 @@ export default function CreatePage() {
   };
 
   // File upload handling
-  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(event.target.files || []);
-    setUploadedMedia(prev => [...prev, ...files]);
+  const handleUploadComplete = (files: UploadedFile[]) => {
+    setUploadedFiles(prev => [...files, ...prev]);
   };
 
-  const removeMedia = (index: number) => {
-    setUploadedMedia(prev => prev.filter((_, i) => i !== index));
+  const removeFile = (fileId: string) => {
+    setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
   };
+
+  if (!user) {
+    return (
+      <div className="h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-4">Please log in to create content</h1>
+          <a href="/login" className="text-blue-600 hover:underline">Go to Login</a>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="h-screen bg-gray-50 flex">
@@ -185,40 +208,43 @@ export default function CreatePage() {
                 <div className="bg-white rounded-2xl p-6 shadow-lg">
                   <h3 className="text-lg font-semibold text-[#1E293B] mb-4">Media</h3>
                   
-                  {uploadedMedia.length === 0 ? (
-                    <div 
-                      onClick={() => fileInputRef.current?.click()}
-                      className="border-2 border-dashed border-[#87CEFA] rounded-xl p-8 text-center cursor-pointer hover:bg-[#87CEFA]/5 transition-colors"
-                    >
-                      <span className="text-4xl mb-4 block">📷</span>
-                      <p className="text-[#64748B] font-medium mb-2">Drop your media here</p>
-                      <p className="text-sm text-[#64748B]">or click to browse</p>
-                      <input
-                        ref={fileInputRef}
-                        type="file"
-                        multiple
-                        accept="image/*,video/*"
-                        onChange={handleFileUpload}
-                        className="hidden"
-                      />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-4">
-                      {uploadedMedia.map((file, index) => (
-                        <div key={index} className="relative group">
-                          <Image
-                            src={URL.createObjectURL(file)}
-                            alt={`Upload ${index + 1}`}
-                            width={400}
-                            height={128}
-                            className="w-full h-32 object-cover rounded-lg"
-                          />
+                  <FileUploader
+                    userId={user.id}
+                    onUploadComplete={handleUploadComplete}
+                    folder="posts"
+                    maxFiles={10}
+                    maxSize={50}
+                    className="mb-4"
+                  />
+                  
+                  {uploadedFiles.length > 0 && (
+                    <div className="grid grid-cols-2 gap-4 mt-4">
+                      {uploadedFiles.map((file) => (
+                        <div key={file.id} className="relative group">
+                          {file.contentType.startsWith('image/') && file.thumbnailUrl ? (
+                            <Image
+                              src={file.thumbnailUrl}
+                              alt={file.filename}
+                              width={400}
+                              height={128}
+                              className="w-full h-32 object-cover rounded-lg"
+                            />
+                          ) : (
+                            <div className="w-full h-32 bg-gray-100 rounded-lg flex items-center justify-center">
+                              <span className="text-2xl">
+                                {file.contentType.startsWith('video/') ? '🎥' : '📄'}
+                              </span>
+                            </div>
+                          )}
                           <button
-                            onClick={() => removeMedia(index)}
+                            onClick={() => removeFile(file.id)}
                             className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                           >
                             ×
                           </button>
+                          <div className="absolute bottom-2 left-2 bg-black bg-opacity-50 text-white text-xs px-2 py-1 rounded">
+                            {file.filename}
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -394,15 +420,23 @@ export default function CreatePage() {
 
               {/* Preview Content */}
               <div className="p-4">
-                {uploadedMedia.length > 0 ? (
+                {uploadedFiles.length > 0 ? (
                   <div className="mb-4">
-                    <Image
-                      src={URL.createObjectURL(uploadedMedia[0])}
-                      alt="Preview"
-                      width={600}
-                      height={192}
-                      className="w-full h-48 object-cover rounded-lg"
-                    />
+                    {uploadedFiles[0].contentType.startsWith('image/') && uploadedFiles[0].thumbnailUrl ? (
+                      <Image
+                        src={uploadedFiles[0].thumbnailUrl}
+                        alt="Preview"
+                        width={600}
+                        height={192}
+                        className="w-full h-48 object-cover rounded-lg"
+                      />
+                    ) : (
+                      <div className="w-full h-48 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <span className="text-4xl">
+                          {uploadedFiles[0].contentType.startsWith('video/') ? '🎥' : '📄'}
+                        </span>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="mb-4 h-48 bg-gray-100 rounded-lg flex items-center justify-center">

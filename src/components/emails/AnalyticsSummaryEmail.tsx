@@ -1,10 +1,6 @@
-import {
-  Button,
-  Section,
-  Text,
-} from '@react-email/components';
-import * as React from 'react';
+import React from 'react';
 import { BaseEmail } from './BaseEmail';
+import { Text, Section, Button, Hr } from '@react-email/components';
 
 interface AnalyticsSummaryEmailProps {
   userName: string;
@@ -14,87 +10,55 @@ interface AnalyticsSummaryEmailProps {
   analyticsUrl: string;
 }
 
-export function AnalyticsSummaryEmail({ 
-  userName, 
-  totalPosts, 
-  totalEngagement, 
-  topPlatform, 
-  analyticsUrl 
+export function AnalyticsSummaryEmail({
+  userName,
+  totalPosts,
+  totalEngagement,
+  topPlatform,
+  analyticsUrl,
 }: AnalyticsSummaryEmailProps) {
-  const getPlatformEmoji = (platform: string) => {
-    switch (platform.toLowerCase()) {
-      case 'instagram': return '📸';
-      case 'linkedin': return '💼';
-      case 'facebook': return '📘';
-      case 'twitter': return '🐦';
-      case 'tiktok': return '🎵';
-      default: return '📱';
-    }
-  };
-
-  const formatEngagement = (engagement: number) => {
-    if (engagement >= 1000000) {
-      return `${(engagement / 1000000).toFixed(1)}M`;
-    } else if (engagement >= 1000) {
-      return `${(engagement / 1000).toFixed(1)}K`;
-    }
-    return engagement.toString();
-  };
-
   return (
     <BaseEmail
-      preview={`Your weekly analytics summary: ${totalPosts} posts, ${formatEngagement(totalEngagement)} total engagement`}
-      title="Your Weekly Analytics Summary 📊"
+      preview="Your weekly analytics summary is ready!"
+      title="📊 Your Weekly Analytics Summary"
     >
       <Text style={paragraph}>
         Hi {userName},
       </Text>
       
       <Text style={paragraph}>
-        Here's your weekly performance summary. You've been doing great!
+        Here's your weekly performance summary:
       </Text>
-      
-      <Section style={analyticsCard}>
-        <Text style={metricLabel}>Posts Published</Text>
-        <Text style={metricValue}>{totalPosts}</Text>
-        
-        <Text style={metricLabel}>Total Engagement</Text>
-        <Text style={metricValue}>{formatEngagement(totalEngagement)}</Text>
-        
-        <Text style={metricLabel}>Top Platform</Text>
-        <Text style={metricValue}>
-          {getPlatformEmoji(topPlatform)} {topPlatform.charAt(0).toUpperCase() + topPlatform.slice(1)}
-        </Text>
+
+      <Section style={metricsContainer}>
+        <div style={metricItem}>
+          <Text style={metricValue}>{totalPosts}</Text>
+          <Text style={metricLabel}>Posts Published</Text>
+        </div>
+        <div style={metricItem}>
+          <Text style={metricValue}>{totalEngagement.toLocaleString()}</Text>
+          <Text style={metricLabel}>Total Engagement</Text>
+        </div>
+        <div style={metricItem}>
+          <Text style={metricValue}>{topPlatform}</Text>
+          <Text style={metricLabel}>Top Platform</Text>
+        </div>
       </Section>
-      
+
       <Text style={paragraph}>
-        <strong>Key Insights:</strong>
+        Keep up the great work! Your content is performing well across all platforms.
       </Text>
-      
-      <Text style={insight}>
-        🎯 Your content is performing well across all platforms<br/>
-        📈 Engagement is growing steadily<br/>
-        ⭐ {topPlatform} is your strongest platform this week
-      </Text>
-      
-      <Text style={paragraph}>
-        Want to dive deeper into your analytics? Check out your detailed performance metrics.
-      </Text>
-      
+
       <Section style={buttonContainer}>
         <Button style={button} href={analyticsUrl}>
-          View Detailed Analytics
+          View Full Analytics
         </Button>
       </Section>
-      
-      <Text style={paragraph}>
-        <strong>Pro Tip:</strong> Try posting at peak engagement times to maximize your reach. 
-        Your analytics show that content posted between 2-4 PM performs 23% better!
-      </Text>
-      
-      <Text style={paragraph}>
-        Keep up the great work!<br/>
-        The PostPal Team
+
+      <Hr style={hr} />
+
+      <Text style={footerText}>
+        Want to improve your performance? Try our AI content optimizer for better engagement rates.
       </Text>
     </BaseEmail>
   );
@@ -104,40 +68,35 @@ const paragraph = {
   fontSize: '16px',
   lineHeight: '26px',
   color: '#374151',
-  margin: '16px 0',
+  margin: '0 0 16px 0',
 };
 
-const analyticsCard = {
+const metricsContainer = {
   backgroundColor: '#f9fafb',
-  border: '1px solid #e5e7eb',
-  borderRadius: '12px',
+  borderRadius: '8px',
   padding: '24px',
   margin: '24px 0',
-  textAlign: 'center' as const,
+  display: 'flex',
+  justifyContent: 'space-around',
+  flexWrap: 'wrap' as const,
 };
 
-const metricLabel = {
-  fontSize: '14px',
-  fontWeight: 'bold',
-  color: '#6b7280',
-  margin: '16px 0 4px',
-  textTransform: 'uppercase' as const,
-  letterSpacing: '0.5px',
+const metricItem = {
+  textAlign: 'center' as const,
+  margin: '0 16px',
 };
 
 const metricValue = {
   fontSize: '32px',
   fontWeight: 'bold',
-  color: '#3b82f6',
-  margin: '0 0 24px',
+  color: '#1f2937',
+  margin: '0 0 8px 0',
 };
 
-const insight = {
-  fontSize: '16px',
-  lineHeight: '26px',
-  color: '#374151',
-  margin: '16px 0',
-  paddingLeft: '0',
+const metricLabel = {
+  fontSize: '14px',
+  color: '#6b7280',
+  margin: '0',
 };
 
 const buttonContainer = {
@@ -147,7 +106,7 @@ const buttonContainer = {
 
 const button = {
   backgroundColor: '#3b82f6',
-  borderRadius: '8px',
+  borderRadius: '6px',
   color: '#ffffff',
   fontSize: '16px',
   fontWeight: 'bold',
@@ -157,3 +116,14 @@ const button = {
   padding: '12px 24px',
 };
 
+const hr = {
+  borderColor: '#e5e7eb',
+  margin: '32px 0',
+};
+
+const footerText = {
+  fontSize: '14px',
+  color: '#6b7280',
+  lineHeight: '20px',
+  margin: '0',
+};

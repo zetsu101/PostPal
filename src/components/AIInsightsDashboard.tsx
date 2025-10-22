@@ -29,7 +29,7 @@ interface PerformanceMetric {
   label: string;
   value: number;
   change: number;
-  icon: JSX.Element;
+  icon: React.ReactElement;
   color: string;
 }
 
@@ -50,7 +50,7 @@ export default function AIInsightsDashboard({
   const [insights, setInsights] = useState<ContentInsight[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedInsight, setSelectedInsight] = useState<ContentInsight | null>(null);
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadInsights();
@@ -130,10 +130,10 @@ export default function AIInsightsDashboard({
       setInsights(mockInsights);
     } catch (error) {
       console.error('Failed to load insights:', error);
-      toast({
+      addToast({
         title: 'Failed to Load Insights',
-        description: 'Unable to fetch AI insights. Please try again.',
-        variant: 'destructive',
+        message: 'Unable to fetch AI insights. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsLoading(false);
@@ -315,7 +315,7 @@ export default function AIInsightsDashboard({
                     {Object.entries(selectedInsight.data).map(([key, value]) => (
                       <div key={key} className="text-sm">
                         <span className="text-gray-600 capitalize">{key.replace(/([A-Z])/g, ' $1')}:</span>
-                        <span className="ml-2 font-medium text-gray-900">{value}</span>
+                        <span className="ml-2 font-medium text-gray-900">{String(value)}</span>
                       </div>
                     ))}
                   </div>

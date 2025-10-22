@@ -32,7 +32,7 @@ export default function TrendAnalysis({
   const [isLoading, setIsLoading] = useState(false);
   const [selectedPlatform, setSelectedPlatform] = useState<string>('all');
   const [activeTab, setActiveTab] = useState<'topics' | 'hashtags' | 'timing'>('topics');
-  const { toast } = useToast();
+  const { addToast } = useToast();
 
   useEffect(() => {
     loadTrends();
@@ -45,10 +45,10 @@ export default function TrendAnalysis({
       setTrends(trendData);
     } catch (error) {
       console.error('Failed to load trends:', error);
-      toast({
+      addToast({
         title: 'Failed to Load Trends',
-        description: 'Unable to fetch trending data. Please try again.',
-        variant: 'destructive',
+        message: 'Unable to fetch trending data. Please try again.',
+        type: 'error',
       });
     } finally {
       setIsLoading(false);
@@ -218,7 +218,7 @@ function TrendingTopics({
     platform: string;
   }>;
   onTrendSelected?: (trend: string) => void;
-  getTrendIcon: (growthRate: number) => JSX.Element;
+  getTrendIcon: (growthRate: number) => React.ReactElement;
   getGrowthColor: (growthRate: number) => string;
 }) {
   return (

@@ -11,7 +11,7 @@ interface PricingCardProps {
   price: number;
   features: string[];
   isPopular?: boolean;
-  onSelect: (plan: string) => void;
+  onSelect: (plan: 'free' | 'pro' | 'enterprise') => void;
   isSelected?: boolean;
   isLoading?: boolean;
 }

@@ -207,6 +207,11 @@ export class MigrationService {
   
   // Check if migration is needed
   static needsMigration(): boolean {
+    // Only check localStorage in browser environment
+    if (typeof window === 'undefined') {
+      return false;
+    }
+    
     const hasLocalData = 
       localStorage.getItem('user') ||
       localStorage.getItem('posts') ||
@@ -221,11 +226,19 @@ export class MigrationService {
   
   // Mark migration as completed
   static markMigrationCompleted(): void {
-    localStorage.setItem('migrated_to_database', 'true');
+    // Only access localStorage in browser environment
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('migrated_to_database', 'true');
+    }
   }
   
   // Clear localStorage after successful migration
   static clearLocalStorage(): void {
+    // Only access localStorage in browser environment
+    if (typeof window === 'undefined') {
+      return;
+    }
+    
     const keysToKeep = ['migrated_to_database'];
     const allKeys = Object.keys(localStorage);
     

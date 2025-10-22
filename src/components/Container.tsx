@@ -6,7 +6,7 @@ interface ContainerProps {
 }
 
 // Provides consistent horizontal page gutters and max width
-export default function Container({ children, className = '' }: ContainerProps) {
+export function Container({ children, className = '' }: ContainerProps) {
   return (
     <div className={`mx-auto w-full max-w-5xl px-4 sm:px-6 lg:px-8 ${className}`}>
       {children}
