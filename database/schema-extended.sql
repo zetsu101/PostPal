@@ -458,5 +458,5 @@ ON CONFLICT (organization_id, user_id) DO NOTHING;
 
 -- Sample AI optimization
 INSERT INTO ai_optimizations (id, user_id, organization_id, original_content, optimized_content, platform, optimization_score, improvements_applied, predicted_metrics) VALUES
-  ('44444444-4444-4444-4444-444444444444', '00000000-0000-0000-0000-000000000001', '11111111-1111-1111-1111-111111111111', 'Check out our new product!', '🚀 Excited to announce our latest innovation! Check out what we\'ve been working on. #innovation #product #tech', 'instagram', 87, '["emojis", "hashtags", "engagement"]', '{"likes": 245, "comments": 18, "shares": 32, "reach": 1250, "engagement_rate": 8.7}')
+  ('44444444-4444-4444-4444-444444444444', '00000000-0000-0000-0000-000000000001', '11111111-1111-1111-1111-111111111111', 'Check out our new product!', '🚀 Excited to announce our latest innovation! Check out what we''ve been working on. #innovation #product #tech', 'instagram', 87, '["emojis", "hashtags", "engagement"]', '{"likes": 245, "comments": 18, "shares": 32, "reach": 1250, "engagement_rate": 8.7}')
 ON CONFLICT (id) DO NOTHING;
