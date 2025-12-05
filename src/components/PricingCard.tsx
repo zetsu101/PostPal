@@ -57,8 +57,8 @@ export default function PricingCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className={`relative bg-white rounded-xl border-2 shadow-lg hover:shadow-xl transition-all duration-300 ${
-        isSelected ? 'border-blue-500 ring-2 ring-blue-200' : 'border-gray-200 hover:border-gray-300'
+      className={`relative bg-white dark:bg-gray-900 rounded-xl border-2 shadow-lg hover:shadow-xl transition-all duration-300 ${
+        isSelected ? 'border-blue-500 dark:border-[#87CEFA] ring-2 ring-blue-200 dark:ring-[#87CEFA]/20' : 'border-gray-200 dark:border-gray-800 hover:border-gray-300 dark:hover:border-gray-700'
       } ${isPopular ? 'scale-105' : ''}`}
     >
       {isPopular && (
@@ -73,7 +73,7 @@ export default function PricingCard({
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center space-x-3">
             {getPlanIcon()}
-            <h3 className="text-2xl font-bold text-gray-900">{name}</h3>
+            <h3 className="text-2xl font-bold text-gray-900 dark:text-white">{name}</h3>
           </div>
           {isSelected && (
             <div className="w-6 h-6 bg-blue-500 rounded-full flex items-center justify-center">
@@ -82,13 +82,13 @@ export default function PricingCard({
           )}
         </div>
 
-        <p className="text-gray-600 mb-6">{description}</p>
+        <p className="text-gray-600 dark:text-gray-300 mb-6">{description}</p>
 
         <div className="mb-8">
           <div className="flex items-baseline">
-            <span className="text-4xl font-bold text-gray-900">${price}</span>
-            {price > 0 && <span className="text-gray-500 ml-1">/month</span>}
-            {price === 0 && <span className="text-gray-500 ml-1">forever</span>}
+            <span className="text-4xl font-bold text-gray-900 dark:text-white">${price}</span>
+            {price > 0 && <span className="text-gray-500 dark:text-gray-400 ml-1">/month</span>}
+            {price === 0 && <span className="text-gray-500 dark:text-gray-400 ml-1">forever</span>}
           </div>
         </div>
 
@@ -96,7 +96,7 @@ export default function PricingCard({
           {features.map((feature, index) => (
             <li key={index} className="flex items-start">
               <Check className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-              <span className="text-gray-700">{feature}</span>
+              <span className="text-gray-700 dark:text-gray-300">{feature}</span>
             </li>
           ))}
         </ul>

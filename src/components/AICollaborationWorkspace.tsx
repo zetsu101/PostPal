@@ -475,7 +475,7 @@ export default function AICollaborationWorkspace() {
                             <div className="mt-2">
                               {Array.isArray(suggestion.details) ? (
                                 <div className="flex flex-wrap gap-1">
-                                  {suggestion.details.map((detail, i) => (
+                                  {suggestion.details.map((detail: any, i: number) => (
                                     <span key={i} className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs">
                                       {detail}
                                     </span>

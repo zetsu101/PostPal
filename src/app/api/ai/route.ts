@@ -5,7 +5,7 @@ import OpenAI from 'openai';
 function generateMockContent(type: string, prompt: any): string {
   console.log('🎭 Generating mock content as fallback');
   
-  const { topic, platform, contentType, tone, targetAudience, hashtagCount, language, includeEmojis, callToAction } = prompt;
+  const { topic, platform, contentType, tone, targetAudience, hashtagCount, includeEmojis, callToAction } = prompt;
   
   switch (type) {
     case 'caption':

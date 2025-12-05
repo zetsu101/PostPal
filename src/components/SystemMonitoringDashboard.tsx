@@ -14,7 +14,7 @@ import {
   TrendingUp,
   TrendingDown,
   Clock,
-  Memory,
+  MemoryStick as Memory,
   Cpu,
   HardDrive,
   Wifi,

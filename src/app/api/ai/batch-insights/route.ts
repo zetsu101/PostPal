@@ -1,9 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest } from 'next/server';
 import { headers } from 'next/headers';
 import { 
   contentScoringModel,
   engagementPredictionModel,
-  optimalTimingModel,
   type ContentFeatures,
   type AudienceInsight
 } from '@/lib/ai-ml-models';
@@ -114,8 +113,8 @@ async function processContentItem(
     const engagementKey = createAIKey('engagementPrediction', content.text || '', { platform, userId, index });
 
     // Get content score (with caching)
-    let contentScore = contentScoringCache.get(contentKey);
-    if (contentScore === null) {
+    let contentScore: number = contentScoringCache.get(contentKey) as number;
+    if (contentScore === null || typeof contentScore !== 'number') {
       contentScore = contentScoringModel.calculateContentScore(features, historicalData);
       contentScoringCache.set(contentKey, contentScore);
     }

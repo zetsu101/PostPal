@@ -4,9 +4,9 @@
 // Production-ready WebSocket server with clustering and monitoring
 
 import { createServer } from 'http';
-import { PostPalWebSocketServer } from './websocket-server';
+import PostPalWebSocketServer, { getWebSocketServer } from './websocket-server';
 import { createServerClient } from './supabase';
-import { monitoring } from './monitoring';
+// import { monitoring } from './monitoring'; // TODO: Add monitoring module
 import cluster from 'cluster';
 import os from 'os';
 
@@ -189,8 +189,8 @@ class PostPalWebSocketCluster {
     // Monitor WebSocket connections
     setInterval(() => {
       const stats = wsServer.getStats();
-      monitoring.trackMetric('websocket_connections', stats.totalClients);
-      monitoring.trackMetric('websocket_users', stats.totalUsers);
+      // monitoring.trackMetric('websocket_connections', stats.totalClients);
+      // monitoring.trackMetric('websocket_users', stats.totalUsers);
       
       // Send stats to primary process
       if (cluster.worker) {
@@ -205,12 +205,16 @@ class PostPalWebSocketCluster {
     // Monitor memory usage
     setInterval(() => {
       const memUsage = process.memoryUsage();
-      monitoring.trackMetric('memory_heap_used', memUsage.heapUsed);
-      monitoring.trackMetric('memory_heap_total', memUsage.heapTotal);
+      // monitoring.trackMetric('memory_heap_used', memUsage.heapUsed);
+      // monitoring.trackMetric('memory_heap_total', memUsage.heapTotal);
       
       // Alert if memory usage is high
       if (memUsage.heapUsed > 500 * 1024 * 1024) { // 500MB
-        monitoring.trackError(new Error('High memory usage detected'), {
+        // monitoring.trackError(new Error('High memory usage detected'), {
+        //   heapUsed: memUsage.heapUsed,
+        //   heapTotal: memUsage.heapTotal
+        // });
+        console.warn('High memory usage detected:', {
           heapUsed: memUsage.heapUsed,
           heapTotal: memUsage.heapTotal
         });

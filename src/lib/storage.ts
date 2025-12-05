@@ -25,6 +25,7 @@ export class LocalStorageManager {
 
   // Set item with TTL
   set<T>(key: string, data: T, ttl?: number): void {
+    if (typeof window === 'undefined') return;
     try {
       const item: StorageItem<T> = {
         data,
@@ -44,6 +45,7 @@ export class LocalStorageManager {
 
   // Get item with TTL validation
   get<T>(key: string): T | null {
+    if (typeof window === 'undefined') return null;
     try {
       const serialized = window.localStorage.getItem(this.prefix + key);
       if (!serialized) return null;
@@ -68,6 +70,7 @@ export class LocalStorageManager {
 
   // Remove item
   remove(key: string): void {
+    if (typeof window === 'undefined') return;
     try {
       window.localStorage.removeItem(this.prefix + key);
     } catch (error) {
@@ -82,6 +85,7 @@ export class LocalStorageManager {
 
   // Clear all items with prefix
   clear(): void {
+    if (typeof window === 'undefined') return;
     try {
       const keys = Object.keys(window.localStorage);
       keys.forEach(key => {
@@ -96,6 +100,7 @@ export class LocalStorageManager {
 
   // Get all keys with prefix
   keys(): string[] {
+    if (typeof window === 'undefined') return [];
     try {
       const keys = Object.keys(window.localStorage);
       return keys
@@ -140,6 +145,7 @@ export class SessionStorageManager {
   }
 
   set<T>(key: string, data: T, ttl?: number): void {
+    if (typeof window === 'undefined') return;
     try {
       const item: StorageItem<T> = {
         data,
@@ -154,6 +160,7 @@ export class SessionStorageManager {
   }
 
   get<T>(key: string): T | null {
+    if (typeof window === 'undefined') return null;
     try {
       const serialized = window.sessionStorage.getItem(this.prefix + key);
       if (!serialized) return null;
@@ -174,6 +181,7 @@ export class SessionStorageManager {
   }
 
   remove(key: string): void {
+    if (typeof window === 'undefined') return;
     try {
       window.sessionStorage.removeItem(this.prefix + key);
     } catch (error) {
@@ -186,6 +194,7 @@ export class SessionStorageManager {
   }
 
   clear(): void {
+    if (typeof window === 'undefined') return;
     try {
       const keys = Object.keys(window.sessionStorage);
       keys.forEach(key => {
@@ -200,6 +209,7 @@ export class SessionStorageManager {
 
   // Get all keys with prefix
   keys(): string[] {
+    if (typeof window === 'undefined') return [];
     try {
       const keys = Object.keys(window.sessionStorage);
       return keys
@@ -356,7 +366,9 @@ export const getStorageStats = () => ({
   memoryCache: memoryCache.size(),
 });
 
-// Auto-cleanup expired items
-setInterval(() => {
-  memoryCache.cleanup();
-}, 60000); // Clean every minute
+// Auto-cleanup expired items (only in browser)
+if (typeof window !== 'undefined') {
+  setInterval(() => {
+    memoryCache.cleanup();
+  }, 60000); // Clean every minute
+}

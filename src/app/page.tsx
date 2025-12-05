@@ -38,9 +38,9 @@ export default function LandingPage() {
   ]);
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 font-sans">
+    <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-black text-gray-900 dark:text-white font-sans">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-700">
+      <header className="sticky top-0 z-50 bg-white/80 dark:bg-black/80 backdrop-blur-sm border-b border-gray-200 dark:border-gray-800">
         <Container className="flex items-center justify-between py-4">
         <motion.span 
           initial={{ opacity: 0, x: -20 }}
@@ -108,10 +108,10 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6 text-[#1F2937] leading-tight"
+            className="text-5xl sm:text-6xl lg:text-7xl font-extrabold mb-6 text-[#1F2937] dark:text-white leading-tight dark:drop-shadow-[0_2px_20px_rgba(255,255,255,0.1)]"
           >
             Never worry about{" "}
-            <span className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] bg-clip-text text-transparent dark:drop-shadow-[0_0_12px_rgba(135,206,250,0.6)]">
               what to post
             </span>{" "}
             again.
@@ -121,7 +121,7 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto text-[#374151] leading-relaxed"
+            className="text-xl sm:text-2xl mb-8 max-w-2xl mx-auto text-gray-300 dark:text-gray-200 leading-relaxed"
           >
             AI-powered content ideas, captions, hashtags, and a drag-and-drop calendar for creators, brands, and freelancers.
           </motion.p>
@@ -148,7 +148,7 @@ export default function LandingPage() {
             </Link>
             <Link 
               href="/dashboard" 
-              className="group border-2 border-[#1F2937] text-[#1F2937] font-semibold px-8 py-4 rounded-full hover:bg-[#1F2937] hover:text-white transition-all duration-300 text-lg"
+              className="group border-2 border-white dark:border-gray-300 text-white dark:text-white font-semibold px-8 py-4 rounded-full hover:bg-white hover:text-black dark:hover:bg-gray-200 dark:hover:text-black transition-all duration-300 text-lg shadow-lg hover:shadow-xl transform hover:scale-105"
             >
               Watch Demo
             </Link>
@@ -159,12 +159,12 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
-            className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-[#6B7280]"
+            className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-8 text-sm text-[#6B7280] dark:text-gray-400"
           >
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
                 {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full border-2 border-white" />
+                  <div key={i} className="w-8 h-8 bg-gradient-to-r from-[#87CEFA] to-[#40E0D0] rounded-full border-2 border-white dark:border-black" />
                 ))}
               </div>
               <span>Join 10,000+ creators</span>
@@ -188,17 +188,17 @@ export default function LandingPage() {
           }}
           className="absolute top-32 left-4 hidden lg:block z-0 opacity-70 pointer-events-none"
         >
-          <div className="bg-white rounded-2xl shadow-xl p-3 border border-gray-100 max-w-xs">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-3 border border-gray-100 dark:border-gray-800 max-w-xs">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 bg-[#87CEFA] rounded-full flex items-center justify-center">
                 <span className="text-white text-sm">📱</span>
               </div>
               <div className="text-sm">
-                <div className="font-semibold">Instagram Post</div>
-                <div className="text-gray-500">2 min ago</div>
+                <div className="font-semibold text-[#1F2937] dark:text-white">Instagram Post</div>
+                <div className="text-gray-500 dark:text-gray-400">2 min ago</div>
               </div>
             </div>
-            <div className="text-sm text-gray-600">&ldquo;Just posted our latest design! ✨&rdquo;</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">&ldquo;Just posted our latest design! ✨&rdquo;</div>
           </div>
         </motion.div>
 
@@ -214,24 +214,24 @@ export default function LandingPage() {
           }}
           className="absolute bottom-32 right-4 hidden lg:block z-0 opacity-70 pointer-events-none"
         >
-          <div className="bg-white rounded-2xl shadow-xl p-3 border border-gray-100 max-w-xs">
+          <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-3 border border-gray-100 dark:border-gray-800 max-w-xs">
             <div className="flex items-center gap-3 mb-3">
               <div className="w-8 h-8 bg-[#40E0D0] rounded-full flex items-center justify-center">
                 <span className="text-white text-sm">📅</span>
               </div>
               <div className="text-sm">
-                <div className="font-semibold">Calendar</div>
-                <div className="text-gray-500">3 posts scheduled</div>
+                <div className="font-semibold text-[#1F2937] dark:text-white">Calendar</div>
+                <div className="text-gray-500 dark:text-gray-400">3 posts scheduled</div>
               </div>
             </div>
-            <div className="text-sm text-gray-600">Next post in 2 hours</div>
+            <div className="text-sm text-gray-600 dark:text-gray-300">Next post in 2 hours</div>
           </div>
         </motion.div>
         </Container>
       </section>
 
       {/* How it Works */}
-      <section className="bg-white py-20">
+      <section className="bg-white dark:bg-black py-20">
         <Container>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -240,8 +240,8 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">How it Works</h2>
-          <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#1F2937] dark:text-white">How it Works</h2>
+          <p className="text-lg text-[#6B7280] dark:text-gray-300 max-w-2xl mx-auto">
             Get started in minutes with our simple 3-step process
           </p>
         </motion.div>
@@ -273,15 +273,15 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
               viewport={{ once: true }}
-              className="flex-1 bg-[#F9FAFB] rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group"
+              className="flex-1 bg-[#F9FAFB] dark:bg-gray-900 rounded-2xl p-8 shadow-sm hover:shadow-lg transition-all duration-300 group border border-gray-200 dark:border-gray-800"
             >
               <div className={`w-10 h-10 rounded-xl bg-gradient-to-br ${item.iconGradient} flex items-center justify-center mb-4`}>
                 <span className="text-lg">{item.icon}</span>
               </div>
-              <h3 className="font-bold text-xl mb-3 text-[#1F2937] group-hover:text-[#87CEFA] transition-colors">
+              <h3 className="font-bold text-xl mb-3 text-[#1F2937] dark:text-white group-hover:text-[#87CEFA] transition-colors">
                 {item.title}
               </h3>
-              <p className="text-[#6B7280] leading-relaxed">
+              <p className="text-[#6B7280] dark:text-gray-300 leading-relaxed">
                 {item.description}
               </p>
             </motion.div>
@@ -291,7 +291,7 @@ export default function LandingPage() {
       </section>
 
       {/* Screenshots/Mockups Placeholder */}
-      <section className="py-20 bg-[#F9FAFB] text-center">
+      <section className="py-20 bg-[#F9FAFB] dark:bg-black text-center">
         <Container>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -300,8 +300,8 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">See PostPal in Action</h2>
-          <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#1F2937] dark:text-white">See PostPal in Action</h2>
+          <p className="text-lg text-[#6B7280] dark:text-gray-300 max-w-2xl mx-auto">
             Beautiful, intuitive interface designed for creators
           </p>
         </motion.div>
@@ -314,11 +314,11 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="flex-1"
           >
-            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-800">
               <div className="bg-gradient-to-br from-[#E0E7FF]/20 to-[#C7D2FE]/20 rounded-xl p-8 text-center">
                 <div className="text-4xl mb-4">📱</div>
-                <h3 className="text-xl font-bold mb-2 text-[#1F2937]">AI Content Generator</h3>
-                <p className="text-[#374151]">Get personalized post ideas in seconds</p>
+                <h3 className="text-xl font-bold mb-2 text-[#1F2937] dark:text-white">AI Content Generator</h3>
+                <p className="text-[#374151] dark:text-gray-300">Get personalized post ideas in seconds</p>
               </div>
             </div>
           </motion.div>
@@ -330,11 +330,11 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="flex-1"
           >
-            <div className="bg-white rounded-2xl shadow-xl p-6 border border-gray-100">
+            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-xl p-6 border border-gray-100 dark:border-gray-800">
               <div className="bg-gradient-to-br from-[#F1F5F9]/20 to-[#E2E8F0]/20 rounded-xl p-8 text-center">
                 <div className="text-4xl mb-4">📅</div>
-                <h3 className="text-xl font-bold mb-2 text-[#1F2937]">Content Calendar</h3>
-                <p className="text-[#374151]">Plan and schedule with drag-and-drop</p>
+                <h3 className="text-xl font-bold mb-2 text-[#1F2937] dark:text-white">Content Calendar</h3>
+                <p className="text-[#374151] dark:text-gray-300">Plan and schedule with drag-and-drop</p>
               </div>
             </div>
           </motion.div>
@@ -343,7 +343,7 @@ export default function LandingPage() {
       </section>
 
       {/* Simple, Clean Pricing Section */}
-      <section className="py-24 bg-white">
+      <section className="py-24 bg-white dark:bg-black">
         <Container className="max-w-4xl">
           {/* Header */}
           <motion.div
@@ -353,10 +353,10 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center mb-16"
           >
-            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#1E293B]">
+            <h2 className="text-4xl sm:text-5xl font-bold mb-6 text-[#1E293B] dark:text-white">
               Simple Pricing
             </h2>
-            <p className="text-xl text-[#64748B] max-w-2xl mx-auto">
+            <p className="text-xl text-[#64748B] dark:text-gray-300 max-w-2xl mx-auto">
               Choose the plan that fits your needs. Start free, upgrade when you&apos;re ready.
             </p>
           </motion.div>
@@ -395,10 +395,10 @@ export default function LandingPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: index * 0.1 }}
                 viewport={{ once: true }}
-                className={`relative bg-white rounded-2xl p-8 border-2 transition-all duration-300 hover:shadow-lg ${
+                className={`relative bg-white dark:bg-gray-900 rounded-2xl p-8 border-2 transition-all duration-300 hover:shadow-lg ${
                   plan.popular 
                     ? 'border-[#87CEFA] shadow-lg' 
-                    : 'border-gray-200'
+                    : 'border-gray-200 dark:border-gray-800'
                 }`}
               >
                 {plan.popular && (
@@ -410,10 +410,10 @@ export default function LandingPage() {
                 )}
 
                 <div className="text-center mb-8">
-                  <h3 className="text-2xl font-bold mb-2 text-[#1E293B]">{plan.name}</h3>
-                  <p className="text-[#64748B] mb-6">{plan.description}</p>
-                  <div className="text-4xl font-bold text-[#1E293B] mb-1">{plan.price}</div>
-                  <div className="text-sm text-[#64748B]">
+                  <h3 className="text-2xl font-bold mb-2 text-[#1E293B] dark:text-white">{plan.name}</h3>
+                  <p className="text-[#64748B] dark:text-gray-300 mb-6">{plan.description}</p>
+                  <div className="text-4xl font-bold text-[#1E293B] dark:text-white mb-1">{plan.price}</div>
+                  <div className="text-sm text-[#64748B] dark:text-gray-400">
                     {plan.price === "$0" ? "forever" : "per month"}
                   </div>
                 </div>
@@ -424,7 +424,7 @@ export default function LandingPage() {
                   className={`w-full py-3 rounded-xl font-semibold mb-8 transition-all duration-300 ${
                     plan.popular
                       ? 'bg-[#87CEFA] text-white hover:bg-[#5F9EC7]'
-                      : 'bg-gray-100 text-[#1E293B] hover:bg-gray-200'
+                      : 'bg-gray-100 dark:bg-gray-800 text-[#1E293B] dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700'
                   }`}
                 >
                   {plan.cta}
@@ -436,7 +436,7 @@ export default function LandingPage() {
                       <div className="w-4 h-4 bg-[#40E0D0] rounded-full flex items-center justify-center">
                         <span className="text-white text-xs font-bold">✓</span>
                       </div>
-                      <span className="text-sm text-[#475569]">{feature}</span>
+                      <span className="text-sm text-[#475569] dark:text-gray-300">{feature}</span>
                     </div>
                   ))}
                 </div>
@@ -452,8 +452,8 @@ export default function LandingPage() {
             viewport={{ once: true }}
             className="text-center"
           >
-            <div className="bg-gray-50 rounded-2xl p-8">
-              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#64748B]">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-2xl p-8 border border-gray-200 dark:border-gray-800">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-6 text-sm text-[#64748B] dark:text-gray-300">
                 <div className="flex items-center gap-2">
                   <span className="text-[#10B981]">✓</span>
                   <span>14-day free trial</span>
@@ -473,7 +473,7 @@ export default function LandingPage() {
       </section>
 
       {/* Testimonials Carousel Placeholder */}
-      <section className="py-20 bg-[#F9FAFB] text-center">
+      <section className="py-20 bg-[#F9FAFB] dark:bg-black text-center">
         <Container>
         <motion.div
           initial={{ opacity: 0, y: 30 }}
@@ -482,8 +482,8 @@ export default function LandingPage() {
           viewport={{ once: true }}
           className="mb-12"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold mb-4">What Our Users Say</h2>
-          <p className="text-lg text-[#6B7280] max-w-2xl mx-auto">
+          <h2 className="text-3xl sm:text-4xl font-bold mb-4 text-[#1F2937] dark:text-white">What Our Users Say</h2>
+          <p className="text-lg text-[#6B7280] dark:text-gray-300 max-w-2xl mx-auto">
             Join thousands of creators who trust PostPal
           </p>
         </motion.div>
@@ -515,14 +515,14 @@ export default function LandingPage() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: index * 0.2 }}
               viewport={{ once: true }}
-              className="flex-1 bg-white rounded-2xl p-8 shadow-lg border border-gray-100"
+              className="flex-1 bg-white dark:bg-gray-900 rounded-2xl p-8 shadow-lg border border-gray-100 dark:border-gray-800"
             >
-                             <div className="text-2xl mb-4">&ldquo;{testimonial.quote}&rdquo;</div>
+                             <div className="text-2xl mb-4 text-[#1F2937] dark:text-gray-200">&ldquo;{testimonial.quote}&rdquo;</div>
               <div className="flex items-center gap-3">
                 <div className="text-3xl">{testimonial.avatar}</div>
                 <div className="text-left">
-                  <div className="font-semibold text-[#1F2937]">{testimonial.author}</div>
-                  <div className="text-sm text-[#6B7280]">{testimonial.role}</div>
+                  <div className="font-semibold text-[#1F2937] dark:text-white">{testimonial.author}</div>
+                  <div className="text-sm text-[#6B7280] dark:text-gray-400">{testimonial.role}</div>
                 </div>
               </div>
             </motion.div>
@@ -532,7 +532,7 @@ export default function LandingPage() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-white py-12 border-t text-center text-[#6B7280]">
+      <footer className="bg-white dark:bg-black py-12 border-t border-gray-200 dark:border-gray-800 text-center text-[#6B7280] dark:text-gray-400">
         <Container className="max-w-4xl">
           <div className="flex flex-col sm:flex-row justify-center gap-8 mb-6">
             <Link href="/terms" className="hover:text-[#87CEFA] transition-colors">Terms</Link>

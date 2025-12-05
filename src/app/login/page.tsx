@@ -47,7 +47,7 @@ export default function LoginPage() {
 
     try {
       await login(formData);
-    } catch (error) {
+    } catch (_error) {
       // Error is handled by the auth context
     }
   };
@@ -63,13 +63,13 @@ export default function LoginPage() {
 
   const handleOAuthLogin = (provider: 'google' | 'github' | 'twitter') => {
     // This will be implemented when we add OAuth
-    console.log(`OAuth login with ${provider}`);
+    // TODO: Implement OAuth authentication
   };
 
   const getOAuthButtonStyle = (provider: 'google' | 'github' | 'twitter') => {
     const styles = {
-      google: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
-      github: 'bg-gray-900 text-white hover:bg-gray-800',
+      google: 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700',
+      github: 'bg-gray-900 dark:bg-gray-800 text-white hover:bg-gray-800 dark:hover:bg-gray-700',
       twitter: 'bg-blue-500 text-white hover:bg-blue-600',
     };
     return styles[provider];
@@ -86,7 +86,7 @@ export default function LoginPage() {
 
   return (
     <Container>
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-black">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -107,7 +107,7 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl font-bold text-gray-900 mb-2"
+              className="text-3xl font-bold text-gray-900 dark:text-white mb-2"
             >
               Welcome back to PostPal
             </motion.h2>
@@ -116,7 +116,7 @@ export default function LoginPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-gray-600"
+              className="text-gray-600 dark:text-gray-300"
             >
               Sign in to your account to continue creating amazing content
             </motion.p>
@@ -129,7 +129,7 @@ export default function LoginPage() {
             transition={{ delay: 0.5 }}
             className="space-y-3"
           >
-            <p className="text-center text-sm text-gray-500">Or continue with</p>
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400">Or continue with</p>
             
             <div className="grid grid-cols-3 gap-3">
               {(['google', 'github', 'twitter'] as const).map((provider) => (
@@ -153,10 +153,10 @@ export default function LoginPage() {
             className="relative"
           >
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-gray-300 dark:border-gray-700" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or sign in with email</span>
+              <span className="px-2 bg-white dark:bg-black text-gray-500 dark:text-gray-400">Or sign in with email</span>
             </div>
           </motion.div>
 
@@ -175,11 +175,11 @@ export default function LoginPage() {
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="bg-red-50 border border-red-200 rounded-xl p-4"
+                  className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4"
                 >
                   <div className="flex items-center gap-3">
                     <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0" />
-                    <p className="text-sm text-red-700">{error}</p>
+                    <p className="text-sm text-red-700 dark:text-red-300">{error}</p>
                   </div>
                 </motion.div>
               )}
@@ -187,7 +187,7 @@ export default function LoginPage() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Email address
               </label>
               <div className="relative">
@@ -202,8 +202,8 @@ export default function LoginPage() {
                   required
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    validationErrors.email ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-700'
                   }`}
                   placeholder="Enter your email"
                 />
@@ -212,7 +212,7 @@ export default function LoginPage() {
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                  className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
                   {validationErrors.email}
@@ -222,7 +222,7 @@ export default function LoginPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -237,8 +237,8 @@ export default function LoginPage() {
                   required
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    validationErrors.password ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-700'
                   }`}
                   placeholder="Enter your password"
                 />
@@ -248,9 +248,9 @@ export default function LoginPage() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                   )}
                 </button>
               </div>
@@ -258,7 +258,7 @@ export default function LoginPage() {
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                  className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
                   {validationErrors.password}
@@ -273,15 +273,15 @@ export default function LoginPage() {
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 border-gray-300 dark:border-gray-700 rounded"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700">
+                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-700 dark:text-gray-200">
                   Remember me
                 </label>
               </div>
               <Link
                 href="/forgot-password"
-                className="text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                  className="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
               >
                 Forgot password?
               </Link>
@@ -312,7 +312,7 @@ export default function LoginPage() {
             transition={{ delay: 0.8 }}
             className="text-center"
           >
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Don&apos;t have an account?{' '}
               <Link
                 href="/signup"
@@ -328,13 +328,13 @@ export default function LoginPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="bg-blue-50 border border-blue-200 rounded-xl p-4"
+            className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-xl p-4"
           >
             <div className="flex items-center gap-2 mb-2">
               <CheckCircle className="w-4 h-4 text-blue-600" />
-              <span className="text-sm font-medium text-blue-800">Demo Account</span>
+              <span className="text-sm font-medium text-blue-800 dark:text-blue-300">Demo Account</span>
             </div>
-            <p className="text-xs text-blue-700">
+            <p className="text-xs text-blue-700 dark:text-blue-300">
               Email: <span className="font-mono">demo@postpal.app</span><br />
               Password: <span className="font-mono">demo123</span>
             </p>

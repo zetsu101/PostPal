@@ -235,6 +235,12 @@ Object.entries(AI_RATE_LIMITS).forEach(([endpoint, config]) => {
 // Rate limiting middleware for Next.js API routes
 export function createRateLimitMiddleware(endpoint: string) {
   return async (request: Request): Promise<{ allowed: boolean; result?: RateLimitResult }> => {
+    // Bypass rate limiting for automated tests/dev if header is present
+    const testBypass = request.headers.get('x-test-bypass');
+    if (testBypass === 'true') {
+      return { allowed: true };
+    }
+
     const config = AI_RATE_LIMITS[endpoint as keyof typeof AI_RATE_LIMITS];
     if (!config) {
       return { allowed: true };

@@ -228,7 +228,7 @@ class AIContentOptimizationEngine {
   }
 
   private generateHashtagSuggestions(content: string, platform: string): string {
-    const trendingHashtags = {
+    const trendingHashtags: Record<string, string[]> = {
       instagram: ['#instagood', '#photooftheday', '#fashion', '#beautiful', '#happy'],
       twitter: ['#trending', '#news', '#tech', '#business', '#innovation'],
       linkedin: ['#leadership', '#innovation', '#business', '#career', '#networking'],
@@ -265,7 +265,7 @@ class AIContentOptimizationEngine {
 
   private async predictMetrics(score: number, platform: string): Promise<{ engagement: number; reach: number; clicks: number }> {
     // Base metrics by platform
-    const baseMetrics = {
+    const baseMetrics: Record<string, { engagement: number; reach: number; clicks: number }> = {
       instagram: { engagement: 4.2, reach: 1000, clicks: 50 },
       twitter: { engagement: 2.1, reach: 500, clicks: 25 },
       linkedin: { engagement: 3.8, reach: 800, clicks: 40 },
@@ -286,9 +286,12 @@ class AIContentOptimizationEngine {
   // A/B Testing functionality
   async createABTest(content: string, platform: string, variants: number = 2): Promise<any[]> {
     const tests = [];
+    const validPlatform = (['instagram', 'twitter', 'facebook', 'linkedin', 'tiktok'].includes(platform) 
+      ? platform 
+      : 'instagram') as 'instagram' | 'twitter' | 'facebook' | 'linkedin' | 'tiktok';
     
     for (let i = 0; i < variants; i++) {
-      const optimized = await this.optimizeContent({ content, platform });
+      const optimized = await this.optimizeContent({ content, platform: validPlatform });
       tests.push({
         id: `variant_${i + 1}`,
         content: content,

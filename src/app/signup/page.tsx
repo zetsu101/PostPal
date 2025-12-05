@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
-import { Eye, EyeOff, Mail, Lock, User, AlertCircle, CheckCircle, Loader2, Shield } from 'lucide-react';
+import { Eye, EyeOff, Mail, Lock, User, AlertCircle, Loader2, Shield } from 'lucide-react';
 import Button from '@/components/ui/Button';
 import { Container } from '@/components/Container';
 
@@ -116,7 +116,7 @@ export default function SignupPage() {
         password: formData.password,
         acceptTerms: formData.acceptTerms,
       });
-    } catch (error) {
+    } catch (_error) {
       // Error is handled by the auth context
     }
   };
@@ -137,8 +137,8 @@ export default function SignupPage() {
 
   const getOAuthButtonStyle = (provider: 'google' | 'github' | 'twitter') => {
     const styles = {
-      google: 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50',
-      github: 'bg-gray-900 text-white hover:bg-gray-800',
+      google: 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700',
+      github: 'bg-gray-900 dark:bg-gray-800 text-white hover:bg-gray-800 dark:hover:bg-gray-700',
       twitter: 'bg-blue-500 text-white hover:bg-blue-600',
     };
     return styles[provider];
@@ -163,7 +163,7 @@ export default function SignupPage() {
 
   return (
     <Container>
-      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50 dark:bg-black">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -184,7 +184,7 @@ export default function SignupPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.3 }}
-              className="text-3xl font-bold text-gray-900 mb-2"
+              className="text-3xl font-bold text-gray-900 dark:text-white mb-2"
             >
               Join PostPal Today
             </motion.h2>
@@ -193,7 +193,7 @@ export default function SignupPage() {
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
-              className="text-gray-600"
+              className="text-gray-600 dark:text-gray-300"
             >
               Start creating amazing social media content with AI assistance
             </motion.p>
@@ -206,7 +206,7 @@ export default function SignupPage() {
             transition={{ delay: 0.5 }}
             className="space-y-3"
           >
-            <p className="text-center text-sm text-gray-500">Or continue with</p>
+            <p className="text-center text-sm text-gray-500 dark:text-gray-400">Or continue with</p>
             
             <div className="grid grid-cols-3 gap-3">
               {(['google', 'github', 'twitter'] as const).map((provider) => (
@@ -230,10 +230,10 @@ export default function SignupPage() {
             className="relative"
           >
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300" />
+              <div className="w-full border-t border-gray-300 dark:border-gray-700" />
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or sign up with email</span>
+              <span className="px-2 bg-white dark:bg-black text-gray-500 dark:text-gray-400">Or sign up with email</span>
             </div>
           </motion.div>
 
@@ -264,7 +264,7 @@ export default function SignupPage() {
 
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Full Name
               </label>
               <div className="relative">
@@ -279,8 +279,8 @@ export default function SignupPage() {
                   required
                   value={formData.name}
                   onChange={(e) => handleInputChange('name', e.target.value)}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    validationErrors.name ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.name ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-700'
                   }`}
                   placeholder="Enter your full name"
                 />
@@ -289,7 +289,7 @@ export default function SignupPage() {
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                  className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
                   {validationErrors.name}
@@ -299,7 +299,7 @@ export default function SignupPage() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Email address
               </label>
               <div className="relative">
@@ -314,8 +314,8 @@ export default function SignupPage() {
                   required
                   value={formData.email}
                   onChange={(e) => handleInputChange('email', e.target.value)}
-                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    validationErrors.email ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-10 pr-3 py-3 border rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.email ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-700'
                   }`}
                   placeholder="Enter your email"
                 />
@@ -324,7 +324,7 @@ export default function SignupPage() {
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                  className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
                   {validationErrors.email}
@@ -334,7 +334,7 @@ export default function SignupPage() {
 
             {/* Password Field */}
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Password
               </label>
               <div className="relative">
@@ -349,8 +349,8 @@ export default function SignupPage() {
                   required
                   value={formData.password}
                   onChange={(e) => handleInputChange('password', e.target.value)}
-                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    validationErrors.password ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.password ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-700'
                   }`}
                   placeholder="Create a strong password"
                 />
@@ -360,9 +360,9 @@ export default function SignupPage() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                   )}
                 </button>
               </div>
@@ -382,7 +382,7 @@ export default function SignupPage() {
                           className={`h-2 w-8 rounded-full transition-all duration-200 ${
                             level <= passwordStrength.score
                               ? getPasswordStrengthColor(passwordStrength.score).replace('text-', 'bg-')
-                              : 'bg-gray-200'
+                              : 'bg-gray-200 dark:bg-gray-700'
                           }`}
                         />
                       ))}
@@ -398,7 +398,7 @@ export default function SignupPage() {
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                  className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
                   {validationErrors.password}
@@ -408,7 +408,7 @@ export default function SignupPage() {
 
             {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 dark:text-gray-200 mb-2">
                 Confirm Password
               </label>
               <div className="relative">
@@ -423,8 +423,8 @@ export default function SignupPage() {
                   required
                   value={formData.confirmPassword}
                   onChange={(e) => handleInputChange('confirmPassword', e.target.value)}
-                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
-                    validationErrors.confirmPassword ? 'border-red-300' : 'border-gray-300'
+                  className={`block w-full pl-10 pr-12 py-3 border rounded-xl bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 ${
+                    validationErrors.confirmPassword ? 'border-red-300 dark:border-red-600' : 'border-gray-300 dark:border-gray-700'
                   }`}
                   placeholder="Confirm your password"
                 />
@@ -434,9 +434,9 @@ export default function SignupPage() {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center"
                 >
                   {showConfirmPassword ? (
-                    <EyeOff className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <EyeOff className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                   ) : (
-                    <Eye className="h-5 w-5 text-gray-400 hover:text-gray-600" />
+                    <Eye className="h-5 w-5 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300" />
                   )}
                 </button>
               </div>
@@ -444,7 +444,7 @@ export default function SignupPage() {
                 <motion.p
                   initial={{ opacity: 0, y: -5 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-2 text-sm text-red-600 flex items-center gap-1"
+                  className="mt-2 text-sm text-red-600 dark:text-red-400 flex items-center gap-1"
                 >
                   <AlertCircle className="w-4 h-4" />
                   {validationErrors.confirmPassword}
@@ -462,11 +462,11 @@ export default function SignupPage() {
                     type="checkbox"
                     checked={formData.acceptTerms}
                     onChange={(e) => handleInputChange('acceptTerms', e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 border-gray-300 dark:border-gray-700 rounded"
                   />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label htmlFor="acceptTerms" className="text-gray-700">
+                  <label htmlFor="acceptTerms" className="text-gray-700 dark:text-gray-200">
                     I agree to the{' '}
                     <Link href="/terms" className="text-blue-600 hover:text-blue-500">
                       Terms of Service
@@ -498,11 +498,11 @@ export default function SignupPage() {
                     type="checkbox"
                     checked={formData.acceptMarketing}
                     onChange={(e) => handleInputChange('acceptMarketing', e.target.checked)}
-                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                    className="h-4 w-4 text-blue-600 dark:text-blue-400 focus:ring-blue-500 border-gray-300 dark:border-gray-700 rounded"
                   />
                 </div>
                 <div className="ml-3 text-sm">
-                  <label htmlFor="acceptMarketing" className="text-gray-700">
+                  <label htmlFor="acceptMarketing" className="text-gray-700 dark:text-gray-200">
                     I want to receive updates about new features and content tips
                   </label>
                 </div>
@@ -534,11 +534,11 @@ export default function SignupPage() {
             transition={{ delay: 0.8 }}
             className="text-center"
           >
-            <p className="text-gray-600">
+            <p className="text-gray-600 dark:text-gray-300">
               Already have an account?{' '}
               <Link
                 href="/login"
-                className="font-medium text-blue-600 hover:text-blue-500 transition-colors"
+                className="font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 dark:hover:text-blue-300 transition-colors"
               >
                 Sign in here
               </Link>
@@ -550,13 +550,13 @@ export default function SignupPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.9 }}
-            className="bg-green-50 border border-green-200 rounded-xl p-4"
+            className="bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-4"
           >
             <div className="flex items-center gap-2 mb-2">
               <Shield className="w-4 h-4 text-green-600" />
-              <span className="text-sm font-medium text-green-800">Secure & Private</span>
+              <span className="text-sm font-medium text-green-800 dark:text-green-300">Secure & Private</span>
             </div>
-            <p className="text-xs text-green-700">
+            <p className="text-xs text-green-700 dark:text-green-300">
               Your data is encrypted and secure. We never share your personal information with third parties.
             </p>
           </motion.div>

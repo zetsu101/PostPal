@@ -54,6 +54,7 @@ export async function GET(request: NextRequest) {
       console.error('Error fetching organizations:', orgError);
       return NextResponse.json({ error: 'Failed to fetch team members' }, { status: 500 });
     }
+    // orgError is checked above, so it's used
 
     // Flatten the team members data
     const teamMembers = organizations?.flatMap(org => 
@@ -69,7 +70,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ teamMembers }, { status: 200 });
 
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error in GET /api/team/members:', error);
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
@@ -150,7 +151,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user is already a team member
-    const { data: existingMember, error: memberCheckError } = await supabase
+    const { data: existingMember } = await supabase
       .from('team_members')
       .select('id')
       .eq('organization_id', organizationId)
@@ -265,7 +266,7 @@ export async function PUT(request: NextRequest) {
     }
 
     // Check if current user has permission to update this member
-    const { data: organization, error: orgError } = await supabase
+    const { data: organization } = await supabase
       .from('organizations')
       .select('owner_id')
       .eq('id', teamMember.organization_id)
@@ -274,7 +275,7 @@ export async function PUT(request: NextRequest) {
     const isOwner = organization?.owner_id === user.id;
     
     // Check if current user is admin in this organization
-    const { data: currentUserMember, error: currentUserError } = await supabase
+    const { data: currentUserMember } = await supabase
       .from('team_members')
       .select('role')
       .eq('organization_id', teamMember.organization_id)
@@ -385,7 +386,7 @@ export async function DELETE(request: NextRequest) {
     }
 
     // Check if current user is the organization owner or the member themselves
-    const { data: organization, error: orgError } = await supabase
+    const { data: organization } = await supabase
       .from('organizations')
       .select('owner_id')
       .eq('id', teamMember.organization_id)

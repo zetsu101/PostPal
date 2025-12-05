@@ -89,7 +89,7 @@ export default function SavedPage() {
   const [searchQuery, setSearchQuery] = useState('');
   const [filterPlatform, setFilterPlatform] = useState('all');
   const [showCreateModal, setShowCreateModal] = useState(false);
-  const [selectedContent, setSelectedContent] = useState<SavedContent | null>(null);
+  // const [selectedContent, setSelectedContent] = useState<SavedContent | null>(null); // Reserved for future use
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [contentToDelete, setContentToDelete] = useState<SavedContent | null>(null);
 
@@ -148,18 +148,8 @@ export default function SavedPage() {
     }, 1000);
   }, []);
 
-  // Update category counts
-  useEffect(() => {
-    const updatedCategories = CATEGORIES.map(category => ({
-      ...category,
-      count: category.id === 'all' 
-        ? savedContent.length 
-        : category.id === 'favorites'
-          ? savedContent.filter(content => content.isFavorite).length
-          : savedContent.filter(content => content.category === category.id).length
-    }));
-    // In a real app, you'd update the categories state here
-  }, [savedContent]);
+  // Update category counts (computed on demand in render, no need to store)
+  // Category counts are calculated when rendering, so no state update needed
 
   const filteredContent = savedContent.filter(content => {
     const matchesCategory = selectedCategory === 'all' || 
@@ -243,7 +233,7 @@ export default function SavedPage() {
         message: 'Content copied to clipboard',
         type: 'success',
       });
-    } catch (error) {
+    } catch (_error) {
       addToast({
         title: 'Copy Failed',
         message: 'Please copy manually',
@@ -362,7 +352,7 @@ export default function SavedPage() {
       </div>
 
       {/* Filters and Controls */}
-      <div className="bg-white rounded-2xl shadow-lg p-6 mb-8">
+      <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-6 mb-8 border border-gray-200 dark:border-gray-800">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-4">
             <div className="relative">
@@ -372,14 +362,14 @@ export default function SavedPage() {
                 placeholder="Search content..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
+                className="pl-10 pr-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
               />
             </div>
             
             <select
               value={filterPlatform}
               onChange={(e) => setFilterPlatform(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
+              className="px-4 py-2 border border-gray-300 dark:border-gray-700 rounded-lg bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent"
             >
               <option value="all">All Platforms</option>
               {PLATFORMS.map((platform) => (
@@ -432,7 +422,7 @@ export default function SavedPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ scale: 1.02 }}
-              className={`bg-white rounded-xl shadow-lg overflow-hidden ${
+              className={`bg-white dark:bg-gray-900 rounded-xl shadow-lg overflow-hidden border border-gray-200 dark:border-gray-800 ${
                 viewMode === 'grid' ? 'p-6' : 'p-4'
               }`}
             >
@@ -452,7 +442,7 @@ export default function SavedPage() {
                         {content.prompt.platform}
                       </span>
                       {content.isTemplate && (
-                        <span className="px-2 py-1 rounded-full bg-purple-100 text-purple-600">
+                        <span className="px-2 py-1 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-300">
                           Template
                         </span>
                       )}
@@ -463,13 +453,13 @@ export default function SavedPage() {
                 <div className="flex items-center gap-1">
                   <button
                     onClick={() => handleFavorite(content.id)}
-                    className={`p-1 rounded hover:bg-gray-100 ${
+                    className={`p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 ${
                       content.isFavorite ? 'text-yellow-500' : 'text-gray-400'
                     }`}
                   >
                     <Star className="w-4 h-4" fill={content.isFavorite ? 'currentColor' : 'none'} />
                   </button>
-                  <button className="p-1 rounded hover:bg-gray-100 text-gray-400">
+                  <button className="p-1 rounded hover:bg-gray-100 dark:hover:bg-gray-800 text-gray-400 dark:text-gray-500">
                     <MoreVertical className="w-4 h-4" />
                   </button>
                 </div>
@@ -485,7 +475,7 @@ export default function SavedPage() {
                 {content.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="px-2 py-1 bg-gray-100 text-gray-600 rounded-full text-xs"
+                    className="px-2 py-1 bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 rounded-full text-xs"
                   >
                     #{tag}
                   </span>
@@ -591,7 +581,7 @@ export default function SavedPage() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-2xl p-6 w-full max-w-md mx-4"
+              className="bg-white dark:bg-gray-900 rounded-2xl p-6 w-full max-w-md mx-4 border border-gray-200 dark:border-gray-800"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="text-center">

@@ -126,7 +126,6 @@ class AuthManager {
   // Login user
   async login(credentials: LoginCredentials): Promise<AuthState> {
     try {
-      console.log('Login attempt:', credentials.email); // Debug log
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
@@ -163,7 +162,6 @@ class AuthManager {
         isLoading: false,
         error: null,
       };
-      console.log('Login successful:', result); // Debug log
       return result;
     } catch (error) {
       return {
@@ -375,7 +373,6 @@ export const useAuth = () => {
   const login = async (credentials: LoginCredentials) => {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
     const result = await authManager.login(credentials);
-    console.log('Login result:', result); // Debug log
     setAuthState(result);
     return result;
   };

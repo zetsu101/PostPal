@@ -14,11 +14,14 @@ const validateStripeConfig = () => {
   }
   
   if (missingVars.length > 0) {
-    console.error('❌ Missing Stripe environment variables:', missingVars.join(', '));
-    console.error('📝 Please create a .env.local file with the following variables:');
-    console.error('   STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here');
-    console.error('   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here');
-    console.error('   Get these from: https://dashboard.stripe.com/apikeys');
+    // Only log warning in development, not as an error
+    if (process.env.NODE_ENV === 'development') {
+      console.warn('⚠️ Stripe environment variables not set (optional):', missingVars.join(', '));
+      console.warn('💡 To enable payments, add these to .env.local:');
+      console.warn('   STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key_here');
+      console.warn('   NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key_here');
+      console.warn('   Get these from: https://dashboard.stripe.com/apikeys');
+    }
     return false;
   }
   

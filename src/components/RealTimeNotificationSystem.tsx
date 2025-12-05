@@ -15,7 +15,7 @@ import {
   Clock,
   Settings,
   Filter,
-  MarkAsRead,
+  CheckCircle2,
   Archive,
   Trash2,
   MoreVertical,
@@ -358,7 +358,7 @@ export default function RealTimeNotificationSystem() {
                     onClick={markAllAsRead}
                     className="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded hover:bg-blue-200 flex items-center"
                   >
-                    <MarkAsRead className="w-3 h-3 mr-1" />
+                    <CheckCircle2 className="w-3 h-3 mr-1" />
                     Mark All Read
                   </button>
                 )}

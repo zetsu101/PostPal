@@ -2,8 +2,29 @@
 // Comprehensive tests for WebSocket server, client, and integration
 
 import { WebSocket } from 'ws';
-import { PostPalWebSocketServer } from '../lib/websocket-server';
-import { WEBSOCKET_CONFIG, WEBSOCKET_MESSAGE_TYPES, WEBSOCKET_TOPICS } from '../lib/websocket-config';
+import PostPalWebSocketServer from '../websocket-server';
+// import { WEBSOCKET_CONFIG, WEBSOCKET_MESSAGE_TYPES, WEBSOCKET_TOPICS } from '../websocket-config';
+// TODO: Create websocket-config module or use constants from websocket-server
+const WEBSOCKET_CONFIG = { port: 8080, path: '/ws/insights' };
+const WEBSOCKET_MESSAGE_TYPES = { 
+  CONNECT: 'connect', 
+  DISCONNECT: 'disconnect', 
+  MESSAGE: 'message',
+  CONNECTION_ESTABLISHED: 'connection_established',
+  SUBSCRIBE: 'subscribe',
+  SUBSCRIPTION_CONFIRMED: 'subscription_confirmed',
+  UNSUBSCRIBE: 'unsubscribe',
+  UNSUBSCRIPTION_CONFIRMED: 'unsubscription_confirmed',
+  PING: 'ping',
+  PONG: 'pong',
+  INSIGHT_UPDATE: 'insight_update'
+};
+const WEBSOCKET_TOPICS = { 
+  INSIGHTS: 'insights', 
+  ANALYTICS: 'analytics',
+  CONTENT_ANALYSIS: 'content_analysis',
+  ENGAGEMENT_PREDICTION: 'engagement_prediction'
+};
 
 interface TestResult {
   test: string;
@@ -377,8 +398,8 @@ class WebSocketTestSuite {
       const stats = this.server.getStats();
       
       const hasRequiredFields = stats.hasOwnProperty('totalClients') &&
-                              stats.hasOwn('totalUsers') &&
-                              stats.hasOwn('timestamp');
+                              stats.hasOwnProperty('totalUsers') &&
+                              stats.hasOwnProperty('timestamp');
       
       return {
         test: 'Server Statistics',

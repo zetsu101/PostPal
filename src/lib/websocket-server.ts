@@ -20,7 +20,7 @@ class PostPalWebSocketServer {
   private wss: WebSocketServer;
   private clients = new Map<string, WebSocketClient>();
   private userClients = new Map<string, Set<string>>();
-  private heartbeatInterval: NodeJS.Timeout;
+  private heartbeatInterval: NodeJS.Timeout | null = null;
 
   constructor(server: any) {
     this.wss = new WebSocketServer({ 
@@ -98,7 +98,10 @@ class PostPalWebSocketServer {
       });
 
       // Setup message handlers
-      ws.on('message', (data) => this.handleMessage(clientId, data));
+      ws.on('message', (data: Buffer | string) => {
+        const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+        this.handleMessage(clientId, buffer);
+      });
       ws.on('close', () => this.handleDisconnect(clientId));
       ws.on('error', (error) => this.handleError(clientId, error));
       ws.on('pong', () => this.handlePong(clientId));

@@ -33,7 +33,7 @@ export async function DELETE(request: NextRequest) {
     const thumbnailKey = fileKey.replace(/\.(jpg|jpeg|png|gif|webp)$/i, '_thumb.jpg');
     try {
       await deleteFromS3(thumbnailKey);
-    } catch (error) {
+    } catch (_error) {
       // Thumbnail might not exist, that's okay
       console.log('Thumbnail not found or already deleted:', thumbnailKey);
     }

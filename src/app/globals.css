@@ -16,15 +16,15 @@
   }
 
   .dark {
-    --postpal-bg: #0F172A;
-    --postpal-text: #F8FAFC;
+    --postpal-bg: #000000;
+    --postpal-text: #FFFFFF;
     --postpal-primary: #60A5FA;
     --postpal-accent: #34D399;
     --postpal-coral: #F87171;
     --postpal-peach: #EF4444;
-    --postpal-gray-light: #1E293B;
-    --postpal-gray-dark: #64748B;
-    --postpal-gray-muted: #CBD5E1;
+    --postpal-gray-light: #0A0A0A;
+    --postpal-gray-dark: #1A1A1A;
+    --postpal-gray-muted: #666666;
   }
 
   body {
@@ -46,21 +46,21 @@
   }
   
   .btn-secondary {
-    @apply bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 text-gray-900 dark:text-white px-6 py-3 rounded-lg font-medium hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-700 dark:hover:to-gray-600 transition-all duration-200;
+    @apply bg-gradient-to-r from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-800 text-gray-900 dark:text-white px-6 py-3 rounded-lg font-medium hover:from-gray-200 hover:to-gray-300 dark:hover:from-gray-800 dark:hover:to-gray-700 transition-all duration-200;
   }
   
   .card {
-    @apply bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700;
+    @apply bg-white dark:bg-gray-900 rounded-xl shadow-lg border border-gray-200 dark:border-gray-800;
   }
   
   .input-field {
-    @apply w-full px-4 py-2 bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent;
+    @apply w-full px-4 py-2 bg-gray-100 dark:bg-gray-900 border border-gray-200 dark:border-gray-800 rounded-lg text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#87CEFA] focus:border-transparent;
   }
 }
 
 /* Form elements with proper dark mode support */
 input, textarea, select {
-  @apply bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-gray-200 dark:border-gray-700;
+  @apply bg-white dark:bg-gray-900 text-gray-900 dark:text-white border-gray-200 dark:border-gray-800;
 }
 
 input::placeholder, textarea::placeholder {

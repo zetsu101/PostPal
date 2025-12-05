@@ -3,7 +3,7 @@
 
 import { NextRequest } from 'next/server';
 import { POST as insightsHandler } from '../../app/api/ai/insights/route';
-import { PostPalWebSocketServer } from '../websocket-server';
+import PostPalWebSocketServer from '../websocket-server';
 import { createServerClient } from '../supabase';
 
 interface IntegrationTestResult {

@@ -134,12 +134,12 @@ class WebSocketClientService extends EventEmitter {
       };
 
       this.ws.onerror = (error) => {
-        this.emit('error', error as Error);
+        this.emit('error', error instanceof Error ? error : new Error('WebSocket error'));
       };
 
     } catch (error) {
       this.state.isConnecting = false;
-      this.emit('error', error as Error);
+      this.emit('error', error instanceof Error ? error : new Error(String(error)));
       
       if (this.state.reconnectAttempts < this.config.maxReconnectAttempts) {
         this.scheduleReconnect();
@@ -355,13 +355,15 @@ export { WebSocketClientService };
 export default webSocketClient;
 
 // React hook for WebSocket client
-export function useWebSocketClient() {
-  const [isConnected, setIsConnected] = React.useState(webSocketClient.isConnected());
-  const [isConnecting, setIsConnecting] = React.useState(webSocketClient.isConnecting());
-  const [lastMessage, setLastMessage] = React.useState<WebSocketMessage | null>(null);
-  const [error, setError] = React.useState<Error | null>(null);
+import { useState, useEffect, useCallback } from 'react';
 
-  React.useEffect(() => {
+export function useWebSocketClient() {
+  const [isConnected, setIsConnected] = useState(webSocketClient.isConnected());
+  const [isConnecting, setIsConnecting] = useState(webSocketClient.isConnecting());
+  const [lastMessage, setLastMessage] = useState<WebSocketMessage | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+
+  useEffect(() => {
     const handleConnected = () => {
       setIsConnected(true);
       setIsConnecting(false);
@@ -396,23 +398,23 @@ export function useWebSocketClient() {
     };
   }, []);
 
-  const connect = React.useCallback((token?: string) => {
+  const connect = useCallback((token?: string) => {
     return webSocketClient.connect(token);
   }, []);
 
-  const disconnect = React.useCallback(() => {
+  const disconnect = useCallback(() => {
     webSocketClient.disconnect();
   }, []);
 
-  const send = React.useCallback((message: WebSocketMessage) => {
+  const send = useCallback((message: WebSocketMessage) => {
     return webSocketClient.send(message);
   }, []);
 
-  const subscribe = React.useCallback((topic: string, userId?: string) => {
+  const subscribe = useCallback((topic: string, userId?: string) => {
     webSocketClient.subscribe(topic, userId);
   }, []);
 
-  const unsubscribe = React.useCallback((topic: string, userId?: string) => {
+  const unsubscribe = useCallback((topic: string, userId?: string) => {
     webSocketClient.unsubscribe(topic, userId);
   }, []);
 

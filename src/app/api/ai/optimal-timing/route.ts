@@ -10,10 +10,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Missing authorization header' }, { status: 401 });
     }
 
-    const supabase = createClient();
-    
     // Verify the auth token (simplified - you'd implement proper JWT verification)
-    const token = authHeader.replace('Bearer ', '');
+    // const token = authHeader.replace('Bearer ', '');
     
     const { userId, platform, timeframe, includeHistoricalData, includeCompetitorAnalysis } = await request.json();
 

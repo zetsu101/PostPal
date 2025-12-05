@@ -157,7 +157,7 @@ export default function AICreatorPage() {
             <div className="text-center p-4 bg-white rounded-lg border border-gray-200">
               <div className="text-2xl mb-2">1️⃣</div>
               <h4 className="font-medium text-gray-900 mb-1">Analyze Trends</h4>
-              <p className="text-sm text-gray-600">Discover what's trending and find relevant hashtags</p>
+              <p className="text-sm text-gray-600">Discover what&apos;s trending and find relevant hashtags</p>
             </div>
             
             <div className="text-center p-4 bg-white rounded-lg border border-gray-200">

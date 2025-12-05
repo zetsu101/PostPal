@@ -68,7 +68,10 @@ class RealtimeInsightsService extends EventEmitter {
     this.userClients.get(userId)!.add(clientId);
 
     // Set up socket event handlers
-    socket.on('message', (data) => this.handleMessage(clientId, data));
+    socket.on('message', (data: Buffer | string) => {
+      const buffer = Buffer.isBuffer(data) ? data : Buffer.from(data);
+      this.handleMessage(clientId, buffer);
+    });
     socket.on('close', () => this.removeClient(clientId));
     socket.on('error', (error) => this.handleError(clientId, error));
     socket.on('pong', () => this.handlePong(clientId));

@@ -315,16 +315,16 @@ export default function AdvancedAnalyticsDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-black dark:to-black p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 Advanced Analytics Dashboard
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Real-time insights powered by AI analytics
               </p>
             </div>
@@ -354,7 +354,7 @@ export default function AdvancedAnalyticsDashboard() {
         </div>
 
         {/* Filters */}
-        <div className="mb-6 bg-white rounded-xl shadow-lg p-4">
+        <div className="mb-6 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-4 border border-gray-200 dark:border-gray-800">
           <div className="flex items-center space-x-4">
             <div className="flex items-center space-x-2">
               <Calendar className="w-4 h-4 text-gray-500" />
