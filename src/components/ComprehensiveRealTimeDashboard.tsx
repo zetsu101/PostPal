@@ -28,7 +28,7 @@ import {
   Edit3,
   Play,
   Pause,
-  Stop,
+  Square as Stop,
   CheckCircle,
   AlertCircle,
   Info,
@@ -74,7 +74,6 @@ import {
   Code,
   Quote,
   ListOrdered,
-  ListUnordered,
   Indent,
   Outdent,
   Link2,
@@ -130,15 +129,7 @@ import {
   Wifi as WifiIcon,
   WifiOff as WifiOffIcon,
   Signal,
-  SignalZero,
-  SignalOne,
-  SignalTwo,
-  SignalThree,
   Battery,
-  BatteryLow,
-  BatteryMedium,
-  BatteryHigh,
-  BatteryFull,
   Power,
   PowerOff,
   RotateCcw,
@@ -146,7 +137,6 @@ import {
   RefreshCw as RefreshIcon,
   Loader2,
   Loader,
-  Spinner,
   Circle,
   Square,
   Triangle,
@@ -159,30 +149,9 @@ import {
   Meh,
   Laugh,
   Angry,
-  Surprised,
-  Confused,
-  Kiss,
-  Wink,
-  Tongue,
   ThumbsUp,
   ThumbsDown,
   Hand,
-  Peace,
-  PointUp,
-  PointDown,
-  PointLeft,
-  PointRight,
-  OkHand,
-  V,
-  RaisedHand,
-  Clap,
-  Wave,
-  CallMe,
-  Metal,
-  Horns,
-  Pray,
-  Amen,
-  Cross,
   Star as StarIcon,
   Moon,
   Sun,
@@ -190,18 +159,10 @@ import {
   CloudRain,
   CloudSnow,
   CloudLightning,
-  Tornado,
-  Hurricane,
-  Earthquake,
-  Volcano,
-  Fire,
-  Water,
   Droplets,
   Snowflake,
   Wind,
   Thermometer,
-  Gauge,
-  Speedometer,
   Compass,
   Map,
   MapPin,
@@ -214,279 +175,6 @@ import {
   Ship,
   Rocket,
   Bike,
-  Scooter,
-  Skateboard,
-  Surfboard,
-  Ski,
-  Snowboard,
-  Tent,
-  Camping,
-  Hiking,
-  Running,
-  Walking,
-  Swimming,
-  Diving,
-  Fishing,
-  Hunting,
-  Gardening,
-  Cooking,
-  Eating,
-  Drinking,
-  Coffee,
-  Tea,
-  Wine,
-  Beer,
-  Cocktail,
-  Pizza,
-  Hamburger,
-  Hotdog,
-  Sandwich,
-  Salad,
-  Soup,
-  Cake,
-  Cookie,
-  Candy,
-  IceCream,
-  Popcorn,
-  Apple,
-  Banana,
-  Orange,
-  Grape,
-  Strawberry,
-  Cherry,
-  Peach,
-  Pear,
-  Pineapple,
-  Watermelon,
-  Lemon,
-  Lime,
-  Coconut,
-  Avocado,
-  Tomato,
-  Carrot,
-  Broccoli,
-  Corn,
-  Potato,
-  Onion,
-  Garlic,
-  Pepper,
-  Mushroom,
-  Lettuce,
-  Spinach,
-  Cabbage,
-  Cauliflower,
-  Eggplant,
-  Cucumber,
-  Radish,
-  Beet,
-  Turnip,
-  Squash,
-  Pumpkin,
-  Zucchini,
-  Asparagus,
-  Artichoke,
-  Celery,
-  Parsley,
-  Cilantro,
-  Basil,
-  Oregano,
-  Thyme,
-  Rosemary,
-  Sage,
-  Mint,
-  Chives,
-  Dill,
-  Tarragon,
-  Bay,
-  Nutmeg,
-  Cinnamon,
-  Ginger,
-  Turmeric,
-  Paprika,
-  Cayenne,
-  BlackPepper,
-  Salt,
-  Sugar,
-  Honey,
-  Syrup,
-  Oil,
-  Butter,
-  Cheese,
-  Milk,
-  Yogurt,
-  Cream,
-  Egg,
-  Bread,
-  Rice,
-  Pasta,
-  Noodles,
-  Flour,
-  Yeast,
-  BakingPowder,
-  BakingSoda,
-  Vanilla,
-  Chocolate,
-  Cocoa,
-  Almond,
-  Walnut,
-  Pecan,
-  Cashew,
-  Pistachio,
-  Hazelnut,
-  Macadamia,
-  Peanut,
-  Sesame,
-  Sunflower,
-  PumpkinSeed,
-  Chia,
-  Flax,
-  Quinoa,
-  Oats,
-  Barley,
-  Wheat,
-  Rye,
-  Corn as CornIcon,
-  Soy,
-  Lentil,
-  Bean,
-  Pea,
-  Chickpea,
-  BlackBean,
-  KidneyBean,
-  NavyBean,
-  PintoBean,
-  LimaBean,
-  GreenBean,
-  SnapPea,
-  SnowPea,
-  Edamame,
-  Tofu,
-  Tempeh,
-  Seitan,
-  Miso,
-  SoySauce,
-  Tamari,
-  Worcestershire,
-  Vinegar,
-  Balsamic,
-  AppleCider,
-  RiceVinegar,
-  WineVinegar,
-  LemonJuice,
-  LimeJuice,
-  OrangeJuice,
-  GrapefruitJuice,
-  CranberryJuice,
-  PomegranateJuice,
-  CoconutWater,
-  AlmondMilk,
-  SoyMilk,
-  OatMilk,
-  RiceMilk,
-  HempMilk,
-  CashewMilk,
-  MacadamiaMilk,
-  HazelnutMilk,
-  WalnutMilk,
-  PistachioMilk,
-  PeanutMilk,
-  SesameMilk,
-  SunflowerMilk,
-  PumpkinMilk,
-  ChiaMilk,
-  FlaxMilk,
-  QuinoaMilk,
-  BarleyMilk,
-  WheatMilk,
-  RyeMilk,
-  CornMilk,
-  SoyMilk as SoyMilkIcon,
-  LentilMilk,
-  BeanMilk,
-  PeaMilk,
-  ChickpeaMilk,
-  BlackBeanMilk,
-  KidneyBeanMilk,
-  NavyBeanMilk,
-  PintoBeanMilk,
-  LimaBeanMilk,
-  GreenBeanMilk,
-  SnapPeaMilk,
-  SnowPeaMilk,
-  EdamameMilk,
-  TofuMilk,
-  TempehMilk,
-  SeitanMilk,
-  MisoMilk,
-  SoySauceMilk,
-  TamariMilk,
-  WorcestershireMilk,
-  VinegarMilk,
-  BalsamicMilk,
-  AppleCiderMilk,
-  RiceVinegarMilk,
-  WineVinegarMilk,
-  LemonJuiceMilk,
-  LimeJuiceMilk,
-  OrangeJuiceMilk,
-  GrapefruitJuiceMilk,
-  CranberryJuiceMilk,
-  PomegranateJuiceMilk,
-  CoconutWaterMilk,
-  AlmondMilk as AlmondMilkIcon,
-  SoyMilk as SoyMilkIcon2,
-  OatMilk as OatMilkIcon,
-  RiceMilk as RiceMilkIcon,
-  HempMilk as HempMilkIcon,
-  CashewMilk as CashewMilkIcon,
-  MacadamiaMilk as MacadamiaMilkIcon,
-  HazelnutMilk as HazelnutMilkIcon,
-  WalnutMilk as WalnutMilkIcon,
-  PistachioMilk as PistachioMilkIcon,
-  PeanutMilk as PeanutMilkIcon,
-  SesameMilk as SesameMilkIcon,
-  SunflowerMilk as SunflowerMilkIcon,
-  PumpkinMilk as PumpkinMilkIcon,
-  ChiaMilk as ChiaMilkIcon,
-  FlaxMilk as FlaxMilkIcon,
-  QuinoaMilk as QuinoaMilkIcon,
-  BarleyMilk as BarleyMilkIcon,
-  WheatMilk as WheatMilkIcon,
-  RyeMilk as RyeMilkIcon,
-  CornMilk as CornMilkIcon,
-  SoyMilk as SoyMilkIcon3,
-  LentilMilk as LentilMilkIcon,
-  BeanMilk as BeanMilkIcon,
-  PeaMilk as PeaMilkIcon,
-  ChickpeaMilk as ChickpeaMilkIcon,
-  BlackBeanMilk as BlackBeanMilkIcon,
-  KidneyBeanMilk as KidneyBeanMilkIcon,
-  NavyBeanMilk as NavyBeanMilkIcon,
-  PintoBeanMilk as PintoBeanMilkIcon,
-  LimaBeanMilk as LimaBeanMilkIcon,
-  GreenBeanMilk as GreenBeanMilkIcon,
-  SnapPeaMilk as SnapPeaMilkIcon,
-  SnowPeaMilk as SnowPeaMilkIcon,
-  EdamameMilk as EdamameMilkIcon,
-  TofuMilk as TofuMilkIcon,
-  TempehMilk as TempehMilkIcon,
-  SeitanMilk as SeitanMilkIcon,
-  MisoMilk as MisoMilkIcon,
-  SoySauceMilk as SoySauceMilkIcon,
-  TamariMilk as TamariMilkIcon,
-  WorcestershireMilk as WorcestershireMilkIcon,
-  VinegarMilk as VinegarMilkIcon,
-  BalsamicMilk as BalsamicMilkIcon,
-  AppleCiderMilk as AppleCiderMilkIcon,
-  RiceVinegarMilk as RiceVinegarMilkIcon,
-  WineVinegarMilk as WineVinegarMilkIcon,
-  LemonJuiceMilk as LemonJuiceMilkIcon,
-  LimeJuiceMilk as LimeJuiceMilkIcon,
-  OrangeJuiceMilk as OrangeJuiceMilkIcon,
-  GrapefruitJuiceMilk as GrapefruitJuiceMilkIcon,
-  CranberryJuiceMilk as CranberryJuiceMilkIcon,
-  PomegranateJuiceMilk as PomegranateJuiceMilkIcon,
-  CoconutWaterMilk as CoconutWaterMilkIcon
 } from 'lucide-react';
 import { useAIInsightsWebSocket } from '@/hooks/useWebSocket';
 
@@ -551,9 +239,15 @@ export default function ComprehensiveRealTimeDashboard() {
   const [selectedView, setSelectedView] = useState<'overview' | 'content' | 'analytics' | 'collaboration'>('overview');
   const [autoRefresh, setAutoRefresh] = useState(true);
   const [refreshInterval, setRefreshInterval] = useState(5000);
+  const [mounted, setMounted] = useState(false);
   
   const { isConnected: wsConnected, lastMessage } = useAIInsightsWebSocket();
   const refreshIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Mount check to prevent hydration errors
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Initialize dashboard data
   useEffect(() => {
@@ -855,11 +549,11 @@ export default function ComprehensiveRealTimeDashboard() {
       case 'scheduled':
         return 'bg-blue-100 text-blue-700';
       case 'draft':
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300';
       case 'failed':
         return 'bg-red-100 text-red-700';
       default:
-        return 'bg-gray-100 text-gray-700';
+        return 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300';
     }
   };
 
@@ -880,16 +574,16 @@ export default function ComprehensiveRealTimeDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-100 p-6">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-100 dark:from-black dark:to-black p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
                 PostPal Real-Time Dashboard
               </h1>
-              <p className="text-gray-600">
+              <p className="text-gray-600 dark:text-gray-300">
                 Comprehensive overview of your social media performance
               </p>
             </div>
@@ -903,7 +597,7 @@ export default function ComprehensiveRealTimeDashboard() {
               </div>
               
               <div className="flex items-center space-x-2">
-                <label className="flex items-center text-sm text-gray-600">
+                <label className="flex items-center text-sm text-gray-600 dark:text-gray-300">
                   <input
                     type="checkbox"
                     checked={autoRefresh}
@@ -916,7 +610,7 @@ export default function ComprehensiveRealTimeDashboard() {
                 <select
                   value={refreshInterval}
                   onChange={(e) => setRefreshInterval(Number(e.target.value))}
-                  className="px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="px-2 py-1 text-sm border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-900 text-gray-900 dark:text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 >
                   <option value={1000}>1s</option>
                   <option value={5000}>5s</option>
@@ -938,7 +632,7 @@ export default function ComprehensiveRealTimeDashboard() {
 
         {/* View Tabs */}
         <div className="mb-6">
-          <div className="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+          <div className="flex space-x-1 bg-gray-100 dark:bg-gray-900 p-1 rounded-lg">
             {[
               { id: 'overview', name: 'Overview', icon: <BarChart3 className="w-4 h-4" /> },
               { id: 'content', name: 'Content', icon: <FileText className="w-4 h-4" /> },
@@ -950,8 +644,8 @@ export default function ComprehensiveRealTimeDashboard() {
                 onClick={() => setSelectedView(tab.id as any)}
                 className={`flex items-center space-x-2 px-4 py-2 rounded-md text-sm font-medium transition-colors ${
                   selectedView === tab.id
-                    ? 'bg-white text-blue-600 shadow-sm'
-                    : 'text-gray-600 hover:text-gray-900'
+                    ? 'bg-white dark:bg-gray-800 text-blue-600 dark:text-blue-400 shadow-sm'
+                    : 'text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
                 {tab.icon}
@@ -963,7 +657,7 @@ export default function ComprehensiveRealTimeDashboard() {
 
         {/* Quick Actions */}
         <div className="mb-8">
-          <h2 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h2>
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Quick Actions</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {quickActions.map((action, index) => (
               <motion.button
@@ -972,17 +666,17 @@ export default function ComprehensiveRealTimeDashboard() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
                 onClick={action.action}
-                className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow text-left group"
+                className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow text-left group border border-gray-200 dark:border-gray-800"
               >
                 <div className={`w-12 h-12 ${action.color} rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform`}>
                   <div className="text-white">
                     {action.icon}
                   </div>
                 </div>
-                <h3 className="font-semibold text-gray-900 mb-2">{action.name}</h3>
-                <p className="text-sm text-gray-600 mb-2">{action.description}</p>
+                <h3 className="font-semibold text-gray-900 dark:text-white mb-2">{action.name}</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-300 mb-2">{action.description}</p>
                 {action.shortcut && (
-                  <p className="text-xs text-gray-400">Shortcut: {action.shortcut}</p>
+                  <p className="text-xs text-gray-400 dark:text-gray-500">Shortcut: {action.shortcut}</p>
                 )}
               </motion.button>
             ))}
@@ -1000,7 +694,7 @@ export default function ComprehensiveRealTimeDashboard() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: index * 0.1 }}
-                  className="bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+                  className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow border border-gray-200 dark:border-gray-800"
                 >
                   <div className="flex items-center justify-between mb-4">
                     <div className={`p-2 rounded-lg ${metric.color.replace('text', 'bg').replace('-600', '-100')}`}>
@@ -1018,7 +712,7 @@ export default function ComprehensiveRealTimeDashboard() {
                     </div>
                   </div>
                   
-                  <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                  <h3 className="text-2xl font-bold text-gray-900 dark:text-white mb-1">
                     {metric.value.toLocaleString()}{metric.unit}
                   </h3>
                   <p className="text-sm text-gray-600">{metric.name}</p>
@@ -1034,7 +728,7 @@ export default function ComprehensiveRealTimeDashboard() {
                           className={`flex-1 rounded-t ${
                             metric.changeType === 'increase' ? 'bg-green-200' :
                             metric.changeType === 'decrease' ? 'bg-red-200' :
-                            'bg-gray-200'
+                            'bg-gray-200 dark:bg-gray-700'
                           }`}
                           style={{ height: `${height}%` }}
                         />
@@ -1047,8 +741,8 @@ export default function ComprehensiveRealTimeDashboard() {
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Live Activities */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-800">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <Activity className="w-5 h-5 mr-2 text-green-500" />
                   Live Activities
                 </h3>
@@ -1061,7 +755,7 @@ export default function ComprehensiveRealTimeDashboard() {
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -20 }}
-                        className="flex items-start space-x-3 p-3 bg-gray-50 rounded-lg"
+                        className="flex items-start space-x-3 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg"
                       >
                         <div className="flex-shrink-0 mt-0.5">
                           {getActivityIcon(activity.type)}
@@ -1069,20 +763,20 @@ export default function ComprehensiveRealTimeDashboard() {
                         
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center space-x-2">
-                            <p className="text-sm font-medium text-gray-900">
+                            <p className="text-sm font-medium text-gray-900 dark:text-white">
                               {activity.title}
                             </p>
-                            <span className="text-xs text-gray-500">
+                            <span className="text-xs text-gray-500 dark:text-gray-400">
                               {formatTimestamp(activity.timestamp)}
                             </span>
                           </div>
                           
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 dark:text-gray-300 mt-1">
                             {activity.description}
                           </p>
                           
                           {activity.userName && (
-                            <p className="text-xs text-gray-500 mt-1">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                               by {activity.userName}
                             </p>
                           )}
@@ -1094,19 +788,19 @@ export default function ComprehensiveRealTimeDashboard() {
               </div>
 
               {/* Recent Content */}
-              <div className="bg-white rounded-xl shadow-lg p-6">
-                <h3 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
+              <div className="bg-white dark:bg-gray-900 rounded-xl shadow-lg p-6 border border-gray-200 dark:border-gray-800">
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
                   <FileText className="w-5 h-5 mr-2 text-blue-500" />
                   Recent Content
                 </h3>
                 
                 <div className="space-y-4">
                   {recentContent.map((content) => (
-                    <div key={content.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                    <div key={content.id} className="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                       <div className="flex-1">
-                        <h4 className="font-medium text-gray-900">{content.title}</h4>
+                        <h4 className="font-medium text-gray-900 dark:text-white">{content.title}</h4>
                         <div className="flex items-center space-x-2 mt-1">
-                          <span className="text-sm text-gray-600 capitalize">{content.platform}</span>
+                          <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">{content.platform}</span>
                           <span className={`px-2 py-1 text-xs rounded-full ${getStatusColor(content.status)}`}>
                             {content.status}
                           </span>
@@ -1118,7 +812,7 @@ export default function ComprehensiveRealTimeDashboard() {
                         </div>
                         
                         {content.metrics && (
-                          <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500">
+                          <div className="flex items-center space-x-4 mt-2 text-xs text-gray-500 dark:text-gray-400">
                             <span>{content.metrics.views} views</span>
                             <span>{content.metrics.likes} likes</span>
                             <span>{content.metrics.comments} comments</span>
@@ -1128,10 +822,10 @@ export default function ComprehensiveRealTimeDashboard() {
                       </div>
                       
                       <div className="flex items-center space-x-2">
-                        <button className="p-1 text-gray-400 hover:text-gray-600">
+                        <button className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                           <Edit3 className="w-4 h-4" />
                         </button>
-                        <button className="p-1 text-gray-400 hover:text-gray-600">
+                        <button className="p-1 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300">
                           <ExternalLink className="w-4 h-4" />
                         </button>
                       </div>
@@ -1144,10 +838,10 @@ export default function ComprehensiveRealTimeDashboard() {
         )}
 
         {/* Footer */}
-        <div className="mt-8 bg-white rounded-xl shadow-lg p-4">
-          <div className="flex items-center justify-between text-sm text-gray-600">
+        <div className="mt-8 bg-white dark:bg-gray-900 rounded-xl shadow-lg p-4 border border-gray-200 dark:border-gray-800">
+          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300">
             <div className="flex items-center space-x-4">
-              <span>Last updated: {lastUpdate.toLocaleTimeString()}</span>
+              <span>Last updated: {mounted ? lastUpdate.toLocaleTimeString() : '--:--:--'}</span>
               <span>•</span>
               <span>WebSocket: {wsConnected ? 'Connected' : 'Disconnected'}</span>
               <span>•</span>

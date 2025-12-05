@@ -196,7 +196,7 @@ export function useWebSocket(config: WebSocketConfig = {}): WebSocketHookReturn 
       };
 
       ws.onerror = (error) => {
-        console.error('WebSocket error:', error);
+        // Silently handle WebSocket errors - connection is optional
         setIsConnected(false);
         setIsConnecting(false);
         setError('WebSocket connection error');
@@ -230,9 +230,10 @@ export function useWebSocket(config: WebSocketConfig = {}): WebSocketHookReturn 
     setReconnectAttempts(0);
   }, []);
 
-  // Auto-connect on mount
+  // Auto-connect on mount (disabled by default - enable when WebSocket server is running)
   useEffect(() => {
-    connect();
+    // Uncomment the line below to enable auto-connect
+    // connect();
     
     return () => {
       disconnect();

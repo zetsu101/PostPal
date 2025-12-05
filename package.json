@@ -14,8 +14,12 @@
     "test": "node -r ts-node/register src/lib/__tests__/test-runner.ts",
     "test:websocket": "node -r ts-node/register src/lib/__tests__/websocket-test-suite.ts",
     "test:integration": "node -r ts-node/register src/lib/__tests__/ai-insights-integration-test.ts",
+    "test:api": "ts-node --project src/lib/__tests__/tsconfig.json src/lib/__tests__/run-api-tests.ts",
     "test:watch": "nodemon --exec \"npm run test\" --watch src/lib --ext ts,tsx",
-    "test:ci": "npm run test && npm run lint"
+    "test:ci": "npm run test && npm run lint",
+    "db:verify": "node -r ts-node/register scripts/verify-database.ts",
+    "check:production": "bash scripts/check-production-ready.sh",
+    "deploy:production": "bash scripts/deploy-production.sh"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.908.0",
@@ -38,11 +42,11 @@
     "lucide-react": "^0.539.0",
     "morgan": "^1.10.1",
     "multer": "^2.0.2",
-    "next": "15.4.4",
+    "next": "15.4.8",
     "next-swagger-doc": "^0.4.1",
     "openai": "^5.10.2",
-    "react": "19.1.0",
-    "react-dom": "19.1.0",
+    "react": "19.1.2",
+    "react-dom": "19.1.2",
     "react-dropzone": "^14.3.8",
     "react-email": "^4.3.0",
     "recharts": "^3.1.2",
@@ -64,12 +68,13 @@
     "@types/ws": "^8.5.12",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
-    "eslint-config-next": "15.4.4",
+    "eslint-config-next": "15.4.8",
     "jest": "^29.7.0",
     "nodemon": "^3.0.3",
     "postcss": "^8.5.6",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
-    "typescript": "^5"
+    "typescript": "^5",
+    "dotenv": "^16.4.5"
   }
 }
